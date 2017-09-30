@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "388883111228",
+    "firebase_url": "https://forgeaccount-199a0.firebaseio.com",
+    "project_id": "forgeaccount-199a0",
+    "storage_bucket": "forgeaccount-199a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388883111228:android:06bfce07cb78bcf5",
+        "android_client_info": {
+          "package_name": "me.jamiethompson.forgeaccount"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388883111228-bkfp3c648npvnvn974okaqkk0cbtt0mj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJrlPQf-8qrugcuPDG2STCtX6NEVcWKSQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
