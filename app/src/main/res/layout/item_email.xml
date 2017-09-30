@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="fill_parent"
+              android:descendantFocusability="blocksDescendants">
+
+    <CheckBox
+        android:id="@+id/read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:checked="true"
+        android:clickable="false"/>
+
+    <TextView
+        android:id="@+id/subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_weight="8"
+        android:maxLines="1"
+        android:text="Subject"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:layout_toEndOf="@+id/read"
+        android:layout_alignBottom="@+id/read"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/read"
+        android:layout_toEndOf="@+id/read"
+        android:layout_weight="8"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:text="From"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:paddingRight="@dimen/time_padding"
+        android:text="00:00"
+        />
+</RelativeLayout>

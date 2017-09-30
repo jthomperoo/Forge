@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="me.jamiethompson.forgeaccount.GeneratorFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/scrollview_bottom_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/scrollview_bottom_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/toolbar_margin"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/save"
+                    style="@style/ForgeButtonWithText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/save_icon"
+                    android:text="Save"/>
+
+                <Button
+                    android:id="@+id/refresh"
+                    style="@style/ForgeButtonWithText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/refresh_icon"
+                    android:text="Refresh"/>
+            </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/account_name_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <EditText
+                    android:id="@+id/account_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/account_name"
+                    android:inputType="text"
+                    android:maxLines="1"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                style="@style/ForgeItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/firstname_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/firstname"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="6"
+                        android:ems="10"
+                        android:hint="@string/firstname"
+                        android:maxLines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <ImageButton
+                    android:id="@+id/copy_firstname"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_copy"/>
+
+                <ImageButton
+                    android:id="@+id/refresh_firstname"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/refresh_icon"/>
+
+                <ImageButton
+                    android:id="@+id/preferences_firstname"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/preferences_icon"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ForgeItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/middlename_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/middlename"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/middlename"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/copy_middlename"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_copy"/>
+
+                <ImageButton
+                    android:id="@+id/refresh_middlename"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/refresh_icon"/>
+
+                <ImageButton
+                    android:id="@+id/preferences_middlename"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/preferences_icon"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ForgeItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/lastname_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/lastname"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/lastname"
+                        android:maxLines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/copy_lastname"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_copy"/>
+
+                <ImageButton
+                    android:id="@+id/refresh_lastname"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/refresh_icon"/>
+
+                <ImageButton
+                    android:id="@+id/preferences_lastname"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/preferences_icon"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ForgeItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/username_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/username"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/username"
+                        android:maxLines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/copy_username"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_copy"/>
+
+                <ImageButton
+                    android:id="@+id/refresh_username"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/refresh_icon"/>
+
+                <ImageButton
+                    android:id="@+id/preferences_username"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/preferences_icon"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ForgeItem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ProgressBar
+                    android:id="@+id/address_progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/email_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/email"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/email"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/copy_email"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_copy"/>
+
+                <ImageButton
+                    android:id="@+id/refresh_email"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/refresh_icon"/>
+
+                <ImageButton
+                    android:id="@+id/preferences_email"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/preferences_icon"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ForgeItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/password_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6">
+
+                    <EditText
+                        android:id="@+id/password"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="@string/password"
+                        android:maxLines="1"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/copy_password"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_copy"/>
+
+                <ImageButton
+                    android:id="@+id/refresh_password"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/refresh_icon"/>
+
+                <ImageButton
+                    android:id="@+id/preferences_password"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/preferences_icon"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ForgeItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/year_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    >
+
+                    <EditText
+                        android:id="@+id/year"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:maxLines="1"
+                        android:textAlignment="textStart"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/month_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    >
+
+                    <EditText
+                        android:id="@+id/month"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:maxLines="1"
+                        android:textAlignment="textStart"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/day_wrapper"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    >
+
+                    <EditText
+                        android:id="@+id/day"
+                        style="@style/ForgeNonEditable"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:maxLines="1"
+                        android:textAlignment="textStart"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/copy_date"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/icon_copy"/>
+
+                <ImageButton
+                    android:id="@+id/refresh_date"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/refresh_icon"/>
+
+                <ImageButton
+                    android:id="@+id/preferences_date"
+                    style="@style/ForgeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/preferences_icon"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <ProgressBar
+                    android:id="@+id/mail_progress"
+                    style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/mail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:text="Guerrilla Mail Inbox"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/email_list"
+                style="@android:style/Widget.Material.ListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="2dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

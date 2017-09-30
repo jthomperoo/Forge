@@ -1,0 +1,38 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_info"
+        android:title="@string/pref_header_general"/>
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_person"
+        android:title="@string/pref_header_firstname"/>
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_person"
+        android:title="@string/pref_header_middlename"/>
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_person"
+        android:title="@string/pref_header_lastname"/>
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_person"
+        android:title="@string/pref_header_username"/>
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_email"
+        android:title="@string/pref_header_email"/>
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_password"
+        android:title="@string/pref_header_password"/>
+    <header
+        android:fragment="me.jamiethompson.forgeaccount.Preferences$GeneralPreferenceFragment"
+        android:icon="@drawable/icon_date_of_birth"
+        android:title="@string/pref_header_date_of_birth"/>
+
+</preference-headers>
