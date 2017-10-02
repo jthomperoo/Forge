@@ -2,8 +2,8 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="example_switch"
-        android:summary="summary"
-        android:title="title"/>
+        android:key="@string/pref_notifications_key"
+        android:summary="@string/pref_notifications_summary"
+        android:title="@string/pref_notifications_title"/>
 
 </PreferenceScreen>

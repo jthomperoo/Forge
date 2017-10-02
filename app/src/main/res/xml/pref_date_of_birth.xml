@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="@string/pref_dob_min_key"
+        android:defaultValue="18"
+        android:inputType="number"
+        android:title="@string/pref_dob_min_title"
+        android:summary="@string/pref_dob_max_summary" />
+</PreferenceScreen>

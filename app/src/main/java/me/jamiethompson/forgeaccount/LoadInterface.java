@@ -1,5 +1,7 @@
 package me.jamiethompson.forgeaccount;
 
+import me.jamiethompson.forgeaccount.Data.ForgeAccount;
+
 /**
  * Created by jamie on 29/09/17.
  */

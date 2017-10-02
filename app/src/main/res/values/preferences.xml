@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_notifications_key">notifications</string>
+    <string name="pref_notifications_title">Email notifications</string>
+    <string name="pref_notifications_summary">Show email notifications</string>
+
+    <string name="pref_password_min_key">password_min</string>
+    <string name="pref_password_min_title">Minimum length</string>
+    <string name="pref_password_min_summary">Mimimum password length generated</string>
+
+    <string name="pref_password_max_key">password_max</string>
+    <string name="pref_password_max_title">Maximum length</string>
+    <string name="pref_password_max_summary">Maximum password length generated</string>
+
+    <string name="pref_password_special_key">password_special</string>
+    <string name="pref_password_special_title">Special characters</string>
+    <string name="pref_password_special_summary">Include special characters in generated password</string>
+
+    <string name="pref_password_number_key">password_number</string>
+    <string name="pref_password_number_title">Number characters</string>
+    <string name="pref_password_number_summary">Include number characters in generated password</string>
+
+    <string name="pref_password_uppercase_key">password_uppercase</string>
+    <string name="pref_password_uppercase_title">Uppercase characters</string>
+    <string name="pref_password_uppercase_summary">Include uppercase characters in generated password</string>
+
+    <string name="pref_dob_min_key">date_of_birth_min</string>
+    <string name="pref_dob_min_title">Minimum age</string>
+    <string name="pref_dob_max_summary">Minimum age of generated date of birth</string>
+</resources>

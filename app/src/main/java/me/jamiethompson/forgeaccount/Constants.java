@@ -8,6 +8,7 @@ public class Constants
 {
 	final public static String ERROR_LOG = "error";
 	final public static String BASE_URL = "http://api.guerrillamail.com/ajax.php";
+	final public static String MAIL_DOMAIN = "guerrillamail.com";
 
 	final public static String GET_EMAILS = "check_email";
 	final public static String GET_ADDRESS = "get_email_address";
@@ -16,6 +17,8 @@ public class Constants
 	final public static int REQUEST_EMAILS = 0;
 	final public static int REQUEST_ADDRESS = 1;
 	final public static int REQUEST_SET_EMAIL = 2;
+
+	final public static int EMAIL_REFRESH_DELAY = 1000;
 
 	final public static String ADDRESS_JSON_KEY = "email_addr";
 	final public static String SID_JSON_KEY = "sid_token";
@@ -36,6 +39,10 @@ public class Constants
 	final public static String EMAIL = "email";
 	final public static String PASSWORD = "password";
 	final public static String DATE = "date";
+
+	final public static String NOTIFICATION_NAVIGATION = "notification_nav";
+	final public static String NOTIFICATION_CHANNEL = "forge_channel";
+	final public static int HELPER_NOTIFICATION_ID = 1;
 
 	final public static int GENERATE_TAB = 0;
 	final public static int STORE_TAB = 1;

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="me.jamiethompson.forgeaccount.GeneratorFragment">
+    tools:context="me.jamiethompson.forgeaccount.TabActivity.GeneratorFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -272,14 +272,15 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="6"/>
+                    android:layout_weight="6"
+                    android:visibility="gone"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/email_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <EditText
                         android:id="@+id/email"
@@ -464,7 +465,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/mail_title"
