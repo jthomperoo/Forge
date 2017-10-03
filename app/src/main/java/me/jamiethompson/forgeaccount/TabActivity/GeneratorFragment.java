@@ -6,17 +6,24 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
+import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,6 +49,10 @@ import me.jamiethompson.forgeaccount.Data.ForgeAccount;
 import me.jamiethompson.forgeaccount.EmailInterface;
 import me.jamiethompson.forgeaccount.Files.CurrentManager;
 import me.jamiethompson.forgeaccount.Generator.ForgeGenerator;
+import me.jamiethompson.forgeaccount.Preferences.DateOfBirthPreferenceFragment;
+import me.jamiethompson.forgeaccount.Preferences.GeneralPreferenceFragment;
+import me.jamiethompson.forgeaccount.Preferences.PasswordPreferenceFragment;
+import me.jamiethompson.forgeaccount.Preferences.Preferences;
 import me.jamiethompson.forgeaccount.UI.Feedback;
 import me.jamiethompson.forgeaccount.Files.FileManager;
 import me.jamiethompson.forgeaccount.ListView.EmailListAdapter;
@@ -94,9 +105,9 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		setUpUserInterface();
 		displayAccount();
 		ForgeAccount currentAccount = CurrentManager.loadCurrentAccount(getContext());
-		if(currentAccount != null)
+		if (currentAccount != null)
 		{
-			if(currentAccount.getEmail() != null)
+			if (currentAccount.getEmail() != null)
 			{
 				load(currentAccount);
 			}
@@ -221,36 +232,32 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			{
 				String nameTag = getString(R.string.date);
 				Calendar dob = mAccount.getDateOfBirth();
-				addToClipboard(nameTag, String.format("%d/%d/%d", dob.get(Calendar.YEAR), dob.get(Calendar.MONTH), dob.get(Calendar.DAY_OF_MONTH)));
+				addToClipboard(nameTag, String.format("%d/%d/%d", dob.get(Calendar.YEAR), dob.get(Calendar.MONTH) + 1, dob.get(Calendar.DAY_OF_MONTH)));
 				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
-				break;
-			}
-			case R.id.preferences_firstname:
-			{
-				break;
-			}
-			case R.id.preferences_middlename:
-			{
-				break;
-			}
-			case R.id.preferences_lastname:
-			{
-				break;
-			}
-			case R.id.preferences_username:
-			{
 				break;
 			}
 			case R.id.preferences_email:
 			{
+				Intent intent = new Intent(getActivity(), Preferences.class );
+				intent.putExtra( PreferenceActivity.EXTRA_SHOW_FRAGMENT, GeneralPreferenceFragment.class.getName() );
+				intent.putExtra( PreferenceActivity.EXTRA_NO_HEADERS, true );
+				startActivity(intent);
 				break;
 			}
 			case R.id.preferences_password:
 			{
+				Intent intent = new Intent(getActivity(), Preferences.class );
+				intent.putExtra( PreferenceActivity.EXTRA_SHOW_FRAGMENT, PasswordPreferenceFragment.class.getName() );
+				intent.putExtra( PreferenceActivity.EXTRA_NO_HEADERS, true );
+				startActivity(intent);
 				break;
 			}
 			case R.id.preferences_date:
 			{
+				Intent intent = new Intent(getActivity(), Preferences.class );
+				intent.putExtra( PreferenceActivity.EXTRA_SHOW_FRAGMENT, DateOfBirthPreferenceFragment.class.getName() );
+				intent.putExtra( PreferenceActivity.EXTRA_NO_HEADERS, true );
+				startActivity(intent);
 				break;
 			}
 		}
@@ -282,7 +289,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		((TextView) dialog.findViewById(R.id.subject)).setText(email.getSubject());
 		((TextView) dialog.findViewById(R.id.from)).setText(email.getFrom());
 		((TextView) dialog.findViewById(R.id.time)).setText(email.getTime());
-		((TextView) dialog.findViewById(R.id.body)).setText(fromHtml(fromHtml(email.getBody()).toString()));
+		((TextView) dialog.findViewById(R.id.body)).setText(linkifyHtml(email.getBody(), Linkify.WEB_URLS));
 		((TextView) dialog.findViewById(R.id.body)).setMovementMethod(LinkMovementMethod.getInstance());
 	}
 
@@ -465,10 +472,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		mView.findViewById(R.id.copy_password).setOnClickListener(this);
 		mView.findViewById(R.id.copy_date).setOnClickListener(this);
 		// settings
-		mView.findViewById(R.id.preferences_firstname).setOnClickListener(this);
-		mView.findViewById(R.id.preferences_middlename).setOnClickListener(this);
-		mView.findViewById(R.id.preferences_lastname).setOnClickListener(this);
-		mView.findViewById(R.id.preferences_username).setOnClickListener(this);
 		mView.findViewById(R.id.preferences_email).setOnClickListener(this);
 		mView.findViewById(R.id.preferences_password).setOnClickListener(this);
 		mView.findViewById(R.id.preferences_date).setOnClickListener(this);
@@ -539,6 +542,15 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			}
 		});
 
+		if(isNetworkAvailable())
+		{
+			showAddressProgress();
+		}
+		else
+		{
+			hideAddressProgress();
+		}
+
 	}
 
 	private void displayAccount()
@@ -555,7 +567,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		((TextView) mView.findViewById(R.id.password)).setText(mAccount.getPassword());
 		Calendar dob = mAccount.getDateOfBirth();
 		((TextView) mView.findViewById(R.id.day)).setText(String.valueOf(dob.get(Calendar.DAY_OF_MONTH)));
-		((TextView) mView.findViewById(R.id.month)).setText(String.valueOf(dob.get(Calendar.MONTH)));
+		((TextView) mView.findViewById(R.id.month)).setText(String.valueOf(dob.get(Calendar.MONTH) + 1));
 		((TextView) mView.findViewById(R.id.year)).setText(String.valueOf(dob.get(Calendar.YEAR)));
 	}
 
@@ -658,6 +670,31 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			result = Html.fromHtml(html);
 		}
 		return result;
+	}
+
+	/**
+	 * Taken from Stack Overflow - https://stackoverflow.com/a/17201376/6052295
+	 *
+	 * @param html
+	 * @param linkifyMask
+	 * @return
+	 */
+
+	public static Spannable linkifyHtml(String html, int linkifyMask)
+	{
+		Spanned text = fromHtml(fromHtml(html).toString());
+		URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
+
+		SpannableString buffer = new SpannableString(text);
+		Linkify.addLinks(buffer, linkifyMask);
+
+		for (URLSpan span : currentSpans)
+		{
+			int end = text.getSpanEnd(span);
+			int start = text.getSpanStart(span);
+			buffer.setSpan(span, start, end, 0);
+		}
+		return buffer;
 	}
 
 	/**

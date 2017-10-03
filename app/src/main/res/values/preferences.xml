@@ -26,5 +26,9 @@
 
     <string name="pref_dob_min_key">date_of_birth_min</string>
     <string name="pref_dob_min_title">Minimum age</string>
-    <string name="pref_dob_max_summary">Minimum age of generated date of birth</string>
+    <string name="pref_dob_min_summary">Minimum age of generated date of birth</string>
+
+    <string name="pref_dob_max_key">date_of_birth_max</string>
+    <string name="pref_dob_max_title">Maximum age</string>
+    <string name="pref_dob_max_summary">Maximum age of generated date of birth</string>
 </resources>

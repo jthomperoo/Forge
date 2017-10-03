@@ -52,6 +52,13 @@ public class Forge extends AppCompatActivity
 			mViewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
 		}
 
+		if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+				.getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)) {
+			PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_general, true);
+			PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_password, true);
+			PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_date_of_birth, true);
+		}
+
 	}
 
 	@Override

@@ -5,5 +5,11 @@
         android:defaultValue="18"
         android:inputType="number"
         android:title="@string/pref_dob_min_title"
+        android:summary="@string/pref_dob_min_summary" />
+    <EditTextPreference
+        android:key="@string/pref_dob_max_key"
+        android:defaultValue="80"
+        android:inputType="number"
+        android:title="@string/pref_dob_max_title"
         android:summary="@string/pref_dob_max_summary" />
 </PreferenceScreen>

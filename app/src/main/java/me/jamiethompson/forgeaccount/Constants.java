@@ -46,4 +46,9 @@ public class Constants
 
 	final public static int GENERATE_TAB = 0;
 	final public static int STORE_TAB = 1;
+
+	final public static String LOWERCASE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
+	final public static String SPECIAL_CHARACTERS = "~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?";
+	final public static String NUMBER_CHARACTERS = "0123456789";
+	final public static String UPPERCASE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 }

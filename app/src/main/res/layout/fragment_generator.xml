@@ -71,7 +71,7 @@
                     android:id="@+id/firstname_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6">
+                    android:layout_weight="7">
 
                     <EditText
                         android:id="@+id/firstname"
@@ -102,14 +102,6 @@
                     android:layout_weight="1"
                     app:srcCompat="@drawable/refresh_icon"/>
 
-                <ImageButton
-                    android:id="@+id/preferences_firstname"
-                    style="@style/ForgeButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/preferences_icon"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -122,7 +114,7 @@
                     android:id="@+id/middlename_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6">
+                    android:layout_weight="7">
 
                     <EditText
                         android:id="@+id/middlename"
@@ -151,14 +143,6 @@
                     android:layout_weight="1"
                     app:srcCompat="@drawable/refresh_icon"/>
 
-                <ImageButton
-                    android:id="@+id/preferences_middlename"
-                    style="@style/ForgeButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/preferences_icon"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -171,7 +155,7 @@
                     android:id="@+id/lastname_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6">
+                    android:layout_weight="7">
 
                     <EditText
                         android:id="@+id/lastname"
@@ -201,14 +185,6 @@
                     android:layout_weight="1"
                     app:srcCompat="@drawable/refresh_icon"/>
 
-                <ImageButton
-                    android:id="@+id/preferences_lastname"
-                    style="@style/ForgeButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/preferences_icon"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -221,7 +197,7 @@
                     android:id="@+id/username_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6">
+                    android:layout_weight="7">
 
                     <EditText
                         android:id="@+id/username"
@@ -251,14 +227,6 @@
                     android:layout_weight="1"
                     app:srcCompat="@drawable/refresh_icon"/>
 
-                <ImageButton
-                    android:id="@+id/preferences_username"
-                    style="@style/ForgeButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/preferences_icon"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -272,7 +240,7 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="6"
+                    android:layout_weight="7"
                     android:visibility="gone"/>
 
                 <android.support.design.widget.TextInputLayout

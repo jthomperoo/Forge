@@ -61,6 +61,12 @@
     <string name="pref_header_password">Password</string>
     <string name="pref_header_date_of_birth">Date of Birth</string>
 
+    <string name="invalid_preference">Invalid preference</string>
+    <string name="error_age_too_high">Maximum age must be less than 100</string>
+    <string name="error_age_too_low">Minimum age must be greater than 0</string>
+    <string name="error_value_required">Value required</string>
+    <string name="error_min_age_greater_max">Minimum age must be less than maximum age</string>
+
     <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
 
 
