@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Forge</string>
 
-    <string name="keyboard_name">Forge Keyboard</string>
+    <string name="notification_service">Forge Helper</string>
 
     <string name="title_activity_forge">Forge</string>
     <string name="action_settings">Settings</string>
@@ -28,7 +28,7 @@
     <string name="notification_channel">forge_channel</string>
 
     <string name="helper_notification_title">Load Forge</string>
-    <string name="helper_notification_text">Tap to autofill current page</string>
+    <string name="helper_notification_text">Tap to open helper</string>
     <string name="helper_notification_generate">Generate</string>
     <string name="helper_notification_store">Store</string>
 
@@ -62,10 +62,18 @@
     <string name="pref_header_date_of_birth">Date of Birth</string>
 
     <string name="invalid_preference">Invalid preference</string>
-    <string name="error_age_too_high">Maximum age must be less than 100</string>
-    <string name="error_age_too_low">Minimum age must be greater than 0</string>
     <string name="error_value_required">Value required</string>
+
+    <string name="error_age_too_high">Maximum age must be less than </string>
+    <string name="error_age_too_low">Minimum age must be greater than </string>
     <string name="error_min_age_greater_max">Minimum age must be less than maximum age</string>
+
+    <string name="error_pass_long">Maximum password length must be less than </string>
+    <string name="error_pass_short">Minimum password length must be greater than </string>
+    <string name="error_min_pass_greater_max">Minimum password length must be less than maximum password length</string>
+
+    <string name="draw_overlay_not_enabled">Draw over other apps permission required</string>
+    <string name="error_draw_overlay_not_enabled">Allow Froge to draw over other apps to use the helper</string>
 
     <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
 

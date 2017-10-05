@@ -16,18 +16,16 @@ import me.jamiethompson.forgeaccount.TabActivity.Forge;
 public class SaveDialogListener implements DialogInterface.OnClickListener
 {
 
-	private ForgeAccount mAccount;
-	private Boolean mLoaded;
-	private Activity mActivity;
-	private View mView;
+	private ForgeAccount account;
+	private Activity activity;
+	private View view;
 
 
-	public SaveDialogListener(ForgeAccount mAccount, Boolean mLoaded, Activity mActivity, View mView)
+	public SaveDialogListener(ForgeAccount account, Activity activity, View view)
 	{
-		this.mAccount = mAccount;
-		this.mLoaded = mLoaded;
-		this.mActivity = mActivity;
-		this.mView = mView;
+		this.account = account;
+		this.activity = activity;
+		this.view = view;
 	}
 
 	@Override
@@ -37,27 +35,25 @@ public class SaveDialogListener implements DialogInterface.OnClickListener
 		{
 			case DialogInterface.BUTTON_POSITIVE:
 			{
-				ForgeAccount saveAccount = FileManager.replace(mActivity, mAccount);
+				ForgeAccount saveAccount = FileManager.replace(activity, account);
 				if (saveAccount != null)
 				{
-					mAccount = saveAccount;
-					mLoaded = true;
-					Feedback.displayMessage(mActivity.getString(R.string.message_account_saved), mView);
+					account = saveAccount;
+					Feedback.displayMessage(activity.getString(R.string.message_account_saved), view);
 				}
-				((Forge) mActivity).reloadSaveList();
+				((Forge) activity).reloadSaveList();
 				dialog.dismiss();
 				break;
 			}
 			case DialogInterface.BUTTON_NEGATIVE:
 			{
-				ForgeAccount saveAccount = FileManager.add(mActivity, mAccount);
+				ForgeAccount saveAccount = FileManager.add(activity, account);
 				if (saveAccount != null)
 				{
-					mAccount = saveAccount;
-					mLoaded = true;
-					Feedback.displayMessage(mActivity.getString(R.string.message_account_saved), mView);
+					account = saveAccount;
+					Feedback.displayMessage(activity.getString(R.string.message_account_saved), view);
 				}
-				((Forge) mActivity).reloadSaveList();
+				((Forge) activity).reloadSaveList();
 				dialog.dismiss();
 				break;
 			}

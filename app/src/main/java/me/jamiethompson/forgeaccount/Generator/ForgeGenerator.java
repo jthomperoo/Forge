@@ -32,14 +32,14 @@ import me.jamiethompson.forgeaccount.Web.MailCommunicator;
 
 public class ForgeGenerator
 {
-	private List<String> mNames;
-	private MailCommunicator mMailComs;
-	private Context mContext;
+	private List<String> names;
+	private MailCommunicator mailComs;
+	private Context context;
 
 	public ForgeGenerator(EmailInterface callback, Context context)
 	{
-		mContext = context;
-		mMailComs = new MailCommunicator(callback, context);
+		this.context = context;
+		mailComs = new MailCommunicator(callback, context);
 		loadNames();
 	}
 
@@ -50,19 +50,19 @@ public class ForgeGenerator
 		{
 			case Constants.FIRSTNAME:
 			{
-				account.setFirstName(mNames.get(rand.nextInt(mNames.size())));
+				account.setFirstName(names.get(rand.nextInt(names.size())));
 				account.setUsername(stripSpecialCharacters(generateUsername(account)));
 				break;
 			}
 			case Constants.MIDDLENAME:
 			{
-				account.setMiddleName(mNames.get(rand.nextInt(mNames.size())));
+				account.setMiddleName(names.get(rand.nextInt(names.size())));
 				account.setUsername(stripSpecialCharacters(generateUsername(account)));
 				break;
 			}
 			case Constants.LASTNAME:
 			{
-				account.setLastName(mNames.get(rand.nextInt(mNames.size())));
+				account.setLastName(names.get(rand.nextInt(names.size())));
 				account.setUsername(stripSpecialCharacters(generateUsername(account)));
 				break;
 			}
@@ -75,7 +75,7 @@ public class ForgeGenerator
 			{
 				if(networkAvailable)
 				{
-					mMailComs.getAddress();
+					mailComs.getAddress();
 				}
 				else
 				{
@@ -90,9 +90,9 @@ public class ForgeGenerator
 			}
 			case Constants.DATE:
 			{
-				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
-				long minAge = Integer.valueOf(sharedPref.getString(mContext.getString(R.string.pref_dob_min_key), "")) * DateUtils.YEAR_IN_MILLIS;
-				long maxAge = Integer.valueOf(sharedPref.getString(mContext.getString(R.string.pref_dob_max_key), "")) * DateUtils.YEAR_IN_MILLIS;
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+				long minAge = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_dob_min_key), "")) * DateUtils.YEAR_IN_MILLIS;
+				long maxAge = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_dob_max_key), "")) * DateUtils.YEAR_IN_MILLIS;
 				long currentMillis = System.currentTimeMillis();
 				Calendar dob = Calendar.getInstance();
 				dob.setTimeInMillis(ThreadLocalRandom.current().nextLong(0 - maxAge, currentMillis - minAge));
@@ -100,7 +100,7 @@ public class ForgeGenerator
 				break;
 			}
 		}
-		CurrentManager.updateCurrentAccount(account, mContext);
+		CurrentManager.updateCurrentAccount(account, context);
 		return account;
 	}
 
@@ -109,12 +109,12 @@ public class ForgeGenerator
 	{
 		Random rand = new Random();
 		ForgeAccount account = new ForgeAccount();
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
-		long minAge = Integer.valueOf(sharedPref.getString(mContext.getString(R.string.pref_dob_min_key), "")) * DateUtils.YEAR_IN_MILLIS;
-		long maxAge = Integer.valueOf(sharedPref.getString(mContext.getString(R.string.pref_dob_max_key), "")) * DateUtils.YEAR_IN_MILLIS;
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+		long minAge = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_dob_min_key), "")) * DateUtils.YEAR_IN_MILLIS;
+		long maxAge = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_dob_max_key), "")) * DateUtils.YEAR_IN_MILLIS;
 		if(networkAvailable)
 		{
-			mMailComs.getAddress();
+			mailComs.getAddress();
 		}
 		else
 		{
@@ -124,12 +124,12 @@ public class ForgeGenerator
 		Calendar dob = Calendar.getInstance();
 		dob.setTimeInMillis(ThreadLocalRandom.current().nextLong(0 - maxAge, currentMillis - minAge));
 		account.setDateOfBirth(dob);
-		account.setFirstName(mNames.get(rand.nextInt(mNames.size())));
-		account.setMiddleName(mNames.get(rand.nextInt(mNames.size())));
-		account.setLastName(mNames.get(rand.nextInt(mNames.size())));
+		account.setFirstName(names.get(rand.nextInt(names.size())));
+		account.setMiddleName(names.get(rand.nextInt(names.size())));
+		account.setLastName(names.get(rand.nextInt(names.size())));
 		account.setUsername(stripSpecialCharacters(generateUsername(account)));
 		account.setPassword(generatePassword());
-		CurrentManager.updateCurrentAccount(account, mContext);
+		CurrentManager.updateCurrentAccount(account, context);
 		return account;
 	}
 
@@ -137,13 +137,13 @@ public class ForgeGenerator
 	{
 		try
 		{
-			InputStreamReader is = new InputStreamReader(mContext.getResources().openRawResource(R.raw.most_common_names));
+			InputStreamReader is = new InputStreamReader(context.getResources().openRawResource(R.raw.most_common_names));
 			BufferedReader reader = new BufferedReader(is);
-			mNames = new ArrayList<>();
+			names = new ArrayList<>();
 			String line;
 			while ((line = reader.readLine()) != null)
 			{
-				mNames.add(line);
+				names.add(line);
 			}
 		}
 		catch (IOException e)
@@ -154,12 +154,12 @@ public class ForgeGenerator
 
 	public void refreshEmails(EmailAddress emailAddress)
 	{
-		mMailComs.getEmails(emailAddress);
+		mailComs.getEmails(emailAddress);
 	}
 
 	public void setEmailAddress(EmailAddress emailAddress)
 	{
-		mMailComs.setEmail(emailAddress.getAddress());
+		mailComs.setEmail(emailAddress.getAddress());
 	}
 
 	private String generateUsername(ForgeAccount account)
@@ -170,12 +170,12 @@ public class ForgeGenerator
 	private String generatePassword()
 	{
 		Random rand = new Random();
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
-		int maxLen = Integer.valueOf(sharedPref.getString(mContext.getString(R.string.pref_password_max_key), ""));
-		int minLen = Integer.valueOf(sharedPref.getString(mContext.getString(R.string.pref_password_min_key), ""));
-		boolean specialChars = sharedPref.getBoolean(mContext.getString(R.string.pref_password_special_key), true);
-		boolean uppercaseChars = sharedPref.getBoolean(mContext.getString(R.string.pref_password_uppercase_key), true);
-		boolean numberChars = sharedPref.getBoolean(mContext.getString(R.string.pref_password_number_key), true);
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+		int maxLen = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_password_max_key), ""));
+		int minLen = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_password_min_key), ""));
+		boolean specialChars = sharedPref.getBoolean(context.getString(R.string.pref_password_special_key), true);
+		boolean uppercaseChars = sharedPref.getBoolean(context.getString(R.string.pref_password_uppercase_key), true);
+		boolean numberChars = sharedPref.getBoolean(context.getString(R.string.pref_password_number_key), true);
 		String characterSet = Constants.LOWERCASE_CHARACTERS;
 		if(specialChars)
 		{

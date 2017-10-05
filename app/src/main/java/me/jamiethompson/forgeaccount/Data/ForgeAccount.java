@@ -3,8 +3,6 @@ package me.jamiethompson.forgeaccount.Data;
 import java.util.Calendar;
 import java.util.UUID;
 
-import me.jamiethompson.forgeaccount.Data.EmailAddress;
-
 /**
  * Created by jamie on 27/09/17.
  */

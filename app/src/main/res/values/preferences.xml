@@ -31,4 +31,8 @@
     <string name="pref_dob_max_key">date_of_birth_max</string>
     <string name="pref_dob_max_title">Maximum age</string>
     <string name="pref_dob_max_summary">Maximum age of generated date of birth</string>
+
+    <string name="pref_helper_key">helper_notification</string>
+    <string name="pref_helper_title">Autofill notification</string>
+    <string name="pref_helper_summary">Always show autofill notification</string>
 </resources>

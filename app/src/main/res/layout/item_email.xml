@@ -16,15 +16,16 @@
         android:id="@+id/subject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/read"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/read"
         android:layout_weight="8"
+        android:gravity="center_vertical"
         android:maxLines="1"
         android:text="Subject"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:layout_toEndOf="@+id/read"
-        android:layout_alignBottom="@+id/read"
-        android:gravity="center_vertical"
-        android:layout_alignParentTop="true"/>
+        android:textColor="?android:attr/editTextColor"/>
 
     <TextView
         android:id="@+id/from"
@@ -37,7 +38,8 @@
         android:gravity="center_vertical"
         android:maxLines="1"
         android:text="From"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="?android:attr/editTextColor"/>
 
     <TextView
         android:id="@+id/time"
@@ -47,5 +49,5 @@
         android:layout_alignParentTop="true"
         android:paddingRight="@dimen/time_padding"
         android:text="00:00"
-        />
+        android:textColor="?android:attr/editTextColor"/>
 </RelativeLayout>

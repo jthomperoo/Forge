@@ -15,14 +15,14 @@ import me.jamiethompson.forgeaccount.R;
 public class ForgePagerAdapter extends FragmentPagerAdapter
 {
 	final int NUM_OF_TABS = 2;
-	private Context mAppContext;
-	private StoreFragment mStoreFragment;
-	private GeneratorFragment mGeneratorFragment;
+	private Context appContext;
+	private StoreFragment storeFragment;
+	private GeneratorFragment generatorFragment;
 
-	public ForgePagerAdapter(FragmentManager fm, Context mAppContext)
+	public ForgePagerAdapter(FragmentManager fm, Context appContext)
 	{
 		super(fm);
-		this.mAppContext = mAppContext;
+		this.appContext = appContext;
 	}
 
 	@Override
@@ -34,13 +34,13 @@ public class ForgePagerAdapter extends FragmentPagerAdapter
 		{
 			case Constants.GENERATE_TAB:
 			{
-				mGeneratorFragment = GeneratorFragment.newInstance();
-				return mGeneratorFragment;
+				generatorFragment = GeneratorFragment.newInstance();
+				return generatorFragment;
 			}
 			case Constants.STORE_TAB:
 			{
-				mStoreFragment = StoreFragment.newInstance();
-				return mStoreFragment;
+				storeFragment = StoreFragment.newInstance();
+				return storeFragment;
 			}
 			default:
 			{
@@ -61,20 +61,20 @@ public class ForgePagerAdapter extends FragmentPagerAdapter
 		switch (position)
 		{
 			case Constants.GENERATE_TAB:
-				return mAppContext.getString(R.string.tab_generate);
+				return appContext.getString(R.string.tab_generate);
 			case Constants.STORE_TAB:
-				return mAppContext.getString(R.string.tab_store);
+				return appContext.getString(R.string.tab_store);
 		}
 		return null;
 	}
 
 	public StoreFragment getStoreFragment()
 	{
-		return mStoreFragment;
+		return storeFragment;
 	}
 
 	public GeneratorFragment getGeneratorFragment()
 	{
-		return mGeneratorFragment;
+		return generatorFragment;
 	}
 }

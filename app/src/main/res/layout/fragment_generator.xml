@@ -247,7 +247,7 @@
                     android:id="@+id/email_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="6"
+                    android:layout_weight="7"
                     android:visibility="visible">
 
                     <EditText
@@ -258,7 +258,6 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/email"
-                        android:inputType="text"
                         android:maxLines="1"
                         />
                 </android.support.design.widget.TextInputLayout>
@@ -278,14 +277,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/refresh_icon"/>
-
-                <ImageButton
-                    android:id="@+id/preferences_email"
-                    style="@style/ForgeButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/preferences_icon"/>
 
             </LinearLayout>
 

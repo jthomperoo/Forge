@@ -1,8 +1,6 @@
 package me.jamiethompson.forgeaccount.UI;
 
-import android.content.Context;
 import android.support.design.widget.Snackbar;
-import android.text.Layout;
 import android.view.View;
 
 /**

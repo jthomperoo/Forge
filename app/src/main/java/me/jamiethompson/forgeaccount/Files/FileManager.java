@@ -1,6 +1,5 @@
 package me.jamiethompson.forgeaccount.Files;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.google.gson.Gson;
@@ -24,16 +23,16 @@ import me.jamiethompson.forgeaccount.R;
 
 public class FileManager
 {
-	public static HashMap<UUID, ForgeAccount> load(Activity activity)
+	public static HashMap<UUID, ForgeAccount> load(Context context)
 	{
 		HashMap<UUID, ForgeAccount> accounts = new HashMap<>();
 
-		if (activity.getFileStreamPath(activity.getString(R.string.filename_forge_accounts)).exists())
+		if (context.getFileStreamPath(context.getString(R.string.filename_forge_accounts)).exists())
 		{
 			FileInputStream inputStream;
 			try
 			{
-				inputStream = activity.openFileInput(activity.getString(R.string.filename_forge_accounts));
+				inputStream = context.openFileInput(context.getString(R.string.filename_forge_accounts));
 
 				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -63,10 +62,10 @@ public class FileManager
 		return accounts;
 	}
 
-	public static ForgeAccount add(Activity activity, ForgeAccount account)
+	public static ForgeAccount add(Context context, ForgeAccount account)
 	{
 		Gson gson = new Gson();
-		HashMap<UUID, ForgeAccount> accounts = FileManager.load(activity);
+		HashMap<UUID, ForgeAccount> accounts = FileManager.load(context);
 		account.setId(java.util.UUID.randomUUID());
 		accounts.put(account.getId(),account);
 		String jsonString = gson.toJson(new ArrayList<>(accounts.values()));
@@ -74,7 +73,7 @@ public class FileManager
 		FileOutputStream outputStream;
 		try
 		{
-			outputStream = activity.openFileOutput(activity.getString(R.string.filename_forge_accounts), Context.MODE_PRIVATE);
+			outputStream = context.openFileOutput(context.getString(R.string.filename_forge_accounts), Context.MODE_PRIVATE);
 			outputStream.write(jsonString.getBytes());
 			outputStream.close();
 			return account;
@@ -86,17 +85,17 @@ public class FileManager
 		}
 	}
 
-	public static ForgeAccount replace(Activity activity, ForgeAccount account)
+	public static ForgeAccount replace(Context context, ForgeAccount account)
 	{
 		Gson gson = new Gson();
-		HashMap<UUID, ForgeAccount> accounts = FileManager.load(activity);
+		HashMap<UUID, ForgeAccount> accounts = FileManager.load(context);
 		accounts.put(account.getId(), account);
 		String jsonString = gson.toJson(new ArrayList<>(accounts.values()));
 		// Internal save
 		FileOutputStream outputStream;
 		try
 		{
-			outputStream = activity.openFileOutput(activity.getString(R.string.filename_forge_accounts), Context.MODE_PRIVATE);
+			outputStream = context.openFileOutput(context.getString(R.string.filename_forge_accounts), Context.MODE_PRIVATE);
 			outputStream.write(jsonString.getBytes());
 			outputStream.close();
 			return account;
@@ -108,17 +107,17 @@ public class FileManager
 		}
 	}
 
-	public static boolean delete(Activity activity, ForgeAccount account)
+	public static boolean delete(Context context, ForgeAccount account)
 	{
 		Gson gson = new Gson();
-		HashMap<UUID, ForgeAccount> accounts = FileManager.load(activity);
+		HashMap<UUID, ForgeAccount> accounts = FileManager.load(context);
 		accounts.remove(account.getId());
 		String jsonString = gson.toJson(new ArrayList<>(accounts.values()));
 		// Internal save
 		FileOutputStream outputStream;
 		try
 		{
-			outputStream = activity.openFileOutput(activity.getString(R.string.filename_forge_accounts), Context.MODE_PRIVATE);
+			outputStream = context.openFileOutput(context.getString(R.string.filename_forge_accounts), Context.MODE_PRIVATE);
 			outputStream.write(jsonString.getBytes());
 			outputStream.close();
 			return true;

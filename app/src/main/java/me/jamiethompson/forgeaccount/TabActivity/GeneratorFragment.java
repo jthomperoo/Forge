@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceActivity;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -23,7 +24,6 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,24 +40,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import android.os.Handler;
-
 import me.jamiethompson.forgeaccount.Constants;
 import me.jamiethompson.forgeaccount.Data.EmailAddress;
 import me.jamiethompson.forgeaccount.Data.EmailMessage;
 import me.jamiethompson.forgeaccount.Data.ForgeAccount;
 import me.jamiethompson.forgeaccount.EmailInterface;
 import me.jamiethompson.forgeaccount.Files.CurrentManager;
-import me.jamiethompson.forgeaccount.Generator.ForgeGenerator;
-import me.jamiethompson.forgeaccount.Preferences.DateOfBirthPreferenceFragment;
-import me.jamiethompson.forgeaccount.Preferences.GeneralPreferenceFragment;
-import me.jamiethompson.forgeaccount.Preferences.PasswordPreferenceFragment;
-import me.jamiethompson.forgeaccount.Preferences.Preferences;
-import me.jamiethompson.forgeaccount.UI.Feedback;
 import me.jamiethompson.forgeaccount.Files.FileManager;
+import me.jamiethompson.forgeaccount.Generator.ForgeGenerator;
 import me.jamiethompson.forgeaccount.ListView.EmailListAdapter;
 import me.jamiethompson.forgeaccount.LoadInterface;
+import me.jamiethompson.forgeaccount.Preferences.DateOfBirthPreferenceFragment;
+import me.jamiethompson.forgeaccount.Preferences.PasswordPreferenceFragment;
+import me.jamiethompson.forgeaccount.Preferences.Preferences;
 import me.jamiethompson.forgeaccount.R;
+import me.jamiethompson.forgeaccount.UI.Feedback;
 import me.jamiethompson.forgeaccount.UI.SaveDialogListener;
 
 /**
@@ -69,15 +66,15 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	final private Handler mailPollHandler = new Handler();
 	private Snackbar noInternetMessage;
 	private Snackbar connectingMessage;
-	private ForgeGenerator mGenerator;
-	private ForgeAccount mAccount;
-	private View mView;
-	private ProgressBar mAddressProgress;
-	private ProgressBar mMailProgress;
-	private TextInputLayout mEmailWrapper;
-	private TextView mEmailEntry;
-	private ListView mEmailList;
-	private EditText mAccountNameEntry;
+	private ForgeGenerator generator;
+	private ForgeAccount account;
+	private View view;
+	private ProgressBar addressProgress;
+	private ProgressBar mailProgress;
+	private TextInputLayout emailWrapper;
+	private TextView emailEntry;
+	private ListView emailList;
+	private EditText accountNameEntry;
 	private List<EmailMessage> emailMessages;
 	private boolean mLoaded = false;
 
@@ -93,7 +90,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	{
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.fragment_generator, container, false);
-		this.mView = view;
+		this.view = view;
 		return view;
 	}
 
@@ -117,7 +114,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	@Override
 	public void onDetach()
 	{
-		mView = null;
+		view = null;
 		super.onDetach();
 	}
 
@@ -146,30 +143,30 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			}
 			case R.id.refresh_firstname:
 			{
-				mAccount = mGenerator.refreshItem(mAccount, Constants.FIRSTNAME, isNetworkAvailable());
+				account = generator.refreshItem(account, Constants.FIRSTNAME, isNetworkAvailable());
 				break;
 			}
 			case R.id.refresh_middlename:
 			{
-				mAccount = mGenerator.refreshItem(mAccount, Constants.MIDDLENAME, isNetworkAvailable());
+				account = generator.refreshItem(account, Constants.MIDDLENAME, isNetworkAvailable());
 				break;
 			}
 			case R.id.refresh_lastname:
 			{
-				mAccount = mGenerator.refreshItem(mAccount, Constants.LASTNAME, isNetworkAvailable());
+				account = generator.refreshItem(account, Constants.LASTNAME, isNetworkAvailable());
 				break;
 			}
 			case R.id.refresh_username:
 			{
-				mAccount = mGenerator.refreshItem(mAccount, Constants.USERNAME, isNetworkAvailable());
+				account = generator.refreshItem(account, Constants.USERNAME, isNetworkAvailable());
 				break;
 			}
 			case R.id.refresh_email:
 			{
-				mAccount = mGenerator.refreshItem(mAccount, Constants.EMAIL, isNetworkAvailable());
+				account = generator.refreshItem(account, Constants.EMAIL, isNetworkAvailable());
 				this.emailMessages = new ArrayList<>();
-				mEmailList.setAdapter(null);
-				setListViewHeightBasedOnChildren(mEmailList);
+				emailList.setAdapter(null);
+				setListViewHeightBasedOnChildren(emailList);
 				if (isNetworkAvailable())
 				{
 					showAddressProgress();
@@ -178,70 +175,62 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			}
 			case R.id.refresh_password:
 			{
-				mGenerator.refreshItem(mAccount, Constants.PASSWORD, isNetworkAvailable());
+				generator.refreshItem(account, Constants.PASSWORD, isNetworkAvailable());
 				break;
 			}
 			case R.id.refresh_date:
 			{
-				mGenerator.refreshItem(mAccount, Constants.DATE, isNetworkAvailable());
+				generator.refreshItem(account, Constants.DATE, isNetworkAvailable());
 				break;
 			}
 			case R.id.copy_firstname:
 			{
 				String nameTag = getString(R.string.firstname);
-				addToClipboard(nameTag, mAccount.getFirstName());
-				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
+				addToClipboard(nameTag, account.getFirstName());
+				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
 				break;
 			}
 			case R.id.copy_middlename:
 			{
 				String nameTag = getString(R.string.middlename);
-				addToClipboard(nameTag, mAccount.getMiddleName());
-				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
+				addToClipboard(nameTag, account.getMiddleName());
+				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
 				break;
 			}
 			case R.id.copy_lastname:
 			{
 				String nameTag = getString(R.string.lastname);
-				addToClipboard(nameTag, mAccount.getLastName());
-				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
+				addToClipboard(nameTag, account.getLastName());
+				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
 				break;
 			}
 			case R.id.copy_username:
 			{
 				String nameTag = getString(R.string.username);
-				addToClipboard(nameTag, mAccount.getUsername());
-				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
+				addToClipboard(nameTag, account.getUsername());
+				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
 				break;
 			}
 			case R.id.copy_email:
 			{
 				String nameTag = getString(R.string.email);
-				addToClipboard(nameTag, mAccount.getEmail().getAddress());
-				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
+				addToClipboard(nameTag, account.getEmail().getAddress());
+				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
 				break;
 			}
 			case R.id.copy_password:
 			{
 				String nameTag = getString(R.string.password);
-				addToClipboard(nameTag, mAccount.getPassword());
-				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
+				addToClipboard(nameTag, account.getPassword());
+				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
 				break;
 			}
 			case R.id.copy_date:
 			{
 				String nameTag = getString(R.string.date);
-				Calendar dob = mAccount.getDateOfBirth();
+				Calendar dob = account.getDateOfBirth();
 				addToClipboard(nameTag, String.format("%d/%d/%d", dob.get(Calendar.YEAR), dob.get(Calendar.MONTH) + 1, dob.get(Calendar.DAY_OF_MONTH)));
-				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), mView);
-				break;
-			}
-			case R.id.preferences_email:
-			{
-				Intent intent = new Intent(getActivity(), Preferences.class );
-				intent.putExtra( PreferenceActivity.EXTRA_SHOW_FRAGMENT, GeneralPreferenceFragment.class.getName() );
-				intent.putExtra( PreferenceActivity.EXTRA_NO_HEADERS, true );
-				startActivity(intent);
+				Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
 				break;
 			}
 			case R.id.preferences_password:
@@ -261,7 +250,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 				break;
 			}
 		}
-		CurrentManager.updateCurrentAccount(mAccount, getContext());
+		CurrentManager.updateCurrentAccount(account, getContext());
 		displayAccount();
 	}
 
@@ -299,21 +288,21 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		if (emailAddress != null)
 		{
 			mailPollHandler.removeMessages(0);
-			mAccount.setEmail(emailAddress);
-			mEmailEntry.setText(emailAddress.getAddress());
+			account.setEmail(emailAddress);
+			emailEntry.setText(emailAddress.getAddress());
 
 			hideAddressProgress();
 			showEmailsProgress();
 
 			if (isNetworkAvailable())
 			{
-				mGenerator.refreshEmails(emailAddress);
+				generator.refreshEmails(emailAddress);
 			}
 			else
 			{
 				toggleNoInternetMessage(true);
 			}
-			CurrentManager.updateCurrentAccount(mAccount, getContext());
+			CurrentManager.updateCurrentAccount(account, getContext());
 
 			mailPollHandler.postDelayed(new Runnable()
 			{
@@ -324,7 +313,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 						showEmailsProgress();
 						if (isNetworkAvailable())
 						{
-							mGenerator.refreshEmails(emailAddress);
+							generator.refreshEmails(emailAddress);
 						}
 						else
 						{
@@ -342,41 +331,41 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	{
 		if (!emails.isEmpty())
 		{
-			mEmailList.setAdapter(null);
+			emailList.setAdapter(null);
 			this.emailMessages = emails;
 		}
 		hideEmailsProgress();
-		EmailListAdapter adapter = new EmailListAdapter(getActivity().getApplicationContext(), R.layout.item_email, this.emailMessages);
-		mEmailList.setAdapter(adapter);
-		setListViewHeightBasedOnChildren(mEmailList);
+		EmailListAdapter adapter = new EmailListAdapter(getContext(), R.layout.item_email, this.emailMessages);
+		emailList.setAdapter(adapter);
+		setListViewHeightBasedOnChildren(emailList);
 	}
 
 	@Override
 	public void load(ForgeAccount account)
 	{
 		mLoaded = true;
-		mAccount = account;
+		this.account = account;
 		this.emailMessages = new ArrayList<>();
-		mEmailList.setAdapter(null);
-		setListViewHeightBasedOnChildren(mEmailList);
+		emailList.setAdapter(null);
+		setListViewHeightBasedOnChildren(emailList);
 
 		if (isNetworkAvailable())
 		{
-			mGenerator.setEmailAddress(account.getEmail());
+			generator.setEmailAddress(account.getEmail());
 			showAddressProgress();
 		}
-		CurrentManager.updateCurrentAccount(mAccount, getContext());
+		CurrentManager.updateCurrentAccount(this.account, getContext());
 		displayAccount();
-		Feedback.displayMessage(getString(R.string.message_account_loaded), mView);
+		Feedback.displayMessage(getString(R.string.message_account_loaded), view);
 	}
 
 
 	private void save()
 	{
-		mAccount.setAccountName(mAccountNameEntry.getText().toString());
+		account.setAccountName(accountNameEntry.getText().toString());
 		if (mLoaded)
 		{
-			DialogInterface.OnClickListener dialogClickListener = new SaveDialogListener(mAccount, mLoaded, getActivity(), mView);
+			DialogInterface.OnClickListener dialogClickListener = new SaveDialogListener(account, getActivity(), view);
 			AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 			builder.setMessage(getString(R.string.dialog_overwrite))
 					.setPositiveButton(getString(R.string.option_overwrite), dialogClickListener)
@@ -386,10 +375,10 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		}
 		else
 		{
-			ForgeAccount saveAccount = FileManager.add(getActivity(), mAccount);
+			ForgeAccount saveAccount = FileManager.add(getActivity(), account);
 			if (saveAccount != null)
 			{
-				Feedback.displayMessage(getString(R.string.message_account_saved), mView);
+				Feedback.displayMessage(getString(R.string.message_account_saved), view);
 				mLoaded = true;
 			}
 		}
@@ -410,9 +399,9 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		}
 		mLoaded = false;
 		this.emailMessages = new ArrayList<>();
-		mEmailList.setAdapter(null);
-		setListViewHeightBasedOnChildren(mEmailList);
-		mAccount = mGenerator.forgeAccount(isNetworkAvailable());
+		emailList.setAdapter(null);
+		setListViewHeightBasedOnChildren(emailList);
+		account = generator.forgeAccount(isNetworkAvailable());
 		displayAccount();
 	}
 
@@ -421,7 +410,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		if (isNetworkAvailable())
 		{
 			toggleNoInternetMessage(false);
-			mGenerator.setEmailAddress(mAccount.getEmail());
+			generator.setEmailAddress(account.getEmail());
 			showAddressProgress();
 		}
 		else
@@ -433,59 +422,58 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	private void setUpGlobals()
 	{
 		emailMessages = new ArrayList<>();
-		mGenerator = new ForgeGenerator(this, getContext());
+		generator = new ForgeGenerator(this, getContext());
 		mLoaded = false;
 		emailMessages = new ArrayList<>();
-		mAccount = mGenerator.forgeAccount(isNetworkAvailable());
+		account = generator.forgeAccount(isNetworkAvailable());
 	}
 
 	private void setUpUserInterface()
 	{
-		((TextInputLayout) mView.findViewById(R.id.account_name_wrapper)).setHint(getString(R.string.account_name));
-		((TextInputLayout) mView.findViewById(R.id.firstname_wrapper)).setHint(getString(R.string.firstname));
-		((TextInputLayout) mView.findViewById(R.id.middlename_wrapper)).setHint(getString(R.string.middlename));
-		((TextInputLayout) mView.findViewById(R.id.lastname_wrapper)).setHint(getString(R.string.account_name));
-		((TextInputLayout) mView.findViewById(R.id.username_wrapper)).setHint(getString(R.string.username));
-		mEmailWrapper = ((TextInputLayout) mView.findViewById(R.id.email_wrapper));
-		mEmailWrapper.setHint(getString(R.string.email));
-		((TextInputLayout) mView.findViewById(R.id.account_name_wrapper)).setHint(getString(R.string.account_name));
-		((TextInputLayout) mView.findViewById(R.id.year_wrapper)).setHint(getString(R.string.year));
-		((TextInputLayout) mView.findViewById(R.id.month_wrapper)).setHint(getString(R.string.month));
-		((TextInputLayout) mView.findViewById(R.id.day_wrapper)).setHint(getString(R.string.day));
+		((TextInputLayout) view.findViewById(R.id.account_name_wrapper)).setHint(getString(R.string.account_name));
+		((TextInputLayout) view.findViewById(R.id.firstname_wrapper)).setHint(getString(R.string.firstname));
+		((TextInputLayout) view.findViewById(R.id.middlename_wrapper)).setHint(getString(R.string.middlename));
+		((TextInputLayout) view.findViewById(R.id.lastname_wrapper)).setHint(getString(R.string.account_name));
+		((TextInputLayout) view.findViewById(R.id.username_wrapper)).setHint(getString(R.string.username));
+		emailWrapper = ((TextInputLayout) view.findViewById(R.id.email_wrapper));
+		emailWrapper.setHint(getString(R.string.email));
+		((TextInputLayout) view.findViewById(R.id.account_name_wrapper)).setHint(getString(R.string.account_name));
+		((TextInputLayout) view.findViewById(R.id.year_wrapper)).setHint(getString(R.string.year));
+		((TextInputLayout) view.findViewById(R.id.month_wrapper)).setHint(getString(R.string.month));
+		((TextInputLayout) view.findViewById(R.id.day_wrapper)).setHint(getString(R.string.day));
 
 		// setting up click listeners
 		// refresh
-		mView.findViewById(R.id.refresh).setOnClickListener(this);
-		mView.findViewById(R.id.refresh_firstname).setOnClickListener(this);
-		mView.findViewById(R.id.refresh_middlename).setOnClickListener(this);
-		mView.findViewById(R.id.refresh_lastname).setOnClickListener(this);
-		mView.findViewById(R.id.refresh_username).setOnClickListener(this);
-		mView.findViewById(R.id.refresh_email).setOnClickListener(this);
-		mView.findViewById(R.id.refresh_password).setOnClickListener(this);
-		mView.findViewById(R.id.refresh_date).setOnClickListener(this);
+		view.findViewById(R.id.refresh).setOnClickListener(this);
+		view.findViewById(R.id.refresh_firstname).setOnClickListener(this);
+		view.findViewById(R.id.refresh_middlename).setOnClickListener(this);
+		view.findViewById(R.id.refresh_lastname).setOnClickListener(this);
+		view.findViewById(R.id.refresh_username).setOnClickListener(this);
+		view.findViewById(R.id.refresh_email).setOnClickListener(this);
+		view.findViewById(R.id.refresh_password).setOnClickListener(this);
+		view.findViewById(R.id.refresh_date).setOnClickListener(this);
 		// copy & paste
-		mView.findViewById(R.id.copy_firstname).setOnClickListener(this);
-		mView.findViewById(R.id.copy_middlename).setOnClickListener(this);
-		mView.findViewById(R.id.copy_lastname).setOnClickListener(this);
-		mView.findViewById(R.id.copy_username).setOnClickListener(this);
-		mView.findViewById(R.id.copy_email).setOnClickListener(this);
-		mView.findViewById(R.id.copy_password).setOnClickListener(this);
-		mView.findViewById(R.id.copy_date).setOnClickListener(this);
+		view.findViewById(R.id.copy_firstname).setOnClickListener(this);
+		view.findViewById(R.id.copy_middlename).setOnClickListener(this);
+		view.findViewById(R.id.copy_lastname).setOnClickListener(this);
+		view.findViewById(R.id.copy_username).setOnClickListener(this);
+		view.findViewById(R.id.copy_email).setOnClickListener(this);
+		view.findViewById(R.id.copy_password).setOnClickListener(this);
+		view.findViewById(R.id.copy_date).setOnClickListener(this);
 		// settings
-		mView.findViewById(R.id.preferences_email).setOnClickListener(this);
-		mView.findViewById(R.id.preferences_password).setOnClickListener(this);
-		mView.findViewById(R.id.preferences_date).setOnClickListener(this);
+		view.findViewById(R.id.preferences_password).setOnClickListener(this);
+		view.findViewById(R.id.preferences_date).setOnClickListener(this);
 		// save button
-		mView.findViewById(R.id.save).setOnClickListener(this);
+		view.findViewById(R.id.save).setOnClickListener(this);
 		// assign globals
-		mAccountNameEntry = mView.findViewById(R.id.account_name);
-		mEmailEntry = mView.findViewById(R.id.email);
-		mAddressProgress = mView.findViewById(R.id.address_progress);
-		mMailProgress = mView.findViewById(R.id.mail_progress);
-		mEmailList = mView.findViewById(R.id.email_list);
+		accountNameEntry = view.findViewById(R.id.account_name);
+		emailEntry = view.findViewById(R.id.email);
+		addressProgress = view.findViewById(R.id.address_progress);
+		mailProgress = view.findViewById(R.id.mail_progress);
+		emailList = view.findViewById(R.id.email_list);
 		// listview
-		mEmailList.setOnItemClickListener(this);
-		mEmailList.setOnTouchListener(new View.OnTouchListener()
+		emailList.setOnItemClickListener(this);
+		emailList.setOnTouchListener(new View.OnTouchListener()
 		{
 			// Setting on Touch Listener for handling the touch inside ScrollView
 			@Override
@@ -496,9 +484,9 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 				return false;
 			}
 		});
-		mEmailList.setAdapter(null);
-		setListViewHeightBasedOnChildren(mEmailList);
-		noInternetMessage = Snackbar.make(mView, R.string.network_unavailable, Snackbar.LENGTH_INDEFINITE);
+		emailList.setAdapter(null);
+		setListViewHeightBasedOnChildren(emailList);
+		noInternetMessage = Snackbar.make(view, R.string.network_unavailable, Snackbar.LENGTH_INDEFINITE);
 		noInternetMessage.setAction(R.string.reload, new View.OnClickListener()
 		{
 			@Override
@@ -527,7 +515,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			}
 		});
 
-		connectingMessage = Snackbar.make(mView, R.string.network_connecting, Snackbar.LENGTH_INDEFINITE);
+		connectingMessage = Snackbar.make(view, R.string.network_connecting, Snackbar.LENGTH_INDEFINITE);
 		Snackbar.SnackbarLayout connectingView = (Snackbar.SnackbarLayout) connectingMessage.getView();
 		connectingView.addView(new ProgressBar(getContext()));
 		connectingMessage.addCallback(new Snackbar.Callback()
@@ -555,20 +543,20 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
 	private void displayAccount()
 	{
-		((TextView) mView.findViewById(R.id.account_name)).setText(mAccount.getAccountName());
-		((TextView) mView.findViewById(R.id.firstname)).setText(mAccount.getFirstName());
-		((TextView) mView.findViewById(R.id.middlename)).setText(mAccount.getMiddleName());
-		((TextView) mView.findViewById(R.id.lastname)).setText(mAccount.getLastName());
-		((TextView) mView.findViewById(R.id.username)).setText(mAccount.getUsername());
-		if (mAccount.getEmail() != null)
+		((TextView) view.findViewById(R.id.account_name)).setText(account.getAccountName());
+		((TextView) view.findViewById(R.id.firstname)).setText(account.getFirstName());
+		((TextView) view.findViewById(R.id.middlename)).setText(account.getMiddleName());
+		((TextView) view.findViewById(R.id.lastname)).setText(account.getLastName());
+		((TextView) view.findViewById(R.id.username)).setText(account.getUsername());
+		if (account.getEmail() != null)
 		{
-			((TextView) mView.findViewById(R.id.email)).setText(mAccount.getEmail().getAddress());
+			((TextView) view.findViewById(R.id.email)).setText(account.getEmail().getAddress());
 		}
-		((TextView) mView.findViewById(R.id.password)).setText(mAccount.getPassword());
-		Calendar dob = mAccount.getDateOfBirth();
-		((TextView) mView.findViewById(R.id.day)).setText(String.valueOf(dob.get(Calendar.DAY_OF_MONTH)));
-		((TextView) mView.findViewById(R.id.month)).setText(String.valueOf(dob.get(Calendar.MONTH) + 1));
-		((TextView) mView.findViewById(R.id.year)).setText(String.valueOf(dob.get(Calendar.YEAR)));
+		((TextView) view.findViewById(R.id.password)).setText(account.getPassword());
+		Calendar dob = account.getDateOfBirth();
+		((TextView) view.findViewById(R.id.day)).setText(String.valueOf(dob.get(Calendar.DAY_OF_MONTH)));
+		((TextView) view.findViewById(R.id.month)).setText(String.valueOf(dob.get(Calendar.MONTH) + 1));
+		((TextView) view.findViewById(R.id.year)).setText(String.valueOf(dob.get(Calendar.YEAR)));
 	}
 
 	private void toggleNoInternetMessage(boolean show)
@@ -593,24 +581,24 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
 	private void hideAddressProgress()
 	{
-		mEmailWrapper.setVisibility(View.VISIBLE);
-		mAddressProgress.setVisibility(View.GONE);
+		emailWrapper.setVisibility(View.VISIBLE);
+		addressProgress.setVisibility(View.GONE);
 	}
 
 	private void showAddressProgress()
 	{
-		mEmailWrapper.setVisibility(View.GONE);
-		mAddressProgress.setVisibility(View.VISIBLE);
+		emailWrapper.setVisibility(View.GONE);
+		addressProgress.setVisibility(View.VISIBLE);
 	}
 
 	private void hideEmailsProgress()
 	{
-		mMailProgress.setVisibility(View.GONE);
+		mailProgress.setVisibility(View.GONE);
 	}
 
 	private void showEmailsProgress()
 	{
-		mMailProgress.setVisibility(View.VISIBLE);
+		mailProgress.setVisibility(View.VISIBLE);
 	}
 
 	private void addToClipboard(String label, String content)

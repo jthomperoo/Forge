@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeViewClicked"
+    android:accessibilityEventTypes="typeWindowStateChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagRequestEnhancedWebAccessibility"
     android:notificationTimeout="100"
+    android:settingsActivity="me.jamiethompson.forgeaccount.Preferences.Preferences"
     android:canRetrieveWindowContent="true"/>

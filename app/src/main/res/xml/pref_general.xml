@@ -1,9 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="@string/pref_notifications_key"
-        android:summary="@string/pref_notifications_summary"
-        android:title="@string/pref_notifications_title"/>
+        android:defaultValue="false"
+        android:key="@string/pref_helper_key"
+        android:summary="@string/pref_helper_summary"
+        android:title="@string/pref_helper_title"/>
 
 </PreferenceScreen>

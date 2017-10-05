@@ -1,15 +1,10 @@
 package me.jamiethompson.forgeaccount.Files;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import me.jamiethompson.forgeaccount.Data.ForgeAccount;
 import me.jamiethompson.forgeaccount.R;

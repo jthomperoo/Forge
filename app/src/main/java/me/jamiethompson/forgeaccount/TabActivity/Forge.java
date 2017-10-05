@@ -1,14 +1,12 @@
 package me.jamiethompson.forgeaccount.TabActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,15 +14,15 @@ import android.view.WindowManager;
 
 import me.jamiethompson.forgeaccount.Constants;
 import me.jamiethompson.forgeaccount.Data.ForgeAccount;
-import me.jamiethompson.forgeaccount.UI.Notifications;
 import me.jamiethompson.forgeaccount.Preferences.Preferences;
 import me.jamiethompson.forgeaccount.R;
+import me.jamiethompson.forgeaccount.UI.Notifications;
 
 public class Forge extends AppCompatActivity
 {
 
-	private ForgePagerAdapter mForgePagerAdapter;
-	private ViewPager mViewPager;
+	private ForgePagerAdapter forgePagerAdapter;
+	private ViewPager viewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -35,13 +33,13 @@ public class Forge extends AppCompatActivity
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		mForgePagerAdapter = new ForgePagerAdapter(getSupportFragmentManager(), getApplicationContext());
+		forgePagerAdapter = new ForgePagerAdapter(getSupportFragmentManager(), getApplicationContext());
 
-		mViewPager = (ViewPager) findViewById(R.id.container);
-		mViewPager.setAdapter(mForgePagerAdapter);
+		viewPager = (ViewPager) findViewById(R.id.container);
+		viewPager.setAdapter(forgePagerAdapter);
 
 		TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-		tabLayout.setupWithViewPager(mViewPager);
+		tabLayout.setupWithViewPager(viewPager);
 
 		Notifications.setUpChannels(this);
 		Notifications.displayHelperNotification(this);
@@ -49,7 +47,7 @@ public class Forge extends AppCompatActivity
 		Intent intent = getIntent();
 		if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION))
 		{
-			mViewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
+			viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
 		}
 
 		if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
@@ -68,7 +66,7 @@ public class Forge extends AppCompatActivity
 		if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION))
 		{
 			Log.d("mega", Constants.NOTIFICATION_NAVIGATION);
-			mViewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
+			viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
 		}
 	}
 
@@ -96,15 +94,15 @@ public class Forge extends AppCompatActivity
 
 	public void reloadSaveList()
 	{
-		StoreFragment storage = mForgePagerAdapter.getStoreFragment();
+		StoreFragment storage = forgePagerAdapter.getStoreFragment();
 		storage.reload(this);
 	}
 
 	public void loadAccount(ForgeAccount account)
 	{
-		GeneratorFragment generator = mForgePagerAdapter.getGeneratorFragment();
+		GeneratorFragment generator = forgePagerAdapter.getGeneratorFragment();
 		generator.load(account);
-		mViewPager.setCurrentItem(Constants.GENERATE_TAB);
+		viewPager.setCurrentItem(Constants.GENERATE_TAB);
 	}
 
 

@@ -20,6 +20,7 @@ import me.jamiethompson.forgeaccount.R;
 public class DateOfBirthPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener
 {
 	final int ABSOLUTE_MAX_AGE = 100;
+	final int ABSOLUTE_MIN_AGE = 0;
 	int minAge;
 	int maxAge;
 
@@ -62,16 +63,16 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
 				{
 					final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 					builder.setTitle(getString(R.string.invalid_preference));
-					builder.setMessage(R.string.error_age_too_high);
+					builder.setMessage(getString(R.string.error_age_too_high) + ABSOLUTE_MAX_AGE);
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.show();
 					return false;
 				}
-				if (value < 0)
+				if (value < ABSOLUTE_MIN_AGE)
 				{
 					final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 					builder.setTitle(getString(R.string.invalid_preference));
-					builder.setMessage(R.string.error_age_too_low);
+					builder.setMessage(getString(R.string.error_age_too_low) + ABSOLUTE_MIN_AGE);
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.show();
 					return false;
@@ -80,7 +81,7 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
 				{
 					final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 					builder.setTitle(getString(R.string.invalid_preference));
-					builder.setMessage(R.string.error_min_age_greater_max);
+					builder.setMessage(getString(R.string.error_min_age_greater_max));
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.show();
 					return false;
@@ -88,7 +89,6 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
 				maxAge = value;
 				return true;
 			}
-
 			if (preference.getKey() == getString(R.string.pref_dob_min_key))
 			{
 				int value = Integer.valueOf(text);
@@ -96,16 +96,16 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
 				{
 					final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 					builder.setTitle(getString(R.string.invalid_preference));
-					builder.setMessage(R.string.error_age_too_high);
+					builder.setMessage(getString(R.string.error_age_too_high) + ABSOLUTE_MAX_AGE);
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.show();
 					return false;
 				}
-				if (value < 0)
+				if (value < ABSOLUTE_MIN_AGE)
 				{
 					final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 					builder.setTitle(getString(R.string.invalid_preference));
-					builder.setMessage(R.string.error_age_too_low);
+					builder.setMessage(getString(R.string.error_age_too_low) + ABSOLUTE_MIN_AGE);
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.show();
 					return false;
@@ -114,7 +114,7 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
 				{
 					final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 					builder.setTitle(getString(R.string.invalid_preference));
-					builder.setMessage(R.string.error_min_age_greater_max);
+					builder.setMessage(getString(R.string.error_min_age_greater_max));
 					builder.setPositiveButton(android.R.string.ok, null);
 					builder.show();
 					return false;
@@ -122,14 +122,13 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
 				minAge = value;
 				return true;
 			}
-
-			return false;
+			return true;
 		}
 		else
 		{
 			final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			builder.setTitle(getString(R.string.invalid_preference));
-			builder.setMessage(R.string.error_value_required);
+			builder.setMessage(getString(R.string.error_value_required));
 			builder.setPositiveButton(android.R.string.ok, null);
 			builder.show();
 			return false;

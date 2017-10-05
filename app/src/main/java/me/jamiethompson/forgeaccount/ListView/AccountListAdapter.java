@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import me.jamiethompson.forgeaccount.Files.FileManager;
 import me.jamiethompson.forgeaccount.Data.ForgeAccount;
+import me.jamiethompson.forgeaccount.Files.FileManager;
 import me.jamiethompson.forgeaccount.R;
 import me.jamiethompson.forgeaccount.ReloadInterface;
 
@@ -24,8 +24,8 @@ import me.jamiethompson.forgeaccount.ReloadInterface;
 public class AccountListAdapter extends ArrayAdapter<ForgeAccount>
 {
 
-	private Activity mActivity;
-	private ReloadInterface mListFragment;
+	private Activity activity;
+	private ReloadInterface listFragment;
 
 	public AccountListAdapter(Context context, int textViewResourceId)
 	{
@@ -35,8 +35,8 @@ public class AccountListAdapter extends ArrayAdapter<ForgeAccount>
 	public AccountListAdapter(Context context, int resource, List<ForgeAccount> accounts, Activity activity, ReloadInterface listFragment)
 	{
 		super(context, resource, accounts);
-		mActivity = activity;
-		mListFragment = listFragment;
+		this.activity = activity;
+		this.listFragment = listFragment;
 	}
 
 	@Override
@@ -70,8 +70,8 @@ public class AccountListAdapter extends ArrayAdapter<ForgeAccount>
 							switch (which)
 							{
 								case DialogInterface.BUTTON_POSITIVE:
-									FileManager.delete(mActivity, account);
-									mListFragment.reload(mActivity);
+									FileManager.delete(activity, account);
+									listFragment.reload(activity);
 									dialog.dismiss();
 									break;
 								case DialogInterface.BUTTON_NEGATIVE:
@@ -81,10 +81,10 @@ public class AccountListAdapter extends ArrayAdapter<ForgeAccount>
 						}
 					};
 
-					AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-					builder.setMessage(mActivity.getString(R.string.dialog_delete))
-							.setPositiveButton(mActivity.getString(R.string.option_delete), dialogClickListener)
-							.setNegativeButton(mActivity.getString(R.string.option_cancel), dialogClickListener).show();
+					AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+					builder.setMessage(activity.getString(R.string.dialog_delete))
+							.setPositiveButton(activity.getString(R.string.option_delete), dialogClickListener)
+							.setNegativeButton(activity.getString(R.string.option_cancel), dialogClickListener).show();
 				}
 			});
 

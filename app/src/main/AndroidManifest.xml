@@ -18,6 +18,7 @@
         <activity
             android:name=".TabActivity.Forge"
             android:label="@string/title_activity_forge"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -27,23 +28,12 @@
         </activity>
         <activity
             android:name=".Preferences.Preferences"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_preferences">
         </activity>
 
-        <service
-            android:name=".Autofill.ForgeAutoFill"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService"/>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service"/>
-        </service>
-
-        <activity android:name=".Autofill.ForgePrompt">
-        </activity>
+        <receiver android:name=".Services.NotificationClickReceiver"/>
+        <service android:name=".Services.OverlayService"/>
     </application>
 
 </manifest>
