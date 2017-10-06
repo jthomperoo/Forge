@@ -352,12 +352,13 @@
                         android:layout_weight="1"
                         android:text="Save"/>
 
-                    <view
-                        class="android.support.v4.widget.Space"
-                        layout_weight="1"
+                    <Button
+                        android:id="@+id/button_generate"
+                        style="@style/ForgeButtonWithText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"/>
+                        android:layout_weight="1"
+                        android:text="Generate"/>
 
                     <Button
                         android:id="@+id/button_dismiss"

@@ -20,10 +20,13 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import me.jamiethompson.forgeaccount.Constants;
 import me.jamiethompson.forgeaccount.Data.ForgeAccount;
 import me.jamiethompson.forgeaccount.Files.CurrentManager;
 import me.jamiethompson.forgeaccount.Files.FileManager;
+import me.jamiethompson.forgeaccount.Generator.ForgeGenerator;
 import me.jamiethompson.forgeaccount.R;
+import me.jamiethompson.forgeaccount.TabActivity.Forge;
 
 /**
  * Created by jamie on 05/10/17.
@@ -94,6 +97,7 @@ public class OverlayService extends Service implements View.OnClickListener
 
 		// listeners
 		overlayView.findViewById(R.id.button_dismiss).setOnClickListener(this);
+		overlayView.findViewById(R.id.button_generate).setOnClickListener(this);
 		overlayView.findViewById(R.id.button_save).setOnClickListener(this);
 		overlayView.findViewById(R.id.background).setOnClickListener(this);
 		firstname.setOnClickListener(this);
@@ -141,6 +145,7 @@ public class OverlayService extends Service implements View.OnClickListener
 	@Override
 	public void onClick(View view)
 	{
+		boolean finish = false;
 		switch (view.getId())
 		{
 			case R.id.copy_firstname:
@@ -148,6 +153,7 @@ public class OverlayService extends Service implements View.OnClickListener
 				String nameTag = getString(R.string.firstname);
 				addToClipboard(nameTag, account.getFirstName());
 				displayToast(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)));
+				finish = true;
 				break;
 			}
 			case R.id.copy_middlename:
@@ -155,6 +161,7 @@ public class OverlayService extends Service implements View.OnClickListener
 				String nameTag = getString(R.string.middlename);
 				addToClipboard(nameTag, account.getMiddleName());
 				displayToast(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)));
+				finish = true;
 				break;
 			}
 			case R.id.copy_lastname:
@@ -162,6 +169,7 @@ public class OverlayService extends Service implements View.OnClickListener
 				String nameTag = getString(R.string.lastname);
 				addToClipboard(nameTag, account.getLastName());
 				displayToast(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)));
+				finish = true;
 				break;
 			}
 			case R.id.copy_username:
@@ -169,6 +177,7 @@ public class OverlayService extends Service implements View.OnClickListener
 				String nameTag = getString(R.string.username);
 				addToClipboard(nameTag, account.getUsername());
 				displayToast(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)));
+				finish = true;
 				break;
 			}
 			case R.id.copy_email:
@@ -176,6 +185,7 @@ public class OverlayService extends Service implements View.OnClickListener
 				String nameTag = getString(R.string.email);
 				addToClipboard(nameTag, account.getEmail().getAddress());
 				displayToast(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)));
+				finish = true;
 				break;
 			}
 			case R.id.copy_password:
@@ -183,6 +193,7 @@ public class OverlayService extends Service implements View.OnClickListener
 				String nameTag = getString(R.string.password);
 				addToClipboard(nameTag, account.getPassword());
 				displayToast(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)));
+				finish = true;
 				break;
 			}
 			case R.id.copy_date:
@@ -191,16 +202,35 @@ public class OverlayService extends Service implements View.OnClickListener
 				Calendar dob = account.getDateOfBirth();
 				addToClipboard(nameTag, String.format("%d/%d/%d", dob.get(Calendar.YEAR), dob.get(Calendar.MONTH) + 1, dob.get(Calendar.DAY_OF_MONTH)));
 				displayToast(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)));
+				finish = true;
 				break;
 			}
 			case R.id.button_save:
 			{
 				account.setAccountName(Calendar.getInstance().getTime().toString());
 				FileManager.add(getApplicationContext(), account);
-				return;
+				displayToast(getString(R.string.message_account_saved));
+				break;
+			}
+			case R.id.button_generate:
+			{
+				Intent generateIntent = new Intent(this, Forge.class);
+				generateIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				generateIntent.putExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB);
+				startActivity(generateIntent);
+				finish = true;
+				break;
+			}
+			case R.id.background:
+			{
+				finish = true;
+				break;
 			}
 		}
-		this.stopSelf();
+		if(finish)
+		{
+			this.stopSelf();
+		}
 	}
 
 	private void displayToast(String message)

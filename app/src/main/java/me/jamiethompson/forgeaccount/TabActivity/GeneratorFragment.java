@@ -63,6 +63,7 @@ import me.jamiethompson.forgeaccount.UI.SaveDialogListener;
 
 public class GeneratorFragment extends Fragment implements View.OnClickListener, EmailInterface, ListView.OnItemClickListener, LoadInterface
 {
+	private static Context context;
 	final private Handler mailPollHandler = new Handler();
 	private Snackbar noInternetMessage;
 	private Snackbar connectingMessage;
@@ -98,10 +99,11 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
+		context = getContext();
 		setUpGlobals();
 		setUpUserInterface();
 		displayAccount();
-		ForgeAccount currentAccount = CurrentManager.loadCurrentAccount(getContext());
+		ForgeAccount currentAccount = CurrentManager.loadCurrentAccount(context);
 		if (currentAccount != null)
 		{
 			if (currentAccount.getEmail() != null)
@@ -250,7 +252,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 				break;
 			}
 		}
-		CurrentManager.updateCurrentAccount(account, getContext());
+		CurrentManager.updateCurrentAccount(account, context);
 		displayAccount();
 	}
 
@@ -302,7 +304,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			{
 				toggleNoInternetMessage(true);
 			}
-			CurrentManager.updateCurrentAccount(account, getContext());
+			CurrentManager.updateCurrentAccount(account, context);
 
 			mailPollHandler.postDelayed(new Runnable()
 			{
@@ -335,7 +337,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			this.emailMessages = emails;
 		}
 		hideEmailsProgress();
-		EmailListAdapter adapter = new EmailListAdapter(getContext(), R.layout.item_email, this.emailMessages);
+		EmailListAdapter adapter = new EmailListAdapter(context, R.layout.item_email, this.emailMessages);
 		emailList.setAdapter(adapter);
 		setListViewHeightBasedOnChildren(emailList);
 	}
@@ -354,7 +356,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			generator.setEmailAddress(account.getEmail());
 			showAddressProgress();
 		}
-		CurrentManager.updateCurrentAccount(this.account, getContext());
+		CurrentManager.updateCurrentAccount(this.account, context);
 		displayAccount();
 		Feedback.displayMessage(getString(R.string.message_account_loaded), view);
 	}
@@ -366,7 +368,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		if (mLoaded)
 		{
 			DialogInterface.OnClickListener dialogClickListener = new SaveDialogListener(account, getActivity(), view);
-			AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setMessage(getString(R.string.dialog_overwrite))
 					.setPositiveButton(getString(R.string.option_overwrite), dialogClickListener)
 					.setNegativeButton(getString(R.string.option_save_new), dialogClickListener)
@@ -422,7 +424,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	private void setUpGlobals()
 	{
 		emailMessages = new ArrayList<>();
-		generator = new ForgeGenerator(this, getContext());
+		generator = new ForgeGenerator(this, context);
 		mLoaded = false;
 		emailMessages = new ArrayList<>();
 		account = generator.forgeAccount(isNetworkAvailable());
@@ -517,7 +519,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
 		connectingMessage = Snackbar.make(view, R.string.network_connecting, Snackbar.LENGTH_INDEFINITE);
 		Snackbar.SnackbarLayout connectingView = (Snackbar.SnackbarLayout) connectingMessage.getView();
-		connectingView.addView(new ProgressBar(getContext()));
+		connectingView.addView(new ProgressBar(context));
 		connectingMessage.addCallback(new Snackbar.Callback()
 		{
 			@Override
@@ -692,8 +694,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 	 */
 	private boolean isNetworkAvailable()
 	{
-		ConnectivityManager connectivityManager
-				= (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 	}
