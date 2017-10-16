@@ -9,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,13 +21,10 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-import me.jamiethompson.forgeaccount.Constants;
 import me.jamiethompson.forgeaccount.Data.ForgeAccount;
 import me.jamiethompson.forgeaccount.Files.CurrentManager;
 import me.jamiethompson.forgeaccount.Files.FileManager;
-import me.jamiethompson.forgeaccount.Generator.ForgeGenerator;
 import me.jamiethompson.forgeaccount.R;
-import me.jamiethompson.forgeaccount.TabActivity.Forge;
 
 /**
  * Created by jamie on 05/10/17.
@@ -50,38 +48,60 @@ public class OverlayService extends Service implements View.OnClickListener
 	public void onCreate()
 	{
 		super.onCreate();
-		account = CurrentManager.loadCurrentAccount(getApplicationContext());
-		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		overlayView = layoutInflater.inflate(R.layout.dialog_manual_copy, null);
-
-		setUpEditTexts();
-		setUpButtons();
-
-		WindowManager.LayoutParams params;
-
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+		boolean canDraw = true;
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
 		{
-			params = new WindowManager.LayoutParams(
-					WindowManager.LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-					WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-					PixelFormat.TRANSPARENT);
+			if (Settings.canDrawOverlays(getApplicationContext()))
+			{
+				canDraw = true;
+			}
+			else
+			{
+				canDraw = false;
+			}
+		}
+		if (canDraw)
+		{
+			Intent closeStatusBarIntent = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+			getApplicationContext().sendBroadcast(closeStatusBarIntent);
+
+			account = CurrentManager.loadCurrentAccount(getApplicationContext());
+			windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+			LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+			overlayView = layoutInflater.inflate(R.layout.dialog_manual_copy, null);
+
+			setUpEditTexts();
+			setUpButtons();
+
+			WindowManager.LayoutParams params;
+
+			if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+			{
+				params = new WindowManager.LayoutParams(
+						WindowManager.LayoutParams.MATCH_PARENT,
+						WindowManager.LayoutParams.MATCH_PARENT,
+						WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+						WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+						PixelFormat.TRANSPARENT);
+			}
+			else
+			{
+				params = new WindowManager.LayoutParams(
+						WindowManager.LayoutParams.MATCH_PARENT,
+						WindowManager.LayoutParams.MATCH_PARENT,
+						WindowManager.LayoutParams.TYPE_PHONE,
+						WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+						PixelFormat.TRANSPARENT);
+			}
+
+			params.gravity = Gravity.CENTER;
+
+			windowManager.addView(overlayView, params);
 		}
 		else
 		{
-			params = new WindowManager.LayoutParams(
-					WindowManager.LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.TYPE_PHONE,
-					WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-					PixelFormat.TRANSPARENT);
+			this.stopSelf();
 		}
-
-		params.gravity = Gravity.CENTER;
-
-		windowManager.addView(overlayView, params);
 	}
 
 	private void setUpButtons()
@@ -97,9 +117,10 @@ public class OverlayService extends Service implements View.OnClickListener
 
 		// listeners
 		overlayView.findViewById(R.id.button_dismiss).setOnClickListener(this);
-		overlayView.findViewById(R.id.button_generate).setOnClickListener(this);
 		overlayView.findViewById(R.id.button_save).setOnClickListener(this);
 		overlayView.findViewById(R.id.background).setOnClickListener(this);
+		overlayView.findViewById(R.id.card_content).setOnClickListener(this);
+
 		firstname.setOnClickListener(this);
 		middlename.setOnClickListener(this);
 		lastname.setOnClickListener(this);
@@ -212,12 +233,8 @@ public class OverlayService extends Service implements View.OnClickListener
 				displayToast(getString(R.string.message_account_saved));
 				break;
 			}
-			case R.id.button_generate:
+			case R.id.button_dismiss:
 			{
-				Intent generateIntent = new Intent(this, Forge.class);
-				generateIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				generateIntent.putExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB);
-				startActivity(generateIntent);
 				finish = true;
 				break;
 			}
@@ -227,7 +244,7 @@ public class OverlayService extends Service implements View.OnClickListener
 				break;
 			}
 		}
-		if(finish)
+		if (finish)
 		{
 			this.stopSelf();
 		}

@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ import me.jamiethompson.forgeaccount.Preferences.DateOfBirthPreferenceFragment;
 import me.jamiethompson.forgeaccount.Preferences.PasswordPreferenceFragment;
 import me.jamiethompson.forgeaccount.Preferences.Preferences;
 import me.jamiethompson.forgeaccount.R;
+import me.jamiethompson.forgeaccount.Tutorial;
 import me.jamiethompson.forgeaccount.UI.Feedback;
 import me.jamiethompson.forgeaccount.UI.SaveDialogListener;
 
@@ -110,6 +112,13 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			{
 				load(currentAccount);
 			}
+		}
+		SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.shared_prefs), Context.MODE_PRIVATE);
+		if (sharedPref.getBoolean(Constants.FIRST_RUN, true))
+		{
+			Tutorial tutorial = new Tutorial(getActivity(), R.id.refresh, R.id.refresh_firstname, R.id.copy_firstname, R.id.preferences_password, R.id.email_list);
+			tutorial.startTutorial();
+			sharedPref.edit().putBoolean(Constants.FIRST_RUN, true);
 		}
 	}
 
@@ -306,6 +315,8 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 			}
 			CurrentManager.updateCurrentAccount(account, context);
 
+			mailPollHandler.removeCallbacksAndMessages(null);
+
 			mailPollHandler.postDelayed(new Runnable()
 			{
 				public void run()
@@ -360,7 +371,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		displayAccount();
 		Feedback.displayMessage(getString(R.string.message_account_loaded), view);
 	}
-
 
 	private void save()
 	{
@@ -435,7 +445,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 		((TextInputLayout) view.findViewById(R.id.account_name_wrapper)).setHint(getString(R.string.account_name));
 		((TextInputLayout) view.findViewById(R.id.firstname_wrapper)).setHint(getString(R.string.firstname));
 		((TextInputLayout) view.findViewById(R.id.middlename_wrapper)).setHint(getString(R.string.middlename));
-		((TextInputLayout) view.findViewById(R.id.lastname_wrapper)).setHint(getString(R.string.account_name));
+		((TextInputLayout) view.findViewById(R.id.lastname_wrapper)).setHint(getString(R.string.lastname));
 		((TextInputLayout) view.findViewById(R.id.username_wrapper)).setHint(getString(R.string.username));
 		emailWrapper = ((TextInputLayout) view.findViewById(R.id.email_wrapper));
 		emailWrapper.setHint(getString(R.string.email));

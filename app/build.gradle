@@ -25,6 +25,7 @@ dependencies {
         exclude group: 'c' +
                 'om.android.support', module: 'support-annotations'
     })
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.opencsv:opencsv:3.9'

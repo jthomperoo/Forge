@@ -288,6 +288,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
+                            android:hint="@string/year"
                             android:maxLines="1"
                             android:textAlignment="textStart"/>
                     </android.support.design.widget.TextInputLayout>
@@ -305,6 +306,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
+                            android:hint="@string/month"
                             android:maxLines="1"
                             android:textAlignment="textStart"/>
                     </android.support.design.widget.TextInputLayout>
@@ -322,6 +324,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
+                            android:hint="@string/day"
                             android:maxLines="1"
                             android:textAlignment="textStart"/>
                     </android.support.design.widget.TextInputLayout>
@@ -352,13 +355,15 @@
                         android:layout_weight="1"
                         android:text="Save"/>
 
-                    <Button
-                        android:id="@+id/button_generate"
-                        style="@style/ForgeButtonWithText"
+                    <view
+                        android:id="@+id/button_space"
+                        class="android.support.v4.widget.Space"
+                        id="@+id/view"
+                        layout_weight="1"
+                        layout_width="0dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Generate"/>
+                        android:layout_weight="1"/>
 
                     <Button
                         android:id="@+id/button_dismiss"

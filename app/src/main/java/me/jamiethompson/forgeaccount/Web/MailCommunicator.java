@@ -106,6 +106,7 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
 			{
 				try
 				{
+					Log.d("mega", response.toString());
 					Calendar messageTime = Calendar.getInstance();
 					List<EmailMessage> emails = new ArrayList<>();
 					JSONArray jsonEmails = response.getJSONArray(Constants.EMAILS_JSON_KEY);

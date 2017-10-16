@@ -8,6 +8,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TutorialTheme" parent="ShowcaseView">
+        <item name="sv_backgroundColor">@color/colorTutorial</item>
+        <item name="sv_showcaseColor">@color/colorTutorial</item>
+        <item name="sv_buttonText">Next</item>
+        <item name="sv_tintButtonColor">false</item>
+        <item name="sv_titleTextAppearance">@style/TutorialTitle</item>
+    </style>
+
+    <style name="TutorialTitle" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="ForgeButton" parent="Base.TextAppearance.AppCompat.Button">
         <item name="android:backgroundTint">@color/colorAccent</item>
         <item name="android:tint">@android:color/white</item>

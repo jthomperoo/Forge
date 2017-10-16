@@ -3,10 +3,12 @@ package me.jamiethompson.forgeaccount.Preferences;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
@@ -61,25 +63,8 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
 					}
 					else
 					{
-						final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-						builder.setTitle(getString(R.string.draw_overlay_not_enabled));
-						builder.setMessage(getString(R.string.error_draw_overlay_not_enabled));
-						builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-						{
-							public void onClick(DialogInterface dialog, int id)
-							{
-								Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-								startActivityForResult(intent, 0);
-							}
-						});
-						builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
-						{
-							public void onClick(DialogInterface dialog, int id)
-							{
-								dialog.dismiss();
-							}
-						});
-						builder.show();
+						showDialog(getString(R.string.draw_overlay_not_enabled), getString(R.string.error_draw_overlay_not_enabled), new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+						return false;
 					}
 				}
 				else
@@ -92,8 +77,69 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
 				Notifications.removeHelperNotification(getActivity());
 			}
 		}
+
+		if (preference.getKey() == getString(R.string.pref_overlay_key))
+		{
+			if ((boolean) o)
+			{
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+				if (sharedPref.getBoolean(getActivity().getString(R.string.pref_helper_key), false))
+				{
+					if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+					{
+						if (Settings.canDrawOverlays(getContext()))
+						{
+							return true;
+						}
+						else
+						{
+							showDialog(getString(R.string.draw_overlay_not_enabled), getString(R.string.error_draw_overlay_not_enabled), new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+							return false;
+						}
+					}
+
+				}
+				else
+				{
+					showDialog(getString(R.string.helper_not_enabled), getString(R.string.error_helper_not_enabled), null);
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 
+
+	private void showDialog(String title, String message, final Intent action)
+	{
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(title);
+		builder.setMessage(message);
+		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+				if (action != null)
+				{
+					startActivityForResult(action, 0);
+				}
+				else
+				{
+					dialog.dismiss();
+				}
+			}
+		});
+		if (action != null)
+		{
+			builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int id)
+				{
+					dialog.dismiss();
+				}
+			});
+		}
+		builder.show();
+	}
 
 }

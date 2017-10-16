@@ -32,7 +32,12 @@
             android:label="@string/title_activity_preferences">
         </activity>
 
-        <receiver android:name=".Services.NotificationClickReceiver"/>
+        <service android:name=".Services.AccessibilityAutofillService">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+        </service>
+
         <service android:name=".Services.OverlayService"/>
     </application>
 

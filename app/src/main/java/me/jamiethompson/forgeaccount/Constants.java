@@ -6,6 +6,8 @@ package me.jamiethompson.forgeaccount;
 
 public class Constants
 {
+	final public static String FIRST_RUN = "first_run";
+
 	final public static String ERROR_LOG = "error";
 	final public static String BASE_URL = "http://api.guerrillamail.com/ajax.php";
 	final public static String MAIL_DOMAIN = "guerrillamail.com";

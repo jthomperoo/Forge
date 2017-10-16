@@ -28,9 +28,10 @@
     <string name="notification_channel">forge_channel</string>
 
     <string name="helper_notification_title">Load Forge</string>
-    <string name="helper_notification_text">Tap to open helper</string>
+    <string name="helper_notification_text">Tap to autofill</string>
     <string name="helper_notification_generate">Generate</string>
     <string name="helper_notification_store">Store</string>
+    <string name="helper_notification_overlay">Overlay</string>
 
     <string name="network_connecting">Connecting</string>
     <string name="network_unavailable">No network connection</string>
@@ -74,6 +75,9 @@
 
     <string name="draw_overlay_not_enabled">Draw over other apps permission required</string>
     <string name="error_draw_overlay_not_enabled">Allow Froge to draw over other apps to use the helper</string>
+
+    <string name="helper_not_enabled">Helper notification not enabled</string>
+    <string name="error_helper_not_enabled">Enable the helper notification to allow the overlay to be summoned</string>
 
     <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
 

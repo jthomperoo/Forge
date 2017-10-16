@@ -13,7 +13,7 @@ import android.preference.PreferenceManager;
 
 import me.jamiethompson.forgeaccount.Constants;
 import me.jamiethompson.forgeaccount.R;
-import me.jamiethompson.forgeaccount.Services.NotificationClickReceiver;
+import me.jamiethompson.forgeaccount.Services.OverlayService;
 import me.jamiethompson.forgeaccount.TabActivity.Forge;
 
 /**
@@ -81,9 +81,10 @@ public class Notifications
 					.setSound(null);
 		}
 
-		Intent notificationReciever = new Intent(context, NotificationClickReceiver.class);
-		PendingIntent pendingIntentAutoFill = PendingIntent.getBroadcast(context, 0, notificationReciever, PendingIntent.FLAG_UPDATE_CURRENT);
-		notificationBuilder.setContentIntent(pendingIntentAutoFill);
+//		Intent notificationReciever = new Intent(context, OverlayClickListener.class);
+//		PendingIntent pendingIntentAutoFill = PendingIntent.getBroadcast(context, 0, notificationReciever, PendingIntent.FLAG_UPDATE_CURRENT);
+//		notificationBuilder.setContentIntent(pendingIntentAutoFill);
+
 
 		Intent generateIntent = new Intent(context, Forge.class);
 		generateIntent.putExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB);
@@ -103,11 +104,23 @@ public class Notifications
 				PendingIntent.getActivity(
 						context,
 						0,
-						generateIntent,
+						storeIntent,
 						PendingIntent.FLAG_UPDATE_CURRENT
 				);
 
+
 		notificationBuilder.addAction(new Notification.Action(R.drawable.icon_store, context.getString(R.string.helper_notification_store), storePendingIntent));
+
+		Intent overlayIntent = new Intent(context, OverlayService.class);
+		PendingIntent overlayPendingIntent =
+				PendingIntent.getService(
+						context,
+						0,
+						overlayIntent,
+						PendingIntent.FLAG_UPDATE_CURRENT
+				);
+
+		notificationBuilder.addAction(new Notification.Action(R.drawable.icon_helper, context.getString(R.string.helper_notification_overlay), overlayPendingIntent));
 
 		notificationManager.notify(Constants.HELPER_NOTIFICATION_TAG, Constants.HELPER_NOTIFICATION_ID, notificationBuilder.build());
 	}
