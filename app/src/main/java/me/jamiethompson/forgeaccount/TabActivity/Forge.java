@@ -3,11 +3,11 @@ package me.jamiethompson.forgeaccount.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -18,92 +18,84 @@ import me.jamiethompson.forgeaccount.Preferences.Preferences;
 import me.jamiethompson.forgeaccount.R;
 import me.jamiethompson.forgeaccount.UI.Notifications;
 
-public class Forge extends AppCompatActivity
-{
+public class Forge extends AppCompatActivity {
 
-	private ForgePagerAdapter forgePagerAdapter;
-	private ViewPager viewPager;
+    private ForgePagerAdapter forgePagerAdapter;
+    private ViewPager viewPager;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_forge);
-		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_forge);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
-		forgePagerAdapter = new ForgePagerAdapter(getSupportFragmentManager(), getApplicationContext());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        forgePagerAdapter = new ForgePagerAdapter(getSupportFragmentManager(), getApplicationContext());
 
-		viewPager = (ViewPager) findViewById(R.id.container);
-		viewPager.setAdapter(forgePagerAdapter);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        params.setScrollFlags(0);  // clear all scroll flags
 
-		TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-		tabLayout.setupWithViewPager(viewPager);
+        viewPager = (ViewPager) findViewById(R.id.container);
+        viewPager.setAdapter(forgePagerAdapter);
 
-		Notifications.setUpChannels(this);
-		Notifications.displayHelperNotification(this);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
-		Intent intent = getIntent();
-		if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION))
-		{
-			viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
-		}
+        Notifications.setUpChannels(this);
+        Notifications.displayHelperNotification(this);
 
-		if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-				.getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)) {
-			PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_general, true);
-			PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_password, true);
-			PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_date_of_birth, true);
-		}
+        Intent intent = getIntent();
+        if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION)) {
+            viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
+        }
 
-	}
+        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)) {
+            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_general, true);
+            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_password, true);
+            PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_date_of_birth, true);
+        }
 
-	@Override
-	protected void onNewIntent(Intent intent)
-	{
-		super.onNewIntent(intent);
-		if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION))
-		{
-			Log.d("mega", Constants.NOTIFICATION_NAVIGATION);
-			viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
-		}
-	}
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_forge, menu);
-		return true;
-	}
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION)) {
+            viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
+        }
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		int id = item.getItemId();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_forge, menu);
+        return true;
+    }
 
-		if (id == R.id.settings)
-		{
-			startActivity(new Intent(this, Preferences.class));
-			return true;
-		}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-		return super.onOptionsItemSelected(item);
-	}
+        if (id == R.id.settings) {
+            startActivity(new Intent(this, Preferences.class));
+            return true;
+        }
 
-	public void reloadSaveList()
-	{
-		StoreFragment storage = forgePagerAdapter.getStoreFragment();
-		storage.reload(this);
-	}
+        return super.onOptionsItemSelected(item);
+    }
 
-	public void loadAccount(ForgeAccount account)
-	{
-		GeneratorFragment generator = forgePagerAdapter.getGeneratorFragment();
-		generator.load(account);
-		viewPager.setCurrentItem(Constants.GENERATE_TAB);
-	}
+    public void reloadSaveList() {
+        StoreFragment storage = forgePagerAdapter.getStoreFragment();
+        storage.reload(this);
+    }
+
+    public void loadAccount(ForgeAccount account) {
+        GeneratorFragment generator = forgePagerAdapter.getGeneratorFragment();
+        generator.load(account);
+        viewPager.setCurrentItem(Constants.GENERATE_TAB);
+    }
 
 
 }

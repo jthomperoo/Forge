@@ -5,14 +5,14 @@
     <header
         android:fragment="me.jamiethompson.forgeaccount.Preferences.GeneralPreferenceFragment"
         android:icon="@drawable/icon_info"
-        android:title="@string/pref_header_general"/>
+        android:title="@string/pref_header_general" />
     <header
         android:fragment="me.jamiethompson.forgeaccount.Preferences.PasswordPreferenceFragment"
         android:icon="@drawable/icon_password"
-        android:title="@string/pref_header_password"/>
+        android:title="@string/pref_header_password" />
     <header
         android:fragment="me.jamiethompson.forgeaccount.Preferences.DateOfBirthPreferenceFragment"
         android:icon="@drawable/icon_date_of_birth"
-        android:title="@string/pref_header_date_of_birth"/>
+        android:title="@string/pref_header_date_of_birth" />
 
 </preference-headers>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.5"
-        android:background="@android:color/black"/>
+        android:background="@android:color/black" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +25,7 @@
             layout_weight=".80"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.1" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/card_content"
@@ -48,7 +47,7 @@
                     android:text="@string/app_name"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                    android:textColor="?android:attr/editTextColor"/>
+                    android:textColor="?android:attr/editTextColor" />
 
                 <LinearLayout
                     style="@style/ForgeItem"
@@ -70,8 +69,7 @@
                             android:layout_weight="6"
                             android:ems="10"
                             android:hint="@string/firstname"
-                            android:maxLines="1"
-                            />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
 
@@ -81,7 +79,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/icon_copy"/>
+                        app:srcCompat="@drawable/icon_copy" />
 
                 </LinearLayout>
 
@@ -107,7 +105,7 @@
                             android:layout_weight="1"
                             android:ems="10"
                             android:hint="@string/middlename"
-                            android:maxLines="1"/>
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                     <ImageButton
@@ -116,7 +114,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/icon_copy"/>
+                        app:srcCompat="@drawable/icon_copy" />
 
                 </LinearLayout>
 
@@ -140,8 +138,7 @@
                             android:layout_weight="1"
                             android:ems="10"
                             android:hint="@string/lastname"
-                            android:maxLines="1"
-                            />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                     <ImageButton
@@ -150,7 +147,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/icon_copy"/>
+                        app:srcCompat="@drawable/icon_copy" />
 
                 </LinearLayout>
 
@@ -176,8 +173,7 @@
                             android:layout_weight="1"
                             android:ems="10"
                             android:hint="@string/username"
-                            android:maxLines="1"
-                            />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                     <ImageButton
@@ -186,7 +182,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/icon_copy"/>
+                        app:srcCompat="@drawable/icon_copy" />
 
                 </LinearLayout>
 
@@ -210,8 +206,7 @@
                             android:layout_weight="1"
                             android:ems="10"
                             android:hint="@string/password"
-                            android:maxLines="1"
-                            />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                     <ImageButton
@@ -220,7 +215,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/icon_copy"/>
+                        app:srcCompat="@drawable/icon_copy" />
 
                 </LinearLayout>
 
@@ -236,7 +231,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="7"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/email_wrapper"
@@ -253,8 +248,7 @@
                             android:layout_weight="1"
                             android:ems="10"
                             android:hint="@string/email"
-                            android:maxLines="1"
-                            />
+                            android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
 
                     <ImageButton
@@ -263,7 +257,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/icon_copy"/>
+                        app:srcCompat="@drawable/icon_copy" />
 
                 </LinearLayout>
 
@@ -279,8 +273,7 @@
                         android:id="@+id/year_wrapper"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        >
+                        android:layout_weight="2">
 
                         <EditText
                             android:id="@+id/year"
@@ -290,15 +283,14 @@
                             android:ems="10"
                             android:hint="@string/year"
                             android:maxLines="1"
-                            android:textAlignment="textStart"/>
+                            android:textAlignment="textStart" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/month_wrapper"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        >
+                        android:layout_weight="2">
 
                         <EditText
                             android:id="@+id/month"
@@ -308,15 +300,14 @@
                             android:ems="10"
                             android:hint="@string/month"
                             android:maxLines="1"
-                            android:textAlignment="textStart"/>
+                            android:textAlignment="textStart" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/day_wrapper"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        >
+                        android:layout_weight="2">
 
                         <EditText
                             android:id="@+id/day"
@@ -326,7 +317,7 @@
                             android:ems="10"
                             android:hint="@string/day"
                             android:maxLines="1"
-                            android:textAlignment="textStart"/>
+                            android:textAlignment="textStart" />
                     </android.support.design.widget.TextInputLayout>
 
                     <ImageButton
@@ -335,7 +326,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/icon_copy"/>
+                        app:srcCompat="@drawable/icon_copy" />
 
                 </LinearLayout>
 
@@ -353,17 +344,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Save"/>
+                        android:text="Save" />
 
                     <view
                         android:id="@+id/button_space"
                         class="android.support.v4.widget.Space"
-                        id="@+id/view"
                         layout_weight="1"
                         layout_width="0dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                     <Button
                         android:id="@+id/button_dismiss"
@@ -371,7 +361,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@android:string/ok"/>
+                        android:text="@android:string/ok" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -383,7 +373,7 @@
             class="android.support.v4.widget.Space"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.1" />
 
     </LinearLayout>
 

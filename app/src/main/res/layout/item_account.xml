@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:descendantFocusability="blocksDescendants">
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:id="@+id/icon"
@@ -10,7 +10,7 @@
         android:layout_height="48dp"
         android:layout_weight="1"
         android:tint="@color/colorAccent"
-        android:src="@drawable/icon_person"/>
+        android:src="@drawable/icon_person" />
 
     <TextView
         android:id="@+id/name"
@@ -25,7 +25,7 @@
         android:maxLines="1"
         android:text="Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="?android:attr/editTextColor"/>
+        android:textColor="?android:attr/editTextColor" />
 
     <ImageButton
         android:id="@+id/delete"
@@ -36,5 +36,5 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:backgroundTint="@color/colorDanger"
-        android:src="@drawable/icon_delete"/>
+        android:src="@drawable/icon_delete" />
 </RelativeLayout>

@@ -2,6 +2,7 @@
     <string name="app_name">Forge</string>
 
     <string name="notification_service">Forge Helper</string>
+    <string name="forge_autofill_service">Forge Autofill Helper</string>
 
     <string name="title_activity_forge">Forge</string>
     <string name="action_settings">Settings</string>
@@ -65,19 +66,37 @@
     <string name="invalid_preference">Invalid preference</string>
     <string name="error_value_required">Value required</string>
 
-    <string name="error_age_too_high">Maximum age must be less than </string>
-    <string name="error_age_too_low">Minimum age must be greater than </string>
+    <string name="error_age_too_high">Age must be less than\u0020</string>
+    <string name="error_age_too_low">Age must be greater than\u0020</string>
     <string name="error_min_age_greater_max">Minimum age must be less than maximum age</string>
 
-    <string name="error_pass_long">Maximum password length must be less than </string>
-    <string name="error_pass_short">Minimum password length must be greater than </string>
+    <string name="error_pass_long">Password length must be less than\u0020</string>
+    <string name="error_pass_short">Password length must be greater than\u0020</string>
     <string name="error_min_pass_greater_max">Minimum password length must be less than maximum password length</string>
 
+    <string name="accessiblity_not_enabled">Accessibility service permission required</string>
+    <string name="error_accessiblity_not_enabled">Allow Forge to run an accessibility service to use the autofill service</string>
+
     <string name="draw_overlay_not_enabled">Draw over other apps permission required</string>
-    <string name="error_draw_overlay_not_enabled">Allow Froge to draw over other apps to use the helper</string>
+    <string name="error_draw_overlay_not_enabled">Allow Forge to draw over other apps to use the helper</string>
 
     <string name="helper_not_enabled">Helper notification not enabled</string>
     <string name="error_helper_not_enabled">Enable the helper notification to allow the overlay to be summoned</string>
+
+    <string name="tutorial_global_refresh_title">Account Refresh</string>
+    <string name="tutorial_global_refresh_text">Press this to generate a completely new identity</string>
+
+    <string name="tutorial_local_refresh_title">Property Refresh</string>
+    <string name="tutorial_local_refresh_text">Press this to regenerate this individual property</string>
+
+    <string name="tutorial_copy_title">Copy</string>
+    <string name="tutorial_copy_text">Press this to copy this property to your clipboard</string>
+
+    <string name="tutorial_local_preferences_title">Property Preferences</string>
+    <string name="tutorial_local_preferences_text">Press this to open this property\'s preferences</string>
+
+    <string name="tutorial_inbox_title">Guerrilla Mail Inbox</string>
+    <string name="tutorial_inbox_text">This is where any emails sent to the generated email are displayed, tap on the email to view it</string>
 
     <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
 

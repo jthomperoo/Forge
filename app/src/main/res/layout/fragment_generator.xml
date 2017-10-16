@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,9 +8,9 @@
     tools:context="me.jamiethompson.forgeaccount.TabActivity.GeneratorFragment">
 
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/scrollview_bottom_padding">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/save_icon"
-                    android:text="Save"/>
+                    android:text="Save" />
 
                 <Button
                     android:id="@+id/refresh"
@@ -41,14 +40,13 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/refresh_icon"
-                    android:text="Refresh"/>
+                    android:text="Refresh" />
             </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/account_name_wrapper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/account_name"
@@ -57,7 +55,7 @@
                     android:ems="10"
                     android:hint="@string/account_name"
                     android:inputType="text"
-                    android:maxLines="1"/>
+                    android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -81,8 +79,7 @@
                         android:layout_weight="6"
                         android:ems="10"
                         android:hint="@string/firstname"
-                        android:maxLines="1"
-                        />
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
 
@@ -92,7 +89,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_copy"/>
+                    app:srcCompat="@drawable/icon_copy" />
 
                 <ImageButton
                     android:id="@+id/refresh_firstname"
@@ -100,7 +97,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/refresh_icon"/>
+                    app:srcCompat="@drawable/refresh_icon" />
 
             </LinearLayout>
 
@@ -124,7 +121,7 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/middlename"
-                        android:maxLines="1"/>
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageButton
@@ -133,7 +130,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_copy"/>
+                    app:srcCompat="@drawable/icon_copy" />
 
                 <ImageButton
                     android:id="@+id/refresh_middlename"
@@ -141,7 +138,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/refresh_icon"/>
+                    app:srcCompat="@drawable/refresh_icon" />
 
             </LinearLayout>
 
@@ -165,8 +162,7 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/lastname"
-                        android:maxLines="1"
-                        />
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageButton
@@ -175,7 +171,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_copy"/>
+                    app:srcCompat="@drawable/icon_copy" />
 
                 <ImageButton
                     android:id="@+id/refresh_lastname"
@@ -183,7 +179,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/refresh_icon"/>
+                    app:srcCompat="@drawable/refresh_icon" />
 
             </LinearLayout>
 
@@ -207,8 +203,7 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/username"
-                        android:maxLines="1"
-                        />
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageButton
@@ -217,7 +212,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_copy"/>
+                    app:srcCompat="@drawable/icon_copy" />
 
                 <ImageButton
                     android:id="@+id/refresh_username"
@@ -225,7 +220,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/refresh_icon"/>
+                    app:srcCompat="@drawable/refresh_icon" />
 
             </LinearLayout>
 
@@ -241,7 +236,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="7"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/email_wrapper"
@@ -258,8 +253,7 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/email"
-                        android:maxLines="1"
-                        />
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageButton
@@ -268,7 +262,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_copy"/>
+                    app:srcCompat="@drawable/icon_copy" />
 
                 <ImageButton
                     android:id="@+id/refresh_email"
@@ -276,7 +270,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/refresh_icon"/>
+                    app:srcCompat="@drawable/refresh_icon" />
 
             </LinearLayout>
 
@@ -300,8 +294,7 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/password"
-                        android:maxLines="1"
-                        />
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageButton
@@ -310,7 +303,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_copy"/>
+                    app:srcCompat="@drawable/icon_copy" />
 
                 <ImageButton
                     android:id="@+id/refresh_password"
@@ -318,7 +311,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/refresh_icon"/>
+                    app:srcCompat="@drawable/refresh_icon" />
 
                 <ImageButton
                     android:id="@+id/preferences_password"
@@ -326,7 +319,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/preferences_icon"/>
+                    app:srcCompat="@drawable/preferences_icon" />
 
             </LinearLayout>
 
@@ -340,8 +333,7 @@
                     android:id="@+id/year_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    >
+                    android:layout_weight="3">
 
                     <EditText
                         android:id="@+id/year"
@@ -350,15 +342,14 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:maxLines="1"
-                        android:textAlignment="textStart"/>
+                        android:textAlignment="textStart" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/month_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    >
+                    android:layout_weight="1.5">
 
                     <EditText
                         android:id="@+id/month"
@@ -367,15 +358,14 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:maxLines="1"
-                        android:textAlignment="textStart"/>
+                        android:textAlignment="textStart" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/day_wrapper"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    >
+                    android:layout_weight="1.5">
 
                     <EditText
                         android:id="@+id/day"
@@ -384,7 +374,7 @@
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:maxLines="1"
-                        android:textAlignment="textStart"/>
+                        android:textAlignment="textStart" />
                 </android.support.design.widget.TextInputLayout>
 
                 <ImageButton
@@ -393,7 +383,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/icon_copy"/>
+                    app:srcCompat="@drawable/icon_copy" />
 
                 <ImageButton
                     android:id="@+id/refresh_date"
@@ -401,7 +391,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/refresh_icon"/>
+                    app:srcCompat="@drawable/refresh_icon" />
 
                 <ImageButton
                     android:id="@+id/preferences_date"
@@ -409,14 +399,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/preferences_icon"/>
+                    app:srcCompat="@drawable/preferences_icon" />
 
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <ProgressBar
                     android:id="@+id/mail_progress"
@@ -425,7 +414,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_weight="1"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/mail_title"
@@ -434,7 +423,7 @@
                     android:layout_weight="5"
                     android:text="Guerrilla Mail Inbox"
                     android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
             </RelativeLayout>
 
             <ListView
@@ -442,7 +431,7 @@
                 style="@android:style/Widget.Material.ListView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dividerHeight="2dp"/>
+                android:dividerHeight="2dp" />
 
         </LinearLayout>
     </ScrollView>
