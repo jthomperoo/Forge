@@ -1,6 +1,7 @@
 package me.jamiethompson.forge.TabActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
@@ -17,6 +18,7 @@ import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.Preferences.Preferences;
 import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.UI.Notifications;
+import me.jamiethompson.forge.Util;
 
 public class Forge extends AppCompatActivity {
 
@@ -43,15 +45,20 @@ public class Forge extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         Notifications.setUpChannels(this);
-        Notifications.displayHelperNotification(this);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if(sharedPref.getBoolean(getString(R.string.pref_helper_key), false)) {
+            if (!Util.isAccessibilitySettingsOn(getApplicationContext())) {
+                Notifications.displayHelperNotification(this);
+            }
+        }
 
         Intent intent = getIntent();
         if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION)) {
             viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
         }
 
-        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                .getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)) {
+        if (!sharedPref.getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)) {
             PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_general, true);
             PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_password, true);
             PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_date_of_birth, true);

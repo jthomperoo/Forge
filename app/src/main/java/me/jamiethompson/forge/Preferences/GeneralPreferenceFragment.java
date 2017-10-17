@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.Services.AccessibilityAutofillService;
 import me.jamiethompson.forge.UI.Notifications;
+import me.jamiethompson.forge.Util;
 
 /**
  * Created by jamie on 03/10/17.
@@ -35,7 +36,7 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
         SwitchPreference overlayPreference = ((SwitchPreference) getPreferenceScreen().findPreference(getString(R.string.pref_overlay_key)));
         overlayPreference.setOnPreferenceChangeListener(this);
         helperPreference.setOnPreferenceChangeListener(this);
-        if (!isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
+        if (!Util.isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getActivity().getString(R.string.pref_overlay_key), false);
@@ -59,7 +60,7 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
     public boolean onPreferenceChange(Preference preference, Object o) {
         if (preference.getKey() == getString(R.string.pref_helper_key)) {
             if ((boolean) o) {
-                if (isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
+                if (Util.isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
                     Notifications.displayHelperNotification(getActivity(), true);
                     return true;
                 } else {
@@ -121,34 +122,5 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
         builder.show();
     }
 
-    private boolean isAccessibilitySettingsOn(Context context) {
-        int accessibilityEnabled = 0;
-        final String service = context.getPackageName() + "/" + AccessibilityAutofillService.class.getCanonicalName();
-        try {
-            accessibilityEnabled = Settings.Secure.getInt(
-                    context.getApplicationContext().getContentResolver(),
-                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-        }
-        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
-
-        if (accessibilityEnabled == 1) {
-            String settingValue = Settings.Secure.getString(
-                    context.getApplicationContext().getContentResolver(),
-                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            if (settingValue != null) {
-                mStringColonSplitter.setString(settingValue);
-                while (mStringColonSplitter.hasNext()) {
-                    String accessibilityService = mStringColonSplitter.next();
-
-                    if (accessibilityService.equalsIgnoreCase(service)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
 
 }
