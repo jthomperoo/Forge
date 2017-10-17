@@ -120,7 +120,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     (ScrollView) view.findViewById(R.id.scroll));
             tutorial.startTutorial();
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(Constants.FIRST_RUN, true);
+            editor.putBoolean(Constants.FIRST_RUN, false);
             editor.commit();
         }
     }
