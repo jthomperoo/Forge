@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.jamiethompson.forgeaccount">
+    package="me.jamiethompson.forge">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".TabActivity.Forge"
+            android:name="me.jamiethompson.forge.TabActivity.Forge"
             android:label="@string/title_activity_forge"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -27,12 +27,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Preferences.Preferences"
+            android:name="me.jamiethompson.forge.Preferences.Preferences"
             android:screenOrientation="portrait"
             android:label="@string/title_activity_preferences"></activity>
 
         <service
-            android:name=".Services.AccessibilityAutofillService"
+            android:name="me.jamiethompson.forge.Services.AccessibilityAutofillService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:label="@string/forge_autofill_service">
             <intent-filter>
@@ -43,9 +43,9 @@
                 android:resource="@xml/accessibility_service" />
         </service>
 
-        <receiver android:name=".Services.NotificationClickReceiver" />
+        <receiver android:name="me.jamiethompson.forge.Services.NotificationClickReceiver" />
 
-        <service android:name=".Services.OverlayService" />
+        <service android:name="me.jamiethompson.forge.Services.OverlayService" />
 
     </application>
 

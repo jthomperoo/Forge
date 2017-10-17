@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="me.jamiethompson.forgeaccount.TabActivity.StoreFragment">
+    tools:context="me.jamiethompson.forge.TabActivity.StoreFragment">
 
     <ListView
         android:id="@+id/account_list"
