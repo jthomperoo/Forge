@@ -31,18 +31,29 @@ public class Notifications {
         }
     }
 
-    public static void displayHelperNotification(Activity activity, Boolean override) {
-        createHelperNotification(activity);
-    }
-
-    public static void displayHelperNotification(Activity activity) {
+    public static void displayHelperNotification(Activity activity, Boolean override, Boolean overrideOverlay) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
-        if (sharedPref.getBoolean(activity.getString(R.string.pref_helper_key), true)) {
-            createHelperNotification(activity);
+        if (override) {
+            createHelperNotification(activity, overrideOverlay);
+        } else {
+            if (sharedPref.getBoolean(activity.getString(R.string.pref_helper_key), true)) {
+                createHelperNotification(activity, overrideOverlay);
+            }
         }
     }
 
-    private static void createHelperNotification(Context context) {
+    public static void displayHelperNotification(Activity activity, Boolean override) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+        if (override) {
+            createHelperNotification(activity, sharedPref.getBoolean(activity.getString(R.string.pref_overlay_key), false));
+        } else {
+            if (sharedPref.getBoolean(activity.getString(R.string.pref_helper_key), true)) {
+                createHelperNotification(activity, sharedPref.getBoolean(activity.getString(R.string.pref_overlay_key), false));
+            }
+        }
+    }
+
+    private static void createHelperNotification(Context context, boolean showOverlay) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification.Builder notificationBuilder;
         String title = context.getString(R.string.helper_notification_title);
@@ -104,7 +115,7 @@ public class Notifications {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if (sharedPref.getBoolean(context.getString(R.string.pref_overlay_key), false)) {
+        if (showOverlay) {
             Intent overlayIntent = new Intent(context, OverlayService.class);
             PendingIntent overlayPendingIntent =
                     PendingIntent.getService(

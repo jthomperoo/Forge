@@ -66,6 +66,7 @@
     <string name="invalid_preference">Invalid preference</string>
     <string name="error_value_required">Value required</string>
 
+
     <string name="error_age_too_high">Age must be less than\u0020</string>
     <string name="error_age_too_low">Age must be greater than\u0020</string>
     <string name="error_min_age_greater_max">Minimum age must be less than maximum age</string>
@@ -74,8 +75,8 @@
     <string name="error_pass_short">Password length must be greater than\u0020</string>
     <string name="error_min_pass_greater_max">Minimum password length must be less than maximum password length</string>
 
-    <string name="accessiblity_not_enabled">Accessibility service permission required</string>
-    <string name="error_accessiblity_not_enabled">Allow Forge to run an accessibility service to use the autofill service</string>
+    <string name="accessibility_not_enabled">Accessibility service permission required</string>
+    <string name="error_accessibility_not_enabled">Allow Forge to run an accessibility service to use the autofill service</string>
 
     <string name="draw_overlay_not_enabled">Draw over other apps permission required</string>
     <string name="error_draw_overlay_not_enabled">Allow Forge to draw over other apps to use the helper</string>

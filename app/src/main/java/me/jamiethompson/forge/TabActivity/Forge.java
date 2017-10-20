@@ -49,7 +49,7 @@ public class Forge extends AppCompatActivity {
 
         if(sharedPref.getBoolean(getString(R.string.pref_helper_key), false)) {
             if (!Util.isAccessibilitySettingsOn(getApplicationContext())) {
-                Notifications.displayHelperNotification(this);
+                Notifications.displayHelperNotification(this, false);
             }
         }
 

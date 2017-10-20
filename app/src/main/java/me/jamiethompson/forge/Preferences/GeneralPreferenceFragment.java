@@ -1,7 +1,6 @@
 package me.jamiethompson.forge.Preferences;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,11 +12,9 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.MenuItem;
 
 import me.jamiethompson.forge.R;
-import me.jamiethompson.forge.Services.AccessibilityAutofillService;
 import me.jamiethompson.forge.UI.Notifications;
 import me.jamiethompson.forge.Util;
 
@@ -64,7 +61,7 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                     Notifications.displayHelperNotification(getActivity(), true);
                     return true;
                 } else {
-                    showDialog(getString(R.string.accessiblity_not_enabled), getString(R.string.error_accessiblity_not_enabled), new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                    showDialog(getString(R.string.accessibility_not_enabled), getString(R.string.error_accessibility_not_enabled), new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
                     return false;
                 }
             } else {
@@ -78,14 +75,14 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                 if (sharedPref.getBoolean(getActivity().getString(R.string.pref_helper_key), false)) {
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (Settings.canDrawOverlays(getContext())) {
-                            Notifications.displayHelperNotification(getActivity(), true);
+                            Notifications.displayHelperNotification(getActivity(), false, true);
                             return true;
                         } else {
                             showDialog(getString(R.string.draw_overlay_not_enabled), getString(R.string.error_draw_overlay_not_enabled), new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
                             return false;
                         }
                     } else {
-                        Notifications.displayHelperNotification(getActivity(), true);
+                        Notifications.displayHelperNotification(getActivity(), false, true);
                         return true;
                     }
 
@@ -93,6 +90,8 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                     showDialog(getString(R.string.helper_not_enabled), getString(R.string.error_helper_not_enabled), null);
                     return false;
                 }
+            } else {
+                Notifications.displayHelperNotification(getActivity(), false, false);
             }
         }
         return true;
