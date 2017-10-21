@@ -66,6 +66,7 @@
     <string name="invalid_preference">Invalid preference</string>
     <string name="error_value_required">Value required</string>
 
+    <string name="error_must_be_numeric">Value must be numeric</string>
 
     <string name="error_age_too_high">Age must be less than\u0020</string>
     <string name="error_age_too_low">Age must be greater than\u0020</string>

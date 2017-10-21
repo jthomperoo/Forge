@@ -14,6 +14,7 @@ public class AutoFillNode {
     public static final int FIRST_NAME = 3;
     public static final int MIDDLE_NAME = 4;
     public static final int LAST_NAME = 5;
+    public static final int FULL_NAME = 6;
 
     private AccessibilityNodeInfo accessiblityNode;
     private int type;

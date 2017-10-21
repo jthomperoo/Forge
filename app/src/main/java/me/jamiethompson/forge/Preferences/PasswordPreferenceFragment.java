@@ -10,6 +10,8 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
+import org.apache.commons.lang3.StringUtils;
+
 import me.jamiethompson.forge.R;
 
 /**
@@ -50,62 +52,84 @@ public class PasswordPreferenceFragment extends PreferenceFragment implements Pr
         String text = String.valueOf(o);
         if (!text.isEmpty()) {
             if (preference.getKey() == getString(R.string.pref_password_max_key)) {
-                int value = Integer.valueOf(text);
-                if (value > ABSOLUTE_MAX_PASSWORD_LENGTH) {
+                if(StringUtils.isNumeric(text))
+                {
+                    int value = Integer.valueOf(text);
+                    if (value > ABSOLUTE_MAX_PASSWORD_LENGTH) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_pass_long) + ABSOLUTE_MAX_PASSWORD_LENGTH);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value < ABSOLUTE_MIN_PASSWORD_LENGTH) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_pass_short) + ABSOLUTE_MIN_PASSWORD_LENGTH);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value <= minPassLen) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_min_pass_greater_max));
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    maxPassLen = value;
+                    return true;
+                }
+                else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_pass_long) + ABSOLUTE_MAX_PASSWORD_LENGTH);
+                    builder.setMessage(getString(R.string.error_must_be_numeric));
                     builder.setPositiveButton(android.R.string.ok, null);
                     builder.show();
                     return false;
                 }
-                if (value < ABSOLUTE_MIN_PASSWORD_LENGTH) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_pass_short) + ABSOLUTE_MIN_PASSWORD_LENGTH);
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                if (value <= minPassLen) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_min_pass_greater_max));
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                maxPassLen = value;
-                return true;
             }
             if (preference.getKey() == getString(R.string.pref_password_min_key)) {
-                int value = Integer.valueOf(text);
-                if (value > ABSOLUTE_MAX_PASSWORD_LENGTH) {
+                if(StringUtils.isNumeric(text)) {
+                    int value = Integer.valueOf(text);
+                    if (value > ABSOLUTE_MAX_PASSWORD_LENGTH) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_pass_long) + ABSOLUTE_MAX_PASSWORD_LENGTH);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value < ABSOLUTE_MIN_PASSWORD_LENGTH) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_pass_short) + ABSOLUTE_MIN_PASSWORD_LENGTH);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value >= maxPassLen) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(R.string.error_min_pass_greater_max);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    minPassLen = value;
+                    return true;
+                }
+                else
+                {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_pass_long) + ABSOLUTE_MAX_PASSWORD_LENGTH);
+                    builder.setMessage(getString(R.string.error_must_be_numeric));
                     builder.setPositiveButton(android.R.string.ok, null);
                     builder.show();
                     return false;
                 }
-                if (value < ABSOLUTE_MIN_PASSWORD_LENGTH) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_pass_short) + ABSOLUTE_MIN_PASSWORD_LENGTH);
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                if (value >= maxPassLen) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(R.string.error_min_pass_greater_max);
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                minPassLen = value;
-                return true;
             }
 
             return true;

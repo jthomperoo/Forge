@@ -25,6 +25,7 @@ public class AccessibilityAutofillService extends AccessibilityService {
     private ArrayList<AccessibilityNodeInfo> editTextNodes;
     private ArrayList<AutoFillNode> validNodes;
     private CharSequence currentPackage = "";
+    private String lastURL = "";
 
     public AccessibilityAutofillService() {
         instance = this;
@@ -42,7 +43,10 @@ public class AccessibilityAutofillService extends AccessibilityService {
         switch (accessibilityEvent.getEventType()) {
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED: {
                 if (accessibilityEvent.getPackageName() != null) {
-                    if (!currentPackage.equals(accessibilityEvent.getPackageName()) && !accessibilityEvent.getPackageName().equals("com.android.systemui")) {
+                    CharSequence packageName = accessibilityEvent.getPackageName();
+                    if (!currentPackage.equals(packageName)
+                            && !packageName.equals("com.android.systemui")
+                            && !packageName.equals("me.jamiethompson.forge")) {
                         currentPackage = accessibilityEvent.getPackageName();
                         validNodes = new ArrayList<>();
                     }
@@ -71,12 +75,22 @@ public class AccessibilityAutofillService extends AccessibilityService {
                                     } else if (viewIdName.contains("middle")) {
                                         validNodes.add(new AutoFillNode(node, AutoFillNode.MIDDLE_NAME));
                                         added = true;
+                                    } else if (viewIdName.contains("full")) {
+                                        validNodes.add(new AutoFillNode(node, AutoFillNode.FULL_NAME));
+                                        added = true;
                                     } else if (viewIdName.contains("last") || viewIdName.contains("family")) {
                                         validNodes.add(new AutoFillNode(node, AutoFillNode.MIDDLE_NAME));
                                         added = true;
                                     } else if (viewIdName.contains("user")) {
                                         validNodes.add(new AutoFillNode(node, AutoFillNode.USERNAME));
                                         added = true;
+                                    }
+                                } else {
+                                    if (node.getText() != null) {
+                                        if (!node.getText().toString().equals(lastURL)) {
+                                            lastURL = node.getText().toString();
+                                            validNodes = new ArrayList<>();
+                                        }
                                     }
                                 }
                             }
@@ -136,7 +150,6 @@ public class AccessibilityAutofillService extends AccessibilityService {
         ForgeAccount account = CurrentManager.loadCurrentAccount(getApplicationContext());
         for (AutoFillNode node : validNodes) {
             String input = getInput(node.getType(), account);
-            Log.d("mega", "INPUT: " + input + " into: " + node.getAccessiblityNode().getViewIdResourceName());
             Bundle arguments = new Bundle();
             arguments.putString(AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, input);
             node.getAccessiblityNode().performAction(AccessibilityNodeInfoCompat.ACTION_SET_TEXT, arguments);
@@ -158,6 +171,8 @@ public class AccessibilityAutofillService extends AccessibilityService {
                 return account.getMiddleName();
             case AutoFillNode.LAST_NAME:
                 return account.getLastName();
+            case AutoFillNode.FULL_NAME:
+                return account.getFirstName() + " " + account.getLastName();
             default:
                 return "";
         }

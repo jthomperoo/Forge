@@ -10,6 +10,8 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
+import org.apache.commons.lang3.StringUtils;
+
 import me.jamiethompson.forge.R;
 
 /**
@@ -51,62 +53,82 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
         String text = String.valueOf(o);
         if (!text.isEmpty()) {
             if (preference.getKey() == getString(R.string.pref_dob_max_key)) {
-                int value = Integer.valueOf(text);
-                if (value > ABSOLUTE_MAX_AGE) {
+                if(StringUtils.isNumeric(text)) {
+                    int value = Integer.valueOf(text);
+                    if (value > ABSOLUTE_MAX_AGE) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_age_too_high) + ABSOLUTE_MAX_AGE);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value < ABSOLUTE_MIN_AGE) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_age_too_low) + ABSOLUTE_MIN_AGE);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value < minAge) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_min_age_greater_max));
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    maxAge = value;
+                    return true;
+                }
+                else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_age_too_high) + ABSOLUTE_MAX_AGE);
+                    builder.setMessage(getString(R.string.error_must_be_numeric));
                     builder.setPositiveButton(android.R.string.ok, null);
                     builder.show();
                     return false;
                 }
-                if (value < ABSOLUTE_MIN_AGE) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_age_too_low) + ABSOLUTE_MIN_AGE);
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                if (value < minAge) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_min_age_greater_max));
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                maxAge = value;
-                return true;
             }
             if (preference.getKey() == getString(R.string.pref_dob_min_key)) {
-                int value = Integer.valueOf(text);
-                if (value > ABSOLUTE_MAX_AGE) {
+                if (StringUtils.isNumeric(text)) {
+                    int value = Integer.valueOf(text);
+                    if (value > ABSOLUTE_MAX_AGE) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_age_too_high) + ABSOLUTE_MAX_AGE);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value < ABSOLUTE_MIN_AGE) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_age_too_low) + ABSOLUTE_MIN_AGE);
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    if (value > maxAge) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.invalid_preference));
+                        builder.setMessage(getString(R.string.error_min_age_greater_max));
+                        builder.setPositiveButton(android.R.string.ok, null);
+                        builder.show();
+                        return false;
+                    }
+                    minAge = value;
+                    return true;
+                }
+                else {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_age_too_high) + ABSOLUTE_MAX_AGE);
+                    builder.setMessage(getString(R.string.error_must_be_numeric));
                     builder.setPositiveButton(android.R.string.ok, null);
                     builder.show();
                     return false;
                 }
-                if (value < ABSOLUTE_MIN_AGE) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_age_too_low) + ABSOLUTE_MIN_AGE);
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                if (value > maxAge) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.invalid_preference));
-                    builder.setMessage(getString(R.string.error_min_age_greater_max));
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                    return false;
-                }
-                minAge = value;
-                return true;
             }
             return true;
         } else {

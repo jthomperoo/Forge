@@ -17,8 +17,8 @@
     <string name="pref_password_special_summary">Include special characters in generated password</string>
 
     <string name="pref_password_number_key">password_number</string>
-    <string name="pref_password_number_title">Number characters</string>
-    <string name="pref_password_number_summary">Include number characters in generated password</string>
+    <string name="pref_password_number_title">Numbers</string>
+    <string name="pref_password_number_summary">Include numbers in generated password</string>
 
     <string name="pref_password_uppercase_key">password_uppercase</string>
     <string name="pref_password_uppercase_title">Uppercase characters</string>
