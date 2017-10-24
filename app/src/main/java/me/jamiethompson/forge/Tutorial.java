@@ -9,40 +9,54 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 /**
  * Created by jamie on 10/10/17.
+ *
+ * Handles the start up tutorial for Forge
  */
 
 public class Tutorial implements View.OnClickListener {
-    private static Activity activity;
-    private ViewTarget globalRefreshButton;
-    private ViewTarget refreshButton;
-    private ViewTarget copyButton;
-    private ViewTarget preferencesButton;
+    // Activity to show tutorial on
+    private Activity activity;
+    // Tutorial targets
+    private ViewTarget refreshGlobal;
+    private ViewTarget refreshLocal;
+    private ViewTarget copy;
     private ViewTarget inbox;
+    // Activity scrollview
     private ScrollView scrollView;
+    // Tutorial showcase
     private ShowcaseView showcase;
+    // Current tutorial position
     private int position;
-    private final int GLOBAL_REFRESH_POSITION = 0;
-    private final int LOCAL_REFRESH_POSITION = 1;
-    private final int COPY_POSITION = 2;
-    private final int LOCAL_PREFERENCES_POSITION = 3;
-    private final int INBOX_POSITION = 4;
 
 
-    public Tutorial(Activity activity, int globalRefreshButton, int refreshButton, int copyButton, int preferencesButton, int inbox, ScrollView scrollView) {
+    /**
+     * @param activity      the activity to show the tutorial on
+     * @param refreshGlobal the global refresh button ID
+     * @param refreshLocal  the local refresh button ID
+     * @param copy          the copy button ID
+     * @param inbox         the inbox ID
+     * @param scrollView    the activity scrollview
+     */
+
+    public Tutorial(Activity activity, int refreshGlobal, int refreshLocal, int copy, int inbox, ScrollView scrollView) {
         this.activity = activity;
-        this.globalRefreshButton = new ViewTarget(globalRefreshButton, activity);
-        this.refreshButton = new ViewTarget(refreshButton, activity);
-        this.copyButton = new ViewTarget(copyButton, activity);
-        this.preferencesButton = new ViewTarget(preferencesButton, activity);
+        // Set up tutorial view targets
+        this.refreshGlobal = new ViewTarget(refreshGlobal, activity);
+        this.refreshLocal = new ViewTarget(refreshLocal, activity);
+        this.copy = new ViewTarget(copy, activity);
         this.inbox = new ViewTarget(inbox, activity);
         this.scrollView = scrollView;
+        // Set tutorial position
         position = 0;
     }
 
+    /**
+     * Starts the tutorial and sets up tutorial showcase with starting values
+     */
     public void startTutorial() {
         showcase = new ShowcaseView.Builder(activity)
                 .withNewStyleShowcase()
-                .setTarget(globalRefreshButton)
+                .setTarget(refreshGlobal)
                 .setStyle(R.style.TutorialTheme)
                 .setContentTitle(activity.getString(R.string.tutorial_global_refresh_title))
                 .setContentText(activity.getString(R.string.tutorial_global_refresh_text))
@@ -53,36 +67,42 @@ public class Tutorial implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        // Progress the tutorial
+        final int GLOBAL_REFRESH_POSITION = 0;
+        final int LOCAL_REFRESH_POSITION = 1;
+        final int COPY_POSITION = 2;
+        final int INBOX_POSITION = 3;
+
+        // Depending on the current position
         switch (position) {
             case GLOBAL_REFRESH_POSITION: {
-                showcase.setShowcase(globalRefreshButton, true);
+                // Update showcase target
+                showcase.setShowcase(refreshGlobal, true);
+                // Update showcase text
                 showcase.setContentTitle(activity.getString(R.string.tutorial_global_refresh_title));
                 showcase.setContentText(activity.getString(R.string.tutorial_global_refresh_text));
                 break;
             }
             case LOCAL_REFRESH_POSITION: {
-                showcase.setShowcase(refreshButton, true);
+                showcase.setShowcase(refreshLocal, true);
                 showcase.setContentTitle(activity.getString(R.string.tutorial_local_refresh_title));
                 showcase.setContentText(activity.getString(R.string.tutorial_local_refresh_text));
                 break;
             }
             case COPY_POSITION: {
-                showcase.setShowcase(copyButton, true);
+                showcase.setShowcase(copy, true);
                 showcase.setContentTitle(activity.getString(R.string.tutorial_copy_title));
                 showcase.setContentText(activity.getString(R.string.tutorial_copy_text));
                 break;
             }
-            case LOCAL_PREFERENCES_POSITION: {
-                showcase.setShowcase(preferencesButton, true);
-                showcase.setContentTitle(activity.getString(R.string.tutorial_local_preferences_title));
-                showcase.setContentText(activity.getString(R.string.tutorial_local_preferences_text));
-                break;
-            }
+
             case INBOX_POSITION: {
+                // Scroll to the bottom of the screen to show the inbox
                 scrollView.scrollTo(0, scrollView.getBottom());
                 showcase.setShowcase(inbox, true);
                 showcase.setContentTitle(activity.getString(R.string.tutorial_inbox_title));
                 showcase.setContentText(activity.getString(R.string.tutorial_inbox_text));
+                // Update the button text to show the end of the tutorial
                 showcase.setButtonText(activity.getString(android.R.string.ok));
                 break;
             }
@@ -91,6 +111,7 @@ public class Tutorial implements View.OnClickListener {
                 break;
             }
         }
+        // Increment current position
         position++;
     }
 }

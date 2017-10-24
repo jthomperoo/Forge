@@ -26,10 +26,6 @@ public class AccountListAdapter extends ArrayAdapter<ForgeAccount> {
     private Activity activity;
     private ReloadInterface listFragment;
 
-    public AccountListAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-    }
-
     public AccountListAdapter(Context context, int resource, List<ForgeAccount> accounts, Activity activity, ReloadInterface listFragment) {
         super(context, resource, accounts);
         this.activity = activity;
@@ -60,7 +56,7 @@ public class AccountListAdapter extends ArrayAdapter<ForgeAccount> {
                             switch (which) {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     FileManager.delete(activity, account);
-                                    listFragment.reload(activity);
+                                    listFragment.reload();
                                     dialog.dismiss();
                                     break;
                                 case DialogInterface.BUTTON_NEGATIVE:

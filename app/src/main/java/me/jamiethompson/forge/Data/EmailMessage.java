@@ -6,13 +6,15 @@ package me.jamiethompson.forge.Data;
 
 public class EmailMessage {
     private boolean read;
+    private String id;
     private String subject;
     private String body;
     private String time;
     private String from;
 
-    public EmailMessage(boolean read, String subject, String body, String time, String from) {
+    public EmailMessage(boolean read, String id, String subject, String body, String time, String from) {
         this.read = read;
+        this.id = id;
         this.subject = subject;
         this.body = body;
         this.time = time;
@@ -25,6 +27,14 @@ public class EmailMessage {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getSubject() {
@@ -58,4 +68,5 @@ public class EmailMessage {
     public void setFrom(String from) {
         this.from = from;
     }
+
 }

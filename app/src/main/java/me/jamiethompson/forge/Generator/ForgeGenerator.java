@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import me.jamiethompson.forge.Constants;
 import me.jamiethompson.forge.Data.EmailAddress;
+import me.jamiethompson.forge.Data.EmailMessage;
 import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.EmailInterface;
 import me.jamiethompson.forge.Files.CurrentManager;
@@ -129,8 +130,8 @@ public class ForgeGenerator {
         }
     }
 
-    public void refreshEmails(EmailAddress emailAddress) {
-        mailComs.getEmails(emailAddress);
+    public void refreshEmails(EmailAddress emailAddress, EmailMessage latestMessage) {
+        mailComs.getEmails(emailAddress, latestMessage);
     }
 
     public void setEmailAddress(EmailAddress emailAddress) {

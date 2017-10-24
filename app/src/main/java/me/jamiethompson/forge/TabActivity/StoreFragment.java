@@ -2,6 +2,7 @@ package me.jamiethompson.forge.TabActivity;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,13 +28,14 @@ import me.jamiethompson.forge.ReloadInterface;
  */
 public class StoreFragment extends Fragment implements ListView.OnItemClickListener, ReloadInterface {
 
+    private Activity activity;
+    private Context context;
     private View view;
     private HashMap<UUID, ForgeAccount> accounts;
     private ListView accountList;
 
     public static StoreFragment newInstance() {
-        StoreFragment fragment = new StoreFragment();
-        return fragment;
+        return new StoreFragment();
     }
 
     @Override
@@ -51,14 +53,16 @@ public class StoreFragment extends Fragment implements ListView.OnItemClickListe
         accounts = new HashMap<>();
         accountList = this.view.findViewById(R.id.account_list);
         accountList.setOnItemClickListener(this);
+        activity = getActivity();
+        context = getContext();
         setUpList();
-        load(getActivity());
+        load();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         ForgeAccount account = (ForgeAccount) adapterView.getItemAtPosition(i);
-        ((Forge) getActivity()).loadAccount(account);
+        ((Forge) activity).loadAccount(account);
     }
 
     @Override
@@ -69,11 +73,11 @@ public class StoreFragment extends Fragment implements ListView.OnItemClickListe
 
 
     @Override
-    public void reload(Activity activity) {
-        load(activity);
+    public void reload() {
+        load();
     }
 
-    public void load(Activity activity) {
+    public void load() {
         accounts = FileManager.load(activity);
         if (accountList != null) {
             setUpList();
@@ -84,7 +88,7 @@ public class StoreFragment extends Fragment implements ListView.OnItemClickListe
         if (!accounts.isEmpty()) {
             accountList.setAdapter(null);
         }
-        AccountListAdapter adapter = new AccountListAdapter(getContext(), R.layout.item_account, new ArrayList<>(accounts.values()), getActivity(), this);
+        AccountListAdapter adapter = new AccountListAdapter(context, R.layout.item_account, new ArrayList<>(accounts.values()), activity, this);
         accountList.setAdapter(adapter);
     }
 

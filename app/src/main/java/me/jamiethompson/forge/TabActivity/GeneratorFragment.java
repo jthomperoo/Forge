@@ -6,13 +6,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceActivity;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -40,6 +38,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import me.jamiethompson.forge.Constants;
@@ -52,9 +51,6 @@ import me.jamiethompson.forge.Files.FileManager;
 import me.jamiethompson.forge.Generator.ForgeGenerator;
 import me.jamiethompson.forge.ListView.EmailListAdapter;
 import me.jamiethompson.forge.LoadInterface;
-import me.jamiethompson.forge.Preferences.DateOfBirthPreferenceFragment;
-import me.jamiethompson.forge.Preferences.PasswordPreferenceFragment;
-import me.jamiethompson.forge.Preferences.Preferences;
 import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.Tutorial;
 import me.jamiethompson.forge.UI.Feedback;
@@ -75,6 +71,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     private ProgressBar addressProgress;
     private ProgressBar mailProgress;
     private TextInputLayout emailWrapper;
+    private TextView mailDomain;
     private TextView emailEntry;
     private ListView emailList;
     private EditText accountNameEntry;
@@ -115,13 +112,12 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     R.id.refresh,
                     R.id.refresh_firstname,
                     R.id.copy_firstname,
-                    R.id.preferences_password,
                     R.id.email_list,
                     (ScrollView) view.findViewById(R.id.scroll));
             tutorial.startTutorial();
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(Constants.FIRST_RUN, false);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -224,20 +220,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
                 break;
             }
-            case R.id.preferences_password: {
-                Intent intent = new Intent(getActivity(), Preferences.class);
-                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, PasswordPreferenceFragment.class.getName());
-                intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                startActivity(intent);
-                break;
-            }
-            case R.id.preferences_date: {
-                Intent intent = new Intent(getActivity(), Preferences.class);
-                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, DateOfBirthPreferenceFragment.class.getName());
-                intent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-                startActivity(intent);
-                break;
-            }
         }
         CurrentManager.updateCurrentAccount(account, context);
         displayAccount();
@@ -276,7 +258,11 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 if (account.getEmail().getAddress() != null) {
                     showEmailsProgress();
                     if (isNetworkAvailable()) {
-                        generator.refreshEmails(account.getEmail());
+                        if (emailMessages.isEmpty()) {
+                            generator.refreshEmails(account.getEmail(), null);
+                        } else {
+                            generator.refreshEmails(account.getEmail(), emailMessages.get(0));
+                        }
                     } else {
                         toggleNoInternetMessage(true);
                     }
@@ -293,17 +279,21 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void loadAddress(final EmailAddress emailAddress) {
-        if (emailAddress != null) {
+    public void loadAddress(final EmailAddress email) {
+        if (email != null) {
             mailPollHandler.removeCallbacksAndMessages(null);
-            account.setEmail(emailAddress);
-            emailEntry.setText(emailAddress.getAddress());
+            account.setEmail(email);
+            emailEntry.setText(email.getAddress().split("@")[0]);
 
             hideAddressProgress();
             showEmailsProgress();
 
             if (isNetworkAvailable()) {
-                generator.refreshEmails(emailAddress);
+                if (emailMessages.isEmpty()) {
+                    generator.refreshEmails(email, null);
+                } else {
+                    generator.refreshEmails(email, emailMessages.get(0));
+                }
             } else {
                 toggleNoInternetMessage(true);
             }
@@ -312,15 +302,17 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
             mailPollHandler.postDelayed(new Runnable() {
                 public void run() {
-                    if (emailAddress != null) {
-                        showEmailsProgress();
-                        if (isNetworkAvailable()) {
-                            generator.refreshEmails(emailAddress);
+                    showEmailsProgress();
+                    if (isNetworkAvailable()) {
+                        if (emailMessages.isEmpty()) {
+                            generator.refreshEmails(email, null);
                         } else {
-                            toggleNoInternetMessage(true);
+                            generator.refreshEmails(email, emailMessages.get(0));
                         }
-                        mailPollHandler.postDelayed(this, Constants.EMAIL_REFRESH_DELAY);
+                    } else {
+                        toggleNoInternetMessage(true);
                     }
+                    mailPollHandler.postDelayed(this, Constants.EMAIL_REFRESH_DELAY);
                 }
             }, Constants.EMAIL_REFRESH_DELAY);
         }
@@ -330,7 +322,11 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     public void loadEmails(List<EmailMessage> emails) {
         if (!emails.isEmpty()) {
             emailList.setAdapter(null);
-            this.emailMessages = emails;
+            for (EmailMessage message : emails) {
+                if (!containsID(emailMessages, message.getId())) {
+                    emailMessages.add(message);
+                }
+            }
         }
         hideEmailsProgress();
         EmailListAdapter adapter = new EmailListAdapter(context, R.layout.item_email, this.emailMessages);
@@ -415,8 +411,9 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         ((TextInputLayout) view.findViewById(R.id.middlename_wrapper)).setHint(getString(R.string.middlename));
         ((TextInputLayout) view.findViewById(R.id.lastname_wrapper)).setHint(getString(R.string.lastname));
         ((TextInputLayout) view.findViewById(R.id.username_wrapper)).setHint(getString(R.string.username));
-        emailWrapper = ((TextInputLayout) view.findViewById(R.id.email_wrapper));
+        emailWrapper = view.findViewById(R.id.email_wrapper);
         emailWrapper.setHint(getString(R.string.email));
+        mailDomain = view.findViewById(R.id.mail_domain);
         ((TextInputLayout) view.findViewById(R.id.account_name_wrapper)).setHint(getString(R.string.account_name));
         ((TextInputLayout) view.findViewById(R.id.year_wrapper)).setHint(getString(R.string.year));
         ((TextInputLayout) view.findViewById(R.id.month_wrapper)).setHint(getString(R.string.month));
@@ -440,9 +437,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         view.findViewById(R.id.copy_email).setOnClickListener(this);
         view.findViewById(R.id.copy_password).setOnClickListener(this);
         view.findViewById(R.id.copy_date).setOnClickListener(this);
-        // settings
-        view.findViewById(R.id.preferences_password).setOnClickListener(this);
-        view.findViewById(R.id.preferences_date).setOnClickListener(this);
         // save button
         view.findViewById(R.id.save).setOnClickListener(this);
         // assign globals
@@ -538,11 +532,13 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
     private void hideAddressProgress() {
         emailWrapper.setVisibility(View.VISIBLE);
+        mailDomain.setVisibility(View.VISIBLE);
         addressProgress.setVisibility(View.GONE);
     }
 
     private void showAddressProgress() {
         emailWrapper.setVisibility(View.GONE);
+        mailDomain.setVisibility(View.GONE);
         addressProgress.setVisibility(View.VISIBLE);
     }
 
@@ -637,6 +633,15 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static boolean containsID(Collection<EmailMessage> c, String id) {
+        for (EmailMessage o : c) {
+            if (o != null && o.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

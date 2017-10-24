@@ -4,10 +4,12 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 /**
  * Created by Jamie on 19/10/2017.
+ * Represents an accessibility node that can be auto filled by the auto fill service, includes
+ * the auto fill input type
  */
 
 public class AutoFillNode {
-
+    // Auto fill input types
     public static final int PASSWORD = 0;
     public static final int USERNAME = 1;
     public static final int EMAIL = 2;
@@ -15,28 +17,36 @@ public class AutoFillNode {
     public static final int MIDDLE_NAME = 4;
     public static final int LAST_NAME = 5;
     public static final int FULL_NAME = 6;
-
-    private AccessibilityNodeInfo accessiblityNode;
+    // Accessibility node that can be auto filled
+    private AccessibilityNodeInfo accessibilityNode;
+    // This node's auto fill input type
     private int type;
 
-    public AutoFillNode(AccessibilityNodeInfo accessiblityNode, int type) {
-        this.accessiblityNode = accessiblityNode;
+    /**
+     * @param accessibilityNode the accessibility node that is valid for auto fill
+     * @param type              the input type of the valid accessibility node, as defined in AutoFillNode
+     */
+    public AutoFillNode(AccessibilityNodeInfo accessibilityNode, int type) {
+        this.accessibilityNode = accessibilityNode;
         this.type = type;
     }
 
-    public AccessibilityNodeInfo getAccessiblityNode() {
-        return accessiblityNode;
+    /**
+     * Returns the accessibility node that is valid for auto fill
+     *
+     * @return the node that is valid for auto fill
+     */
+    public AccessibilityNodeInfo getAccessibilityNode() {
+        return accessibilityNode;
     }
 
-    public void setAccessiblityNode(AccessibilityNodeInfo accessiblityNode) {
-        this.accessiblityNode = accessiblityNode;
-    }
-
+    /**
+     * Returns the input type of the auto fill node
+     *
+     * @return the input type of the auto fill node, as defined in AutoFillNode
+     */
     public int getType() {
         return type;
     }
 
-    public void setType(int type) {
-        this.type = type;
-    }
 }

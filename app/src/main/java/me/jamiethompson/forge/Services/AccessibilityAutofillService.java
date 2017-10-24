@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.InputType;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -152,7 +151,7 @@ public class AccessibilityAutofillService extends AccessibilityService {
             String input = getInput(node.getType(), account);
             Bundle arguments = new Bundle();
             arguments.putString(AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, input);
-            node.getAccessiblityNode().performAction(AccessibilityNodeInfoCompat.ACTION_SET_TEXT, arguments);
+            node.getAccessibilityNode().performAction(AccessibilityNodeInfoCompat.ACTION_SET_TEXT, arguments);
             SystemClock.sleep(200);
         }
     }
@@ -182,7 +181,7 @@ public class AccessibilityAutofillService extends AccessibilityService {
         if (node.getViewIdResourceName() != null) {
             int i = 0;
             while (i < validNodes.size()) {
-                AccessibilityNodeInfo compareNode = validNodes.get(i).getAccessiblityNode();
+                AccessibilityNodeInfo compareNode = validNodes.get(i).getAccessibilityNode();
                 if (compareNode.getViewIdResourceName() != null) {
                     if (compareNode.getViewIdResourceName().equals(node.getViewIdResourceName())) {
                         return true;

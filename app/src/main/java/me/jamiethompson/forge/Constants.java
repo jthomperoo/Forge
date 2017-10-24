@@ -2,6 +2,7 @@ package me.jamiethompson.forge;
 
 /**
  * Created by jamie on 27/09/17.
+ * Constants file holds global constants across the application
  */
 
 public class Constants {
@@ -24,10 +25,10 @@ public class Constants {
     final public static String ADDRESS_JSON_KEY = "email_addr";
     final public static String SID_JSON_KEY = "sid_token";
     final public static String EMAILS_JSON_KEY = "list";
+    final public static String EMAIL_ID_KEY = "mail_id";
     final public static String SUBJECT_JSON_KEY = "mail_subject";
     final public static String BODY_JSON_KEY = "mail_excerpt";
     final public static String FROM_JSON_KEY = "mail_from";
-    final public static String TIME_JSON_KEY = "mail_timestamp";
 
     final public static String SID_PARAMETER_KEY = "sid_token";
     final public static String SEQUENCE_PARAMETER_KEY = "seq";

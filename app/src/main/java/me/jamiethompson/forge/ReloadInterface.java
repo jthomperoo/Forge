@@ -1,11 +1,14 @@
 package me.jamiethompson.forge;
 
-import android.app.Activity;
 
 /**
  * Created by jamie on 29/09/17.
+ * Used for interaction between generator and storage, to reload storage with newly saved values
  */
 
 public interface ReloadInterface {
-    void reload(Activity activity);
+    /**
+     * Called when the storage needs to reload its current values
+     */
+    void reload();
 }

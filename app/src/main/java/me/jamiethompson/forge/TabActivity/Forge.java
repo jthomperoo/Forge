@@ -95,7 +95,7 @@ public class Forge extends AppCompatActivity {
 
     public void reloadSaveList() {
         StoreFragment storage = forgePagerAdapter.getStoreFragment();
-        storage.reload(this);
+        storage.reload();
     }
 
     public void loadAccount(ForgeAccount account) {

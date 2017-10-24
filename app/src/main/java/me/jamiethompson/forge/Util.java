@@ -8,10 +8,17 @@ import me.jamiethompson.forge.Services.AccessibilityAutofillService;
 
 /**
  * Created by Jamie on 17/10/2017.
+ * Handles all global utility methods and functions
  */
 
 public class Util {
 
+    /**
+     * Checks if the Forge Auto fill accessibility service is enabled
+     *
+     * @param context application context
+     * @return true = service enabled, false = service disabled
+     */
     public static boolean isAccessibilitySettingsOn(Context context) {
         int accessibilityEnabled = 0;
         final String service = context.getPackageName() + "/" + AccessibilityAutofillService.class.getCanonicalName();

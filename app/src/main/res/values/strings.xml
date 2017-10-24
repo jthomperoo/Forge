@@ -43,6 +43,8 @@
     <string name="option_save_new">Save New</string>
     <string name="option_cancel">Cancel</string>
 
+    <string name="default_mail_domain">\@guerrillamailblock.com</string>
+
     <string name="dialog_delete">Delete the account?</string>
     <string name="option_delete">Delete</string>
 
