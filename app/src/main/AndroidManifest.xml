@@ -32,7 +32,7 @@
             android:label="@string/title_activity_preferences"></activity>
 
         <service
-            android:name="me.jamiethompson.forge.Services.AccessibilityAutofillService"
+            android:name="me.jamiethompson.forge.Services.Autofill.AccessibilityAutofillService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:label="@string/forge_autofill_service">
             <intent-filter>
@@ -43,7 +43,7 @@
                 android:resource="@xml/accessibility_service" />
         </service>
 
-        <receiver android:name="me.jamiethompson.forge.Services.NotificationClickReceiver" />
+        <receiver android:name="me.jamiethompson.forge.Services.Autofill.NotificationClickReceiver" />
 
         <service android:name="me.jamiethompson.forge.Services.OverlayService" />
 

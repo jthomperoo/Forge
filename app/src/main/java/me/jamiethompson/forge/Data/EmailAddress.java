@@ -2,30 +2,29 @@ package me.jamiethompson.forge.Data;
 
 /**
  * Created by jamie on 27/09/17.
+ * Represents a Guerrilla Mail email address
  */
 
 public class EmailAddress {
+    // Email address string
     private String address;
-    private String SidToken;
+    // Email SID Token from API
+    private String sidToken;
 
+    /**
+     * @param address  email address value
+     * @param sidToken SID Token from API
+     */
     public EmailAddress(String address, String sidToken) {
         this.address = address;
-        SidToken = sidToken;
+        this.sidToken = sidToken;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getSidToken() {
-        return SidToken;
-    }
-
-    public void setSidToken(String sidToken) {
-        SidToken = sidToken;
+        return sidToken;
     }
 }

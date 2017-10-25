@@ -2,16 +2,31 @@ package me.jamiethompson.forge.Data;
 
 /**
  * Created by jamie on 27/09/17.
+ * Represents an email message
  */
 
 public class EmailMessage {
+    // Has the email been read
     private boolean read;
+    // Email ID
     private String id;
+    // Email subject
     private String subject;
+    // Email body
     private String body;
+    // Email time
     private String time;
+    // Email sender address
     private String from;
 
+    /**
+     * @param read    has the email been read
+     * @param id      email ID
+     * @param subject email subject
+     * @param body    email body
+     * @param time    email receiving time
+     * @param from    email sender address
+     */
     public EmailMessage(boolean read, String id, String subject, String body, String time, String from) {
         this.read = read;
         this.id = id;
@@ -41,16 +56,8 @@ public class EmailMessage {
         return subject;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getBody() {
         return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
     }
 
     public String getTime() {

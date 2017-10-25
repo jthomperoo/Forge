@@ -3,8 +3,10 @@ package me.jamiethompson.forge;
 import android.content.Context;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 
-import me.jamiethompson.forge.Services.AccessibilityAutofillService;
+import me.jamiethompson.forge.Constants.General;
+import me.jamiethompson.forge.Services.Autofill.AccessibilityAutofillService;
 
 /**
  * Created by Jamie on 17/10/2017.
@@ -27,7 +29,8 @@ public class Util {
                     context.getApplicationContext().getContentResolver(),
                     android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
         } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
+            // If there is an error, log it
+            Log.e(General.ERROR_LOG, e.getMessage());
         }
         TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
 

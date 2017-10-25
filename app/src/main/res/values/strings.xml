@@ -22,6 +22,11 @@
     <string name="month">Month</string>
     <string name="day">Day</string>
 
+    <string name="save">Save</string>
+    <string name="refresh">Refresh</string>
+    <string name="more_fields">More</string>
+    <string name="less_fields">Less</string>
+
     <string name="shared_prefs">forge_account</string>
     <string name="shared_pref_current">forge_current_account</string>
 

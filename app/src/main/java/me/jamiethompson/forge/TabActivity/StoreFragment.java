@@ -18,22 +18,31 @@ import java.util.UUID;
 
 import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.Files.FileManager;
+import me.jamiethompson.forge.Interfaces.ReloadInterface;
 import me.jamiethompson.forge.ListView.AccountListAdapter;
 import me.jamiethompson.forge.R;
-import me.jamiethompson.forge.ReloadInterface;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Storage Fragment handles displaying the account storage to the user
  */
 public class StoreFragment extends Fragment implements ListView.OnItemClickListener, ReloadInterface {
-
+    // Parent activity
     private Activity activity;
+    // Fragment context
     private Context context;
+    // Fragment view
     private View view;
+    // Storage map
     private HashMap<UUID, ForgeAccount> accounts;
+    // Accounts list view
     private ListView accountList;
 
+    /**
+     * Generates a new Store Fragment instance
+     *
+     * @return new store fragment instance
+     */
     public static StoreFragment newInstance() {
         return new StoreFragment();
     }
@@ -74,21 +83,36 @@ public class StoreFragment extends Fragment implements ListView.OnItemClickListe
 
     @Override
     public void reload() {
+        // Refresh and load the storage
         load();
     }
 
+    /**
+     * Refreshes and loads the storage from local storage
+     */
     public void load() {
         accounts = FileManager.load(activity);
         if (accountList != null) {
+            // If the account list exists, display this in the UI
             setUpList();
         }
     }
 
+    /**
+     * Set up list view UI to show the stored accounts
+     */
     public void setUpList() {
         if (!accounts.isEmpty()) {
+            // If there are accounts stored, remove all existing items from the list view
             accountList.setAdapter(null);
         }
-        AccountListAdapter adapter = new AccountListAdapter(context, R.layout.item_account, new ArrayList<>(accounts.values()), activity, this);
+        // Create an account list adapter with the loaded accounts and assign it to the list view
+        AccountListAdapter adapter = new AccountListAdapter(
+                context,
+                R.layout.item_account,
+                new ArrayList<>(accounts.values()),
+                activity,
+                this);
         accountList.setAdapter(adapter);
     }
 

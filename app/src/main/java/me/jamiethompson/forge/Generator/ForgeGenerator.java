@@ -18,12 +18,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.jamiethompson.forge.Constants;
+import me.jamiethompson.forge.Constants.General;
+import me.jamiethompson.forge.Constants.UI;
 import me.jamiethompson.forge.Data.EmailAddress;
 import me.jamiethompson.forge.Data.EmailMessage;
 import me.jamiethompson.forge.Data.ForgeAccount;
-import me.jamiethompson.forge.EmailInterface;
 import me.jamiethompson.forge.Files.CurrentManager;
+import me.jamiethompson.forge.Interfaces.EmailInterface;
 import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.Web.MailCommunicator;
 
@@ -45,26 +46,26 @@ public class ForgeGenerator {
     public ForgeAccount refreshItem(ForgeAccount account, String item, boolean networkAvailable) {
         Random rand = new Random();
         switch (item) {
-            case Constants.FIRSTNAME: {
+            case UI.FIRSTNAME: {
                 account.setFirstName(names.get(rand.nextInt(names.size())));
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case Constants.MIDDLENAME: {
+            case UI.MIDDLENAME: {
                 account.setMiddleName(names.get(rand.nextInt(names.size())));
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case Constants.LASTNAME: {
+            case UI.LASTNAME: {
                 account.setLastName(names.get(rand.nextInt(names.size())));
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case Constants.USERNAME: {
+            case UI.USERNAME: {
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case Constants.EMAIL: {
+            case UI.EMAIL: {
                 if (networkAvailable) {
                     mailComs.getAddress();
                 } else {
@@ -72,11 +73,11 @@ public class ForgeGenerator {
                 }
                 break;
             }
-            case Constants.PASSWORD: {
+            case UI.PASSWORD: {
                 account.setPassword(generatePassword());
                 break;
             }
-            case Constants.DATE: {
+            case UI.DATE: {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
                 long minAge = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_dob_min_key), "")) * DateUtils.YEAR_IN_MILLIS;
                 long maxAge = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_dob_max_key), "")) * DateUtils.YEAR_IN_MILLIS;
@@ -150,21 +151,21 @@ public class ForgeGenerator {
         boolean specialChars = sharedPref.getBoolean(context.getString(R.string.pref_password_special_key), true);
         boolean uppercaseChars = sharedPref.getBoolean(context.getString(R.string.pref_password_uppercase_key), true);
         boolean numberChars = sharedPref.getBoolean(context.getString(R.string.pref_password_number_key), true);
-        String characterSet = Constants.LOWERCASE_CHARACTERS;
+        String characterSet = General.LOWERCASE_CHARACTERS;
         if (specialChars) {
-            characterSet += Constants.SPECIAL_CHARACTERS;
+            characterSet += General.SPECIAL_CHARACTERS;
         }
         if (uppercaseChars) {
-            characterSet += Constants.UPPERCASE_CHARACTERS;
+            characterSet += General.UPPERCASE_CHARACTERS;
         }
         if (numberChars) {
-            characterSet += Constants.NUMBER_CHARACTERS;
+            characterSet += General.NUMBER_CHARACTERS;
         }
         return RandomStringUtils.random(rand.nextInt((maxLen - minLen) + 1) + minLen, characterSet);
     }
 
     private EmailAddress generateEmail() {
-        return new EmailAddress(String.format("%s@%s", RandomStringUtils.randomAlphanumeric(8), Constants.MAIL_DOMAIN),
+        return new EmailAddress(String.format("%s@%s", RandomStringUtils.randomAlphanumeric(8), General.MAIL_DOMAIN),
                 null);
     }
 

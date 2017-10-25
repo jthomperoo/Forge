@@ -13,12 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import me.jamiethompson.forge.Constants;
+import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.Preferences.Preferences;
 import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.UI.Notifications;
-import me.jamiethompson.forge.Util;
 
 public class Forge extends AppCompatActivity {
 
@@ -47,15 +46,9 @@ public class Forge extends AppCompatActivity {
         Notifications.setUpChannels(this);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        if(sharedPref.getBoolean(getString(R.string.pref_helper_key), false)) {
-            if (!Util.isAccessibilitySettingsOn(getApplicationContext())) {
-                Notifications.displayHelperNotification(this, false);
-            }
-        }
-
         Intent intent = getIntent();
-        if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION)) {
-            viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
+        if (intent.hasExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION)) {
+            viewPager.setCurrentItem(intent.getIntExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.GENERATE_TAB));
         }
 
         if (!sharedPref.getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)) {
@@ -69,8 +62,8 @@ public class Forge extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.hasExtra(Constants.NOTIFICATION_NAVIGATION)) {
-            viewPager.setCurrentItem(intent.getIntExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB));
+        if (intent.hasExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION)) {
+            viewPager.setCurrentItem(intent.getIntExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.GENERATE_TAB));
         }
     }
 
@@ -101,7 +94,7 @@ public class Forge extends AppCompatActivity {
     public void loadAccount(ForgeAccount account) {
         GeneratorFragment generator = forgePagerAdapter.getGeneratorFragment();
         generator.load(account);
-        viewPager.setCurrentItem(Constants.GENERATE_TAB);
+        viewPager.setCurrentItem(General.GENERATE_TAB);
     }
 
 

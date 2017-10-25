@@ -55,10 +55,9 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
 
 
     public boolean onPreferenceChange(Preference preference, Object o) {
-        if (preference.getKey() == getString(R.string.pref_helper_key)) {
+        if (preference.getKey().equals(getString(R.string.pref_helper_key))) {
             if ((boolean) o) {
                 if (Util.isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
-                    Notifications.displayHelperNotification(getActivity(), true);
                     return true;
                 } else {
                     showDialog(getString(R.string.accessibility_not_enabled), getString(R.string.error_accessibility_not_enabled), new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
@@ -69,20 +68,18 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
             }
         }
 
-        if (preference.getKey() == getString(R.string.pref_overlay_key)) {
+        if (preference.getKey().equals(getString(R.string.pref_overlay_key))) {
             if ((boolean) o) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
                 if (sharedPref.getBoolean(getActivity().getString(R.string.pref_helper_key), false)) {
                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (Settings.canDrawOverlays(getContext())) {
-                            Notifications.displayHelperNotification(getActivity(), false, true);
                             return true;
                         } else {
                             showDialog(getString(R.string.draw_overlay_not_enabled), getString(R.string.error_draw_overlay_not_enabled), new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
                             return false;
                         }
                     } else {
-                        Notifications.displayHelperNotification(getActivity(), false, true);
                         return true;
                     }
 
@@ -90,8 +87,6 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                     showDialog(getString(R.string.helper_not_enabled), getString(R.string.error_helper_not_enabled), null);
                     return false;
                 }
-            } else {
-                Notifications.displayHelperNotification(getActivity(), false, false);
             }
         }
         return true;

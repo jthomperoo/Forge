@@ -1,4 +1,4 @@
-package me.jamiethompson.forge.Services;
+package me.jamiethompson.forge.Services.Autofill;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

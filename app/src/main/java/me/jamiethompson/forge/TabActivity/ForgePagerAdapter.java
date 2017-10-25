@@ -5,20 +5,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import me.jamiethompson.forge.Constants;
+import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.R;
 
 /**
  * Created by jamie on 27/09/17.
  */
 
-public class ForgePagerAdapter extends FragmentPagerAdapter {
-    final int NUM_OF_TABS = 2;
+class ForgePagerAdapter extends FragmentPagerAdapter {
     private Context appContext;
     private StoreFragment storeFragment;
     private GeneratorFragment generatorFragment;
 
-    public ForgePagerAdapter(FragmentManager fm, Context appContext) {
+    ForgePagerAdapter(FragmentManager fm, Context appContext) {
         super(fm);
         this.appContext = appContext;
     }
@@ -28,11 +27,11 @@ public class ForgePagerAdapter extends FragmentPagerAdapter {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
         switch (position) {
-            case Constants.GENERATE_TAB: {
+            case General.GENERATE_TAB: {
                 generatorFragment = GeneratorFragment.newInstance();
                 return generatorFragment;
             }
-            case Constants.STORE_TAB: {
+            case General.STORE_TAB: {
                 storeFragment = StoreFragment.newInstance();
                 return storeFragment;
             }
@@ -44,25 +43,25 @@ public class ForgePagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return NUM_OF_TABS;
+        return 2;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
-            case Constants.GENERATE_TAB:
+            case General.GENERATE_TAB:
                 return appContext.getString(R.string.tab_generate);
-            case Constants.STORE_TAB:
+            case General.STORE_TAB:
                 return appContext.getString(R.string.tab_store);
         }
         return null;
     }
 
-    public StoreFragment getStoreFragment() {
+    StoreFragment getStoreFragment() {
         return storeFragment;
     }
 
-    public GeneratorFragment getGeneratorFragment() {
+    GeneratorFragment getGeneratorFragment() {
         return generatorFragment;
     }
 }

@@ -20,10 +20,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import me.jamiethompson.forge.Constants;
+import me.jamiethompson.forge.Constants.Endpoints;
+import me.jamiethompson.forge.Constants.General;
+import me.jamiethompson.forge.Constants.ResponseKeys;
 import me.jamiethompson.forge.Data.EmailAddress;
 import me.jamiethompson.forge.Data.EmailMessage;
-import me.jamiethompson.forge.EmailInterface;
+import me.jamiethompson.forge.Interfaces.EmailInterface;
 
 /**
  * Created by jamie on 27/09/17.
@@ -37,6 +39,7 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
     private Context appContext;
     // Volley callback interface
     private final VolleyInterface IVolley = this;
+    RequestQueue queue;
 
     /**
      * @param IEmail     the class to callback to on response from the API
@@ -45,6 +48,7 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
     public MailCommunicator(EmailInterface IEmail, Context appContext) {
         this.appContext = appContext;
         this.IEmail = IEmail;
+        queue = Volley.newRequestQueue(appContext);
     }
 
     /**
@@ -56,9 +60,9 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
         // Set up parameters
         HashMap<String, String> parameters = new HashMap<>();
         // Add the email identifier as a parameter
-        parameters.put(Constants.EMAIL_USER_PARAMETER_KEY, email);
+        parameters.put(ResponseKeys.EMAIL_USER_PARAMETER_KEY, email);
         // Make the request to the API with the parameters and to the set email endpoint
-        getRequest(Constants.SET_EMAIL, parameters, Constants.REQUEST_SET_EMAIL);
+        getRequest(Endpoints.SET_EMAIL, parameters, General.REQUEST_SET_EMAIL);
     }
 
     /**
@@ -69,35 +73,43 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
     public void getEmails(EmailAddress emailAddress, EmailMessage latestEmail) {
         // The default email ID if no email loaded
         final String DEFAULT_EMAIL_ID = "0";
+        // Set up parameters
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put(Constants.SID_PARAMETER_KEY, emailAddress.getSidToken());
+        parameters.put(ResponseKeys.SID_PARAMETER_KEY, emailAddress.getSidToken());
         if (latestEmail != null) {
-            parameters.put(Constants.SEQUENCE_PARAMETER_KEY, latestEmail.getId());
+            // If there is an email loaded, use the latest email ID
+            parameters.put(ResponseKeys.SEQUENCE_PARAMETER_KEY, latestEmail.getId());
         } else {
-            parameters.put(Constants.SEQUENCE_PARAMETER_KEY, DEFAULT_EMAIL_ID);
+            // If there is no email loaded yet use the default email ID
+            parameters.put(ResponseKeys.SEQUENCE_PARAMETER_KEY, DEFAULT_EMAIL_ID);
         }
-        getRequest(Constants.GET_EMAILS, parameters, Constants.REQUEST_EMAILS);
+        // Queue the GET request
+        getRequest(Endpoints.GET_EMAILS, parameters, General.REQUEST_EMAILS);
     }
 
     /**
      * Generate and set up a random email from Guerrilla Mail
      */
     public void getAddress() {
-        HashMap<String, String> parameters = new HashMap<>();
-        getRequest(Constants.GET_ADDRESS, parameters, Constants.REQUEST_ADDRESS);
+        // Get request to get address endpoint with no parameters
+        getRequest(Endpoints.GET_ADDRESS, new HashMap<String, String>(), General.REQUEST_ADDRESS);
     }
 
     /**
-     * @param endpoint
-     * @param parameters
-     * @param request
+     * Queues up the GET request to the Guerrilla Mail API
+     *
+     * @param endpoint   API endpoint
+     * @param parameters request parameters
+     * @param request    request type
      */
     private void getRequest(String endpoint, HashMap<String, String> parameters, final int request) {
-        RequestQueue queue = Volley.newRequestQueue(appContext);
-        String url = String.format("%s?f=%s", Constants.BASE_URL, endpoint);
+        // Construct URL from endpoint and base URL
+        String url = String.format("%s?f=%s", General.BASE_URL, endpoint);
+        // Iterate through each parameter, adding the parameter key and value to the query params
         for (String key : parameters.keySet()) {
             url += String.format("&%s=%s", key, parameters.get(key));
         }
+        // Create the Volley request, with callbacks to this class
         JsonObjectRequest get = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -105,40 +117,52 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
                 IVolley.onResponse(request, response);
             }
         }, this);
+        // Queue the request
         queue.add(get);
     }
 
     @Override
     public void onResponse(int request, JSONObject response) {
+        // Depending on the request type
         switch (request) {
-            case Constants.REQUEST_ADDRESS:
-            case Constants.REQUEST_SET_EMAIL: {
+            case General.REQUEST_ADDRESS:
+            case General.REQUEST_SET_EMAIL: {
+                // Request address and request set email have the same result, and same action
                 try {
-                    IEmail.loadAddress(new EmailAddress(response.getString(Constants.ADDRESS_JSON_KEY), response.getString(Constants.SID_JSON_KEY)));
+                    // Load the returned address
+                    IEmail.loadAddress(new EmailAddress(response.getString(ResponseKeys.ADDRESS_JSON_KEY), response.getString(ResponseKeys.SID_JSON_KEY)));
                 } catch (JSONException e) {
-                    Log.e(Constants.ERROR_LOG, e.getMessage());
+                    // If there is an error, log it
+                    Log.e(General.ERROR_LOG, e.getMessage());
                 }
                 break;
             }
-            case Constants.REQUEST_EMAILS: {
+            case General.REQUEST_EMAILS: {
+                // On email request
                 try {
-                    Log.d("mega", response.toString());
+                    // Set the format for hour and minute, 24 hour clock
+                    DecimalFormat format = new DecimalFormat("00");
+                    // Get current time that response is received
                     Calendar messageTime = Calendar.getInstance();
                     List<EmailMessage> emails = new ArrayList<>();
-                    JSONArray jsonEmails = response.getJSONArray(Constants.EMAILS_JSON_KEY);
-                    DecimalFormat mFormat = new DecimalFormat("00");
+                    // Get the emails in JSON format
+                    JSONArray jsonEmails = response.getJSONArray(ResponseKeys.EMAILS_JSON_KEY);
+                    // Iterate through each email
                     for (int i = 0; i < jsonEmails.length(); i++) {
                         JSONObject email = jsonEmails.getJSONObject(i);
+                        // Create a new local email object
                         emails.add(new EmailMessage(false,
-                                email.getString(Constants.EMAIL_ID_KEY),
-                                email.getString(Constants.SUBJECT_JSON_KEY),
-                                email.getString(Constants.BODY_JSON_KEY),
-                                String.format("%s:%s", mFormat.format(messageTime.get(Calendar.HOUR_OF_DAY)), mFormat.format(messageTime.get(Calendar.MINUTE))),
-                                email.getString(Constants.FROM_JSON_KEY)));
+                                email.getString(ResponseKeys.EMAIL_ID_KEY),
+                                email.getString(ResponseKeys.SUBJECT_JSON_KEY),
+                                email.getString(ResponseKeys.BODY_JSON_KEY),
+                                String.format("%s:%s", format.format(messageTime.get(Calendar.HOUR_OF_DAY)), format.format(messageTime.get(Calendar.MINUTE))),
+                                email.getString(ResponseKeys.FROM_JSON_KEY)));
                     }
+                    // Callback to load the emails in the UI
                     IEmail.loadEmails(emails);
                 } catch (JSONException e) {
-                    Log.e(Constants.ERROR_LOG, e.getMessage().toString());
+                    // If there is an error, log it
+                    Log.e(General.ERROR_LOG, e.getMessage());
                 }
                 break;
             }
@@ -147,6 +171,7 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Log.e(Constants.ERROR_LOG, error.toString());
+        // If there is an error, log it
+        Log.e(General.ERROR_LOG, error.toString());
     }
 }

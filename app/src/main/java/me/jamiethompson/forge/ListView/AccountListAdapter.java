@@ -14,8 +14,8 @@ import java.util.List;
 
 import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.Files.FileManager;
+import me.jamiethompson.forge.Interfaces.ReloadInterface;
 import me.jamiethompson.forge.R;
-import me.jamiethompson.forge.ReloadInterface;
 
 /**
  * Created by jamie on 29/09/17.

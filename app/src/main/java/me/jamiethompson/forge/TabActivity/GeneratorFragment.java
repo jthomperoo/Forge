@@ -28,12 +28,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,27 +44,28 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
-import me.jamiethompson.forge.Constants;
+import me.jamiethompson.forge.Constants.General;
+import me.jamiethompson.forge.Constants.UI;
 import me.jamiethompson.forge.Data.EmailAddress;
 import me.jamiethompson.forge.Data.EmailMessage;
 import me.jamiethompson.forge.Data.ForgeAccount;
-import me.jamiethompson.forge.EmailInterface;
 import me.jamiethompson.forge.Files.CurrentManager;
 import me.jamiethompson.forge.Files.FileManager;
 import me.jamiethompson.forge.Generator.ForgeGenerator;
+import me.jamiethompson.forge.Interfaces.EmailInterface;
+import me.jamiethompson.forge.Interfaces.LoadInterface;
 import me.jamiethompson.forge.ListView.EmailListAdapter;
-import me.jamiethompson.forge.LoadInterface;
 import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.Tutorial;
 import me.jamiethompson.forge.UI.Feedback;
-import me.jamiethompson.forge.UI.SaveDialogListener;
+import me.jamiethompson.forge.UI.SaveListener;
 
 /**
  * Created by jamie on 27/09/17.
  */
 
 public class GeneratorFragment extends Fragment implements View.OnClickListener, EmailInterface, ListView.OnItemClickListener, LoadInterface {
-    private static Context context;
+    private Context context;
     final private Handler mailPollHandler = new Handler();
     private Snackbar noInternetMessage;
     private Snackbar connectingMessage;
@@ -71,16 +75,18 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     private ProgressBar addressProgress;
     private ProgressBar mailProgress;
     private TextInputLayout emailWrapper;
-    private TextView mailDomain;
+    private Spinner mailDomain;
     private TextView emailEntry;
     private ListView emailList;
     private EditText accountNameEntry;
     private List<EmailMessage> emailMessages;
-    private boolean mLoaded = false;
+    private boolean moreToggled = false;
+    private List<LinearLayout> moreFields;
+    private Button moreToggle;
+    private boolean loaded = false;
 
     public static GeneratorFragment newInstance() {
-        GeneratorFragment fragment = new GeneratorFragment();
-        return fragment;
+        return new GeneratorFragment();
     }
 
     @Override
@@ -107,7 +113,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         }
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.shared_prefs),
                 Context.MODE_PRIVATE);
-        if (sharedPref.getBoolean(Constants.FIRST_RUN, true)) {
+        if (sharedPref.getBoolean(General.FIRST_RUN, true)) {
             Tutorial tutorial = new Tutorial(getActivity(),
                     R.id.refresh,
                     R.id.refresh_firstname,
@@ -116,7 +122,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     (ScrollView) view.findViewById(R.id.scroll));
             tutorial.startTutorial();
             SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(Constants.FIRST_RUN, false);
+            editor.putBoolean(General.FIRST_RUN, false);
             editor.apply();
         }
     }
@@ -144,23 +150,23 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 break;
             }
             case R.id.refresh_firstname: {
-                account = generator.refreshItem(account, Constants.FIRSTNAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.FIRSTNAME, isNetworkAvailable());
                 break;
             }
             case R.id.refresh_middlename: {
-                account = generator.refreshItem(account, Constants.MIDDLENAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.MIDDLENAME, isNetworkAvailable());
                 break;
             }
             case R.id.refresh_lastname: {
-                account = generator.refreshItem(account, Constants.LASTNAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.LASTNAME, isNetworkAvailable());
                 break;
             }
             case R.id.refresh_username: {
-                account = generator.refreshItem(account, Constants.USERNAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.USERNAME, isNetworkAvailable());
                 break;
             }
             case R.id.refresh_email: {
-                account = generator.refreshItem(account, Constants.EMAIL, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.EMAIL, isNetworkAvailable());
                 this.emailMessages = new ArrayList<>();
                 emailList.setAdapter(null);
                 setListViewHeightBasedOnChildren(emailList);
@@ -170,11 +176,11 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 break;
             }
             case R.id.refresh_password: {
-                generator.refreshItem(account, Constants.PASSWORD, isNetworkAvailable());
+                generator.refreshItem(account, UI.PASSWORD, isNetworkAvailable());
                 break;
             }
             case R.id.refresh_date: {
-                generator.refreshItem(account, Constants.DATE, isNetworkAvailable());
+                generator.refreshItem(account, UI.DATE, isNetworkAvailable());
                 break;
             }
             case R.id.copy_firstname: {
@@ -219,6 +225,20 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 addToClipboard(nameTag, String.format("%d/%d/%d", dob.get(Calendar.YEAR), dob.get(Calendar.MONTH) + 1, dob.get(Calendar.DAY_OF_MONTH)));
                 Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
                 break;
+            }
+            case R.id.more_toggle: {
+                if (moreToggled) {
+                    for (LinearLayout layout : moreFields) {
+                        layout.setVisibility(View.GONE);
+                    }
+                    moreToggle.setText(getString(R.string.more_fields));
+                } else {
+                    for (LinearLayout layout : moreFields) {
+                        layout.setVisibility(View.VISIBLE);
+                    }
+                    moreToggle.setText(getString(R.string.less_fields));
+                }
+                moreToggled = !moreToggled;
             }
         }
         CurrentManager.updateCurrentAccount(account, context);
@@ -266,10 +286,10 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     } else {
                         toggleNoInternetMessage(true);
                     }
-                    mailPollHandler.postDelayed(this, Constants.EMAIL_REFRESH_DELAY);
+                    mailPollHandler.postDelayed(this, General.EMAIL_REFRESH_DELAY);
                 }
             }
-        }, Constants.EMAIL_REFRESH_DELAY);
+        }, General.EMAIL_REFRESH_DELAY);
     }
 
     @Override
@@ -312,9 +332,9 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     } else {
                         toggleNoInternetMessage(true);
                     }
-                    mailPollHandler.postDelayed(this, Constants.EMAIL_REFRESH_DELAY);
+                    mailPollHandler.postDelayed(this, General.EMAIL_REFRESH_DELAY);
                 }
-            }, Constants.EMAIL_REFRESH_DELAY);
+            }, General.EMAIL_REFRESH_DELAY);
         }
     }
 
@@ -336,7 +356,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void load(ForgeAccount account) {
-        mLoaded = true;
+        loaded = true;
         this.account = account;
         this.emailMessages = new ArrayList<>();
         emailList.setAdapter(null);
@@ -353,8 +373,8 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
     private void save() {
         account.setAccountName(accountNameEntry.getText().toString());
-        if (mLoaded) {
-            DialogInterface.OnClickListener dialogClickListener = new SaveDialogListener(account, getActivity(), view);
+        if (loaded) {
+            DialogInterface.OnClickListener dialogClickListener = new SaveListener(account, getActivity(), view);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(getString(R.string.dialog_overwrite))
                     .setPositiveButton(getString(R.string.option_overwrite), dialogClickListener)
@@ -365,7 +385,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
             ForgeAccount saveAccount = FileManager.add(getActivity(), account);
             if (saveAccount != null) {
                 Feedback.displayMessage(getString(R.string.message_account_saved), view);
-                mLoaded = true;
+                loaded = true;
             }
         }
         ((Forge) getActivity()).reloadSaveList();
@@ -379,7 +399,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         } else {
             toggleNoInternetMessage(true);
         }
-        mLoaded = false;
+        loaded = false;
         this.emailMessages = new ArrayList<>();
         emailList.setAdapter(null);
         setListViewHeightBasedOnChildren(emailList);
@@ -400,7 +420,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     private void setUpGlobals() {
         emailMessages = new ArrayList<>();
         generator = new ForgeGenerator(this, context);
-        mLoaded = false;
+        loaded = false;
         emailMessages = new ArrayList<>();
         account = generator.forgeAccount(isNetworkAvailable());
     }
@@ -418,6 +438,17 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         ((TextInputLayout) view.findViewById(R.id.year_wrapper)).setHint(getString(R.string.year));
         ((TextInputLayout) view.findViewById(R.id.month_wrapper)).setHint(getString(R.string.month));
         ((TextInputLayout) view.findViewById(R.id.day_wrapper)).setHint(getString(R.string.day));
+
+
+        moreToggle = view.findViewById(R.id.more_toggle);
+        moreToggle.setOnClickListener(this);
+
+        moreFields = new ArrayList<>();
+
+        moreFields.add((LinearLayout) view.findViewById(R.id.firstname_row));
+        moreFields.add((LinearLayout) view.findViewById(R.id.middlename_row));
+        moreFields.add((LinearLayout) view.findViewById(R.id.lastname_row));
+        moreFields.add((LinearLayout) view.findViewById(R.id.dob_row));
 
         // setting up click listeners
         // refresh
@@ -507,7 +538,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         ((TextView) view.findViewById(R.id.lastname)).setText(account.getLastName());
         ((TextView) view.findViewById(R.id.username)).setText(account.getUsername());
         if (account.getEmail() != null) {
-            ((TextView) view.findViewById(R.id.email)).setText(account.getEmail().getAddress());
+            ((TextView) view.findViewById(R.id.email)).setText(account.getEmail().getAddress().split("@")[0]);
         }
         ((TextView) view.findViewById(R.id.password)).setText(account.getPassword());
         Calendar dob = account.getDateOfBirth();

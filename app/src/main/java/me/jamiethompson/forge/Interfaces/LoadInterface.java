@@ -1,4 +1,4 @@
-package me.jamiethompson.forge;
+package me.jamiethompson.forge.Interfaces;
 
 import me.jamiethompson.forge.Data.ForgeAccount;
 

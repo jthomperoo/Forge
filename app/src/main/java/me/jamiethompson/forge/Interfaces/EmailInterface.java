@@ -1,4 +1,4 @@
-package me.jamiethompson.forge;
+package me.jamiethompson.forge.Interfaces;
 
 import java.util.List;
 

@@ -11,9 +11,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-import me.jamiethompson.forge.Constants;
+import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.R;
-import me.jamiethompson.forge.Services.NotificationClickReceiver;
+import me.jamiethompson.forge.Services.Autofill.NotificationClickReceiver;
 import me.jamiethompson.forge.Services.OverlayService;
 import me.jamiethompson.forge.TabActivity.Forge;
 
@@ -26,29 +26,29 @@ public class Notifications {
         NotificationManager mNotificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            NotificationChannel mChannel = new NotificationChannel(Constants.NOTIFICATION_CHANNEL, activity.getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_MIN);
+            NotificationChannel mChannel = new NotificationChannel(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_CHANNEL, activity.getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
             mNotificationManager.createNotificationChannel(mChannel);
         }
     }
 
-    public static void displayHelperNotification(Activity activity, Boolean override, Boolean overrideOverlay) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+    public static void displayHelperNotification(Context context, Boolean override, Boolean overrideOverlay) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         if (override) {
-            createHelperNotification(activity, overrideOverlay);
+            createHelperNotification(context, overrideOverlay);
         } else {
-            if (sharedPref.getBoolean(activity.getString(R.string.pref_helper_key), true)) {
-                createHelperNotification(activity, overrideOverlay);
+            if (sharedPref.getBoolean(context.getString(R.string.pref_helper_key), true)) {
+                createHelperNotification(context, overrideOverlay);
             }
         }
     }
 
-    public static void displayHelperNotification(Activity activity, Boolean override) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+    public static void displayHelperNotification(Context context, Boolean override) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         if (override) {
-            createHelperNotification(activity, sharedPref.getBoolean(activity.getString(R.string.pref_overlay_key), false));
+            createHelperNotification(context, sharedPref.getBoolean(context.getString(R.string.pref_overlay_key), false));
         } else {
-            if (sharedPref.getBoolean(activity.getString(R.string.pref_helper_key), true)) {
-                createHelperNotification(activity, sharedPref.getBoolean(activity.getString(R.string.pref_overlay_key), false));
+            if (sharedPref.getBoolean(context.getString(R.string.pref_helper_key), true)) {
+                createHelperNotification(context, sharedPref.getBoolean(context.getString(R.string.pref_overlay_key), false));
             }
         }
     }
@@ -63,11 +63,11 @@ public class Notifications {
                     .setSmallIcon(R.mipmap.forge_logo_small)
                     .setContentTitle(title)
                     .setContentText(text)
-                    .setChannelId(Constants.NOTIFICATION_CHANNEL)
+                    .setChannelId(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_CHANNEL)
                     .setOngoing(true)
                     .setOnlyAlertOnce(true)
                     .setTicker(null)
-                    .setPriority(Notification.PRIORITY_MIN)
+                    .setPriority(Notification.PRIORITY_LOW)
                     .setVibrate(null)
                     .setSound(null);
         } else {
@@ -78,7 +78,7 @@ public class Notifications {
                     .setOngoing(true)
                     .setOnlyAlertOnce(true)
                     .setTicker(null)
-                    .setPriority(Notification.PRIORITY_MIN)
+                    .setPriority(Notification.PRIORITY_LOW)
                     .setVibrate(null)
                     .setSound(null);
         }
@@ -89,7 +89,7 @@ public class Notifications {
         notificationBuilder.setContentIntent(pendingIntentAutoFill);
 
         Intent generateIntent = new Intent(context, Forge.class);
-        generateIntent.putExtra(Constants.NOTIFICATION_NAVIGATION, Constants.GENERATE_TAB);
+        generateIntent.putExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.GENERATE_TAB);
         PendingIntent generatePendingIntent =
                 PendingIntent.getActivity(
                         context,
@@ -101,7 +101,7 @@ public class Notifications {
         notificationBuilder.addAction(new Notification.Action(R.drawable.icon_generate, context.getString(R.string.helper_notification_generate), generatePendingIntent));
 
         Intent storeIntent = new Intent(context, Forge.class);
-        generateIntent.putExtra(Constants.NOTIFICATION_NAVIGATION, Constants.STORE_TAB);
+        generateIntent.putExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.STORE_TAB);
         PendingIntent storePendingIntent =
                 PendingIntent.getActivity(
                         context,
@@ -128,11 +128,11 @@ public class Notifications {
             notificationBuilder.addAction(new Notification.Action(R.drawable.icon_helper, context.getString(R.string.helper_notification_overlay), overlayPendingIntent));
         }
 
-        notificationManager.notify(Constants.HELPER_NOTIFICATION_TAG, Constants.HELPER_NOTIFICATION_ID, notificationBuilder.build());
+        notificationManager.notify(me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_TAG, me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_ID, notificationBuilder.build());
     }
 
     public static void removeHelperNotification(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(Constants.HELPER_NOTIFICATION_TAG, Constants.HELPER_NOTIFICATION_ID);
+        notificationManager.cancel(me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_TAG, me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_ID);
     }
 }

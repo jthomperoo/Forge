@@ -1,9 +1,11 @@
-package me.jamiethompson.forge.Services;
+package me.jamiethompson.forge.Services.Autofill;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.InputType;
 import android.view.accessibility.AccessibilityEvent;
@@ -11,9 +13,10 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
 
-import me.jamiethompson.forge.AutoFillNode;
 import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.Files.CurrentManager;
+import me.jamiethompson.forge.R;
+import me.jamiethompson.forge.UI.Notifications;
 
 /**
  * Created by jamie on 09/10/17.
@@ -25,6 +28,7 @@ public class AccessibilityAutofillService extends AccessibilityService {
     private ArrayList<AutoFillNode> validNodes;
     private CharSequence currentPackage = "";
     private String lastURL = "";
+    private boolean notificationDisplayed = false;
 
     public AccessibilityAutofillService() {
         instance = this;
@@ -48,6 +52,8 @@ public class AccessibilityAutofillService extends AccessibilityService {
                             && !packageName.equals("me.jamiethompson.forge")) {
                         currentPackage = accessibilityEvent.getPackageName();
                         validNodes = new ArrayList<>();
+                        Notifications.removeHelperNotification(getApplicationContext());
+                        notificationDisplayed = false;
                     }
                 }
                 AccessibilityNodeInfo rootNode = getRootInActiveWindow();
@@ -89,6 +95,8 @@ public class AccessibilityAutofillService extends AccessibilityService {
                                         if (!node.getText().toString().equals(lastURL)) {
                                             lastURL = node.getText().toString();
                                             validNodes = new ArrayList<>();
+                                            Notifications.removeHelperNotification(getApplicationContext());
+                                            notificationDisplayed = false;
                                         }
                                     }
                                 }
@@ -103,15 +111,27 @@ public class AccessibilityAutofillService extends AccessibilityService {
                                         case InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD:
                                         case InputType.TYPE_TEXT_VARIATION_PASSWORD:
                                         case InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD:
+                                            added = true;
                                             validNodes.add(new AutoFillNode(node, AutoFillNode.PASSWORD));
                                             break;
                                         case InputType.TYPE_TEXT_VARIATION_PERSON_NAME:
+                                            added = true;
                                             validNodes.add(new AutoFillNode(node, AutoFillNode.USERNAME));
                                             break;
                                         case InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS:
                                         case InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS:
+                                            added = true;
                                             validNodes.add(new AutoFillNode(node, AutoFillNode.EMAIL));
                                             break;
+                                    }
+                                }
+                            }
+                            if (!notificationDisplayed) {
+                                if (added) {
+                                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                    if (sharedPref.getBoolean(getString(R.string.pref_helper_key), false)) {
+                                        Notifications.displayHelperNotification(this, false);
+                                        notificationDisplayed = true;
                                     }
                                 }
                             }
