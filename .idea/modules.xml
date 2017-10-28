@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Forge.iml" filepath="$PROJECT_DIR$/Forge.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ForgeAccount.iml" filepath="$PROJECT_DIR$/ForgeAccount.iml" />
+      <module fileurl="file://C:\Users\Jamie\Desktop\Projects\Forge\ForgeAccount.iml" filepath="C:\Users\Jamie\Desktop\Projects\Forge\ForgeAccount.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

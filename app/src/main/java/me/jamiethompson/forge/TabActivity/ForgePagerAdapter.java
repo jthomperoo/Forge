@@ -10,13 +10,21 @@ import me.jamiethompson.forge.R;
 
 /**
  * Created by jamie on 27/09/17.
+ * FragmentPagerAdapter for handling tab fragments within the main Forge activity
  */
 
 class ForgePagerAdapter extends FragmentPagerAdapter {
+    // Application context
     private Context appContext;
+    // Storage Fragment
     private StoreFragment storeFragment;
+    // Generator Fragment
     private GeneratorFragment generatorFragment;
 
+    /**
+     * @param fm fragment manager
+     * @param appContext application context
+     */
     ForgePagerAdapter(FragmentManager fm, Context appContext) {
         super(fm);
         this.appContext = appContext;
@@ -24,8 +32,7 @@ class ForgePagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
+        // getItem is called to instantiate the fragment for the given page
         switch (position) {
             case General.GENERATE_TAB: {
                 generatorFragment = GeneratorFragment.newInstance();
