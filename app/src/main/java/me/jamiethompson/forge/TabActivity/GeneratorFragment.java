@@ -23,6 +23,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,31 +63,128 @@ import me.jamiethompson.forge.UI.SaveListener;
 
 /**
  * Created by jamie on 27/09/17.
+ * Generator Fragment handles creating new Forge Accounts and displaying them to the user
  */
 
 public class GeneratorFragment extends Fragment implements View.OnClickListener, EmailInterface, ListView.OnItemClickListener, LoadInterface {
-    private Context context;
+    // Handler for polling the mail APIs
     final private Handler mailPollHandler = new Handler();
+    // Fragment context
+    private Context context;
+    // Fragment view
+    private View view;
+    // Snackbars for user feedback
     private Snackbar noInternetMessage;
     private Snackbar connectingMessage;
+    // Forge account generator
     private ForgeGenerator generator;
+    // Current Forge account
     private ForgeAccount account;
-    private View view;
+    // Progress bars for loading email information
     private ProgressBar addressProgress;
     private ProgressBar mailProgress;
+    // Email text wrapper
     private TextInputLayout emailWrapper;
+    // Drop down for choosing email provider
     private Spinner mailDomain;
-    private TextView emailEntry;
+    // Email entry
+    private EditText emailEntry;
+    // Email inbox list
     private ListView emailList;
+    // Account entry
     private EditText accountNameEntry;
+    // Loaded email inbox messages
     private List<EmailMessage> emailMessages;
+    // Show more details toggled
     private boolean moreToggled = false;
+    // Additional fields shown when more is toggled
     private List<LinearLayout> moreFields;
+    // More/less toggle button
     private Button moreToggle;
+    // If the current account has been loaded from storage or not
     private boolean loaded = false;
+
+    private boolean isTyping = false;
 
     public static GeneratorFragment newInstance() {
         return new GeneratorFragment();
+    }
+
+    /**
+     * Taken from Stack Overflow - https://stackoverflow.com/a/26501296
+     *
+     * @param listView
+     */
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
+    /**
+     * Taken from Stack Overflow - https://stackoverflow.com/a/37905107
+     *
+     * @param html
+     * @return
+     */
+
+    @SuppressWarnings("deprecation")
+    public static Spanned fromHtml(String html) {
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(html);
+        }
+        return result;
+    }
+
+    /**
+     * Taken from Stack Overflow - https://stackoverflow.com/a/17201376/6052295
+     *
+     * @param html
+     * @param linkifyMask
+     * @return
+     */
+
+    public static Spannable linkifyHtml(String html, int linkifyMask) {
+        Spanned text = fromHtml(fromHtml(html).toString());
+        URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
+
+        SpannableString buffer = new SpannableString(text);
+        Linkify.addLinks(buffer, linkifyMask);
+
+        for (URLSpan span : currentSpans) {
+            int end = text.getSpanEnd(span);
+            int start = text.getSpanStart(span);
+            buffer.setSpan(span, start, end, 0);
+        }
+        return buffer;
+    }
+
+    public static boolean containsID(Collection<EmailMessage> c, String id) {
+        for (EmailMessage o : c) {
+            if (o != null && o.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -101,9 +199,13 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Get fragment context
         context = getContext();
+        // Set up global variables
         setUpGlobals();
+        // Set up user interface variables and UI
         setUpUserInterface();
+        // Display the
         displayAccount();
         ForgeAccount currentAccount = CurrentManager.loadCurrentAccount(context);
         if (currentAccount != null) {
@@ -301,6 +403,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     @Override
     public void loadAddress(final EmailAddress email) {
         if (email != null) {
+            Log.d("mega", email.getAddress());
             mailPollHandler.removeCallbacksAndMessages(null);
             account.setEmail(email);
             emailEntry.setText(email.getAddress().split("@")[0]);
@@ -473,6 +576,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         // assign globals
         accountNameEntry = view.findViewById(R.id.account_name);
         emailEntry = view.findViewById(R.id.email);
+
         addressProgress = view.findViewById(R.id.address_progress);
         mailProgress = view.findViewById(R.id.mail_progress);
         emailList = view.findViewById(R.id.email_list);
@@ -588,74 +692,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     }
 
     /**
-     * Taken from Stack Overflow - https://stackoverflow.com/a/26501296
-     *
-     * @param listView
-     */
-
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-    }
-
-    /**
-     * Taken from Stack Overflow - https://stackoverflow.com/a/37905107
-     *
-     * @param html
-     * @return
-     */
-
-    @SuppressWarnings("deprecation")
-    public static Spanned fromHtml(String html) {
-        Spanned result;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            result = Html.fromHtml(html);
-        }
-        return result;
-    }
-
-    /**
-     * Taken from Stack Overflow - https://stackoverflow.com/a/17201376/6052295
-     *
-     * @param html
-     * @param linkifyMask
-     * @return
-     */
-
-    public static Spannable linkifyHtml(String html, int linkifyMask) {
-        Spanned text = fromHtml(fromHtml(html).toString());
-        URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
-
-        SpannableString buffer = new SpannableString(text);
-        Linkify.addLinks(buffer, linkifyMask);
-
-        for (URLSpan span : currentSpans) {
-            int end = text.getSpanEnd(span);
-            int start = text.getSpanStart(span);
-            buffer.setSpan(span, start, end, 0);
-        }
-        return buffer;
-    }
-
-    /**
      * Taken from Stack Overflow - https://stackoverflow.com/a/4239019
      *
      * @return
@@ -664,15 +700,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    public static boolean containsID(Collection<EmailMessage> c, String id) {
-        for (EmailMessage o : c) {
-            if (o != null && o.getId().equals(id)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

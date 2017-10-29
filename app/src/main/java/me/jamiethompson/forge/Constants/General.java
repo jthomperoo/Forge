@@ -11,13 +11,15 @@ public class General {
 
     final public static String BASE_URL = "http://api.guerrillamail.com/ajax.php";
 
-    final public static String MAIL_DOMAIN = "guerrillamail.com";
+    final public static String MAIL_DOMAIN = "guerrillamailblock.com";
 
     final public static int REQUEST_EMAILS = 0;
     final public static int REQUEST_ADDRESS = 1;
     final public static int REQUEST_SET_EMAIL = 2;
 
     final public static int EMAIL_REFRESH_DELAY = 10000;
+
+    final public static int TYPING_TIMEOUT = 3000;
 
     final public static int GENERATE_TAB = 0;
     final public static int STORE_TAB = 1;

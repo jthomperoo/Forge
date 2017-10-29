@@ -201,6 +201,7 @@
                         android:layout_weight="1"
                         android:ems="10"
                         android:hint="@string/email"
+                        android:inputType="textNoSuggestions"
                         android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 

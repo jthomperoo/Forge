@@ -108,8 +108,8 @@ public class Forge extends AppCompatActivity {
     }
 
     /**
-     *
-     * @param account
+     * Loads an account into the generator page
+     * @param account the account to be loadeds
      */
     public void loadAccount(ForgeAccount account) {
         GeneratorFragment generator = forgePagerAdapter.getGeneratorFragment();
