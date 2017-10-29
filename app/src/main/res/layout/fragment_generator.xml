@@ -202,6 +202,7 @@
                         android:ems="10"
                         android:hint="@string/email"
                         android:inputType="textNoSuggestions"
+                        android:imeOptions="actionDone"
                         android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 

@@ -7,8 +7,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -23,11 +21,11 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -60,6 +58,7 @@ import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.Tutorial;
 import me.jamiethompson.forge.UI.Feedback;
 import me.jamiethompson.forge.UI.SaveListener;
+import me.jamiethompson.forge.Util;
 
 /**
  * Created by jamie on 27/09/17.
@@ -104,16 +103,14 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     // If the current account has been loaded from storage or not
     private boolean loaded = false;
 
-    private boolean isTyping = false;
-
     public static GeneratorFragment newInstance() {
         return new GeneratorFragment();
     }
 
     /**
      * Taken from Stack Overflow - https://stackoverflow.com/a/26501296
-     *
-     * @param listView
+     * Updates the ListView height based on its children
+     * @param listView the ListView to adjust
      */
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -139,9 +136,9 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
     /**
      * Taken from Stack Overflow - https://stackoverflow.com/a/37905107
-     *
-     * @param html
-     * @return
+     * Decodes an encoded HTML string
+     * @param html the encoded HTML string to decode
+     * @return the decoded HTML string
      */
 
     @SuppressWarnings("deprecation")
@@ -157,10 +154,10 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
     /**
      * Taken from Stack Overflow - https://stackoverflow.com/a/17201376/6052295
-     *
-     * @param html
-     * @param linkifyMask
-     * @return
+     * Adds links to a HTML string
+     * @param html the HTML string to add links to
+     * @param linkifyMask the link type
+     * @return The spannable text with clickable links
      */
 
     public static Spannable linkifyHtml(String html, int linkifyMask) {
@@ -178,9 +175,18 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         return buffer;
     }
 
-    public static boolean containsID(Collection<EmailMessage> c, String id) {
-        for (EmailMessage o : c) {
-            if (o != null && o.getId().equals(id)) {
+    /**
+     * Checks if a list of email messages contains an ID
+     *
+     * @param messageList the list of email messages
+     * @param id          the id to check for
+     * @return true = list contains the email, false = list doesn't contain the email
+     */
+    public static boolean containsID(Collection<EmailMessage> messageList, String id) {
+        for (EmailMessage message : messageList) {
+            // For each message
+            if (message != null && message.getId().equals(id)) {
+                // If the message id equals the ID being searched for
                 return true;
             }
         }
@@ -205,7 +211,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         setUpGlobals();
         // Set up user interface variables and UI
         setUpUserInterface();
-        // Display the
         displayAccount();
         ForgeAccount currentAccount = CurrentManager.loadCurrentAccount(context);
         if (currentAccount != null) {
@@ -237,7 +242,8 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
-        if (isNetworkAvailable()) {
+        boolean networkAvailable = Util.isNetworkAvailable(context);
+        if (networkAvailable) {
             toggleNoInternetMessage(false);
         } else {
             toggleNoInternetMessage(true);
@@ -252,37 +258,37 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 break;
             }
             case R.id.refresh_firstname: {
-                account = generator.refreshItem(account, UI.FIRSTNAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.FIRSTNAME, networkAvailable);
                 break;
             }
             case R.id.refresh_middlename: {
-                account = generator.refreshItem(account, UI.MIDDLENAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.MIDDLENAME, networkAvailable);
                 break;
             }
             case R.id.refresh_lastname: {
-                account = generator.refreshItem(account, UI.LASTNAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.LASTNAME, networkAvailable);
                 break;
             }
             case R.id.refresh_username: {
-                account = generator.refreshItem(account, UI.USERNAME, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.USERNAME, networkAvailable);
                 break;
             }
             case R.id.refresh_email: {
-                account = generator.refreshItem(account, UI.EMAIL, isNetworkAvailable());
+                account = generator.refreshItem(account, UI.EMAIL, networkAvailable);
                 this.emailMessages = new ArrayList<>();
                 emailList.setAdapter(null);
                 setListViewHeightBasedOnChildren(emailList);
-                if (isNetworkAvailable()) {
+                if (networkAvailable) {
                     showAddressProgress();
                 }
                 break;
             }
             case R.id.refresh_password: {
-                generator.refreshItem(account, UI.PASSWORD, isNetworkAvailable());
+                generator.refreshItem(account, UI.PASSWORD, networkAvailable);
                 break;
             }
             case R.id.refresh_date: {
-                generator.refreshItem(account, UI.DATE, isNetworkAvailable());
+                generator.refreshItem(account, UI.DATE, networkAvailable);
                 break;
             }
             case R.id.copy_firstname: {
@@ -379,7 +385,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
             public void run() {
                 if (account.getEmail().getAddress() != null) {
                     showEmailsProgress();
-                    if (isNetworkAvailable()) {
+                    if (Util.isNetworkAvailable(context)) {
                         if (emailMessages.isEmpty()) {
                             generator.refreshEmails(account.getEmail(), null);
                         } else {
@@ -403,15 +409,17 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     @Override
     public void loadAddress(final EmailAddress email) {
         if (email != null) {
-            Log.d("mega", email.getAddress());
+            Feedback.displayMessage(String.format(getString(R.string.email_set_message), email.getAddress()), view);
             mailPollHandler.removeCallbacksAndMessages(null);
             account.setEmail(email);
             emailEntry.setText(email.getAddress().split("@")[0]);
+            emailMessages = new ArrayList<>();
+            emailList.setAdapter(null);
 
             hideAddressProgress();
             showEmailsProgress();
 
-            if (isNetworkAvailable()) {
+            if (Util.isNetworkAvailable(context)) {
                 if (emailMessages.isEmpty()) {
                     generator.refreshEmails(email, null);
                 } else {
@@ -426,7 +434,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
             mailPollHandler.postDelayed(new Runnable() {
                 public void run() {
                     showEmailsProgress();
-                    if (isNetworkAvailable()) {
+                    if (Util.isNetworkAvailable(context)) {
                         if (emailMessages.isEmpty()) {
                             generator.refreshEmails(email, null);
                         } else {
@@ -465,7 +473,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         emailList.setAdapter(null);
         setListViewHeightBasedOnChildren(emailList);
 
-        if (isNetworkAvailable()) {
+        if (Util.isNetworkAvailable(context)) {
             generator.setEmailAddress(account.getEmail());
             showAddressProgress();
         }
@@ -496,7 +504,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     }
 
     private void refresh() {
-        if (isNetworkAvailable()) {
+        if (Util.isNetworkAvailable(context)) {
             toggleNoInternetMessage(false);
             showAddressProgress();
         } else {
@@ -506,12 +514,12 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         this.emailMessages = new ArrayList<>();
         emailList.setAdapter(null);
         setListViewHeightBasedOnChildren(emailList);
-        account = generator.forgeAccount(isNetworkAvailable());
+        account = generator.forgeAccount(Util.isNetworkAvailable(context));
         displayAccount();
     }
 
     private void reload() {
-        if (isNetworkAvailable()) {
+        if (Util.isNetworkAvailable(context)) {
             toggleNoInternetMessage(false);
             generator.setEmailAddress(account.getEmail());
             showAddressProgress();
@@ -525,7 +533,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         generator = new ForgeGenerator(this, context);
         loaded = false;
         emailMessages = new ArrayList<>();
-        account = generator.forgeAccount(isNetworkAvailable());
+        account = generator.forgeAccount(Util.isNetworkAvailable(context));
     }
 
     private void setUpUserInterface() {
@@ -577,20 +585,32 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         accountNameEntry = view.findViewById(R.id.account_name);
         emailEntry = view.findViewById(R.id.email);
 
+        emailEntry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    generator.setEmailAddress(new EmailAddress(
+                            String.format("%s@%s", emailEntry.getText().toString(), General.MAIL_DOMAIN),
+                            null));
+                }
+                return false;
+            }
+        });
+
         addressProgress = view.findViewById(R.id.address_progress);
         mailProgress = view.findViewById(R.id.mail_progress);
         emailList = view.findViewById(R.id.email_list);
         // listview
         emailList.setOnItemClickListener(this);
-        emailList.setOnTouchListener(new View.OnTouchListener() {
-            // Setting on Touch Listener for handling the touch inside ScrollView
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
+//        emailList.setOnTouchListener(new View.OnTouchListener() {
+//            // Setting on Touch Listener for handling the touch inside ScrollView
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                // Disallow the touch request for parent scroll on touch of child view
+//                v.getParent().requestDisallowInterceptTouchEvent(true);
+//                return false;
+//            }
+//        });
         emailList.setAdapter(null);
         setListViewHeightBasedOnChildren(emailList);
         noInternetMessage = Snackbar.make(view, R.string.network_unavailable, Snackbar.LENGTH_INDEFINITE);
@@ -609,7 +629,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
-                if (!isNetworkAvailable()) {
+                if (!Util.isNetworkAvailable(context)) {
                     connectingMessage.show();
                 }
             }
@@ -621,13 +641,13 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         connectingMessage.addCallback(new Snackbar.Callback() {
             @Override
             public void onShown(Snackbar sb) {
-                if (!isNetworkAvailable()) {
+                if (!Util.isNetworkAvailable(context)) {
                     noInternetMessage.show();
                 }
             }
         });
 
-        if (isNetworkAvailable()) {
+        if (Util.isNetworkAvailable(context)) {
             showAddressProgress();
         } else {
             hideAddressProgress();
@@ -689,17 +709,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(label, content);
         clipboard.setPrimaryClip(clip);
-    }
-
-    /**
-     * Taken from Stack Overflow - https://stackoverflow.com/a/4239019
-     *
-     * @return
-     */
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

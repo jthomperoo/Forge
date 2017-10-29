@@ -1,6 +1,8 @@
 package me.jamiethompson.forge;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,5 +52,22 @@ public class Util {
             }
         }
         return false;
+    }
+
+    /**
+     * Taken from Stack Overflow - https://stackoverflow.com/a/4239019
+     * Checks if there is an available network connection
+     *
+     * @return true = connection available, false = no connection
+     */
+    public static boolean isNetworkAvailable(Context context) {
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        } catch (NullPointerException e) {
+            Log.e(General.ERROR_LOG, e.getMessage());
+            return false;
+        }
     }
 }
