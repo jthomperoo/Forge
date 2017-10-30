@@ -110,7 +110,7 @@ public class ForgeGenerator {
                 long currentMillis = System.currentTimeMillis();
                 Calendar dob = Calendar.getInstance();
                 // Set the date of birth to be random within the age bounds
-                dob.setTimeInMillis(ThreadLocalRandom.current().nextLong(0 - maxAge, currentMillis - minAge));
+                dob.setTimeInMillis(ThreadLocalRandom.current().nextLong(currentMillis - maxAge, currentMillis - minAge));
                 // Update the Forge Account
                 account.setDateOfBirth(dob);
                 break;
@@ -145,7 +145,7 @@ public class ForgeGenerator {
         long currentMillis = System.currentTimeMillis();
         Calendar dob = Calendar.getInstance();
         // Set the date of birth to be random within the age bounds
-        dob.setTimeInMillis(ThreadLocalRandom.current().nextLong(0 - maxAge, currentMillis - minAge));
+        dob.setTimeInMillis(ThreadLocalRandom.current().nextLong(currentMillis - maxAge, currentMillis - minAge));
         account.setDateOfBirth(dob);
         // Set the first name to be a random value in the list
         account.setFirstName(names.get(rand.nextInt(names.size())));
@@ -160,6 +160,15 @@ public class ForgeGenerator {
         // Update the currently loaded account and return the newly generated account
         CurrentManager.updateCurrentAccount(account, context);
         return account;
+    }
+
+    /**
+     * Gets more information about a specific email
+     *
+     * @param email the email to load more information about
+     */
+    public void fetchEmail(EmailMessage email) {
+        mailComs.getEmail(email);
     }
 
     /**

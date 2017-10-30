@@ -20,6 +20,13 @@ public interface EmailInterface {
     void loadAddress(EmailAddress email);
 
     /**
+     * Load a more detailed email object returned by the API
+     *
+     * @param email the email with more information returned by the API
+     */
+    void loadEmail(EmailMessage email);
+
+    /**
      * Load the emails sent to the email address returned by the API
      * @param emails a list of emails for the email address returned by the API
      */

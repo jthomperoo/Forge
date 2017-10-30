@@ -103,6 +103,10 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     // If the current account has been loaded from storage or not
     private boolean loaded = false;
 
+    private boolean emailShown = false;
+
+    private Dialog emailDialog = null;
+
     public static GeneratorFragment newInstance() {
         return new GeneratorFragment();
     }
@@ -223,8 +227,8 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         if (sharedPref.getBoolean(General.FIRST_RUN, true)) {
             Tutorial tutorial = new Tutorial(getActivity(),
                     R.id.refresh,
-                    R.id.refresh_firstname,
-                    R.id.copy_firstname,
+                    R.id.refresh_username,
+                    R.id.copy_username,
                     R.id.email_list,
                     (ScrollView) view.findViewById(R.id.scroll));
             tutorial.startTutorial();
@@ -370,12 +374,28 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     }
                 });
         Dialog dialog = builder.create();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                emailShown = false;
+                emailDialog = null;
+            }
+        });
         dialog.show();
+        emailShown = true;
+        emailDialog = dialog;
         ((TextView) dialog.findViewById(R.id.subject)).setText(email.getSubject());
         ((TextView) dialog.findViewById(R.id.from)).setText(email.getFrom());
         ((TextView) dialog.findViewById(R.id.time)).setText(email.getTime());
-        ((TextView) dialog.findViewById(R.id.body)).setText(linkifyHtml(email.getBody(), Linkify.WEB_URLS));
-        ((TextView) dialog.findViewById(R.id.body)).setMovementMethod(LinkMovementMethod.getInstance());
+        if (Util.isNetworkAvailable(context)) {
+            generator.fetchEmail(email);
+        } else {
+            TextView body = emailDialog.findViewById(R.id.body);
+            emailDialog.findViewById(R.id.body_loading).setVisibility(View.GONE);
+            body.setVisibility(View.VISIBLE);
+            body.setText(linkifyHtml(email.getBody(), Linkify.WEB_URLS));
+            body.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
 
     @Override
@@ -446,6 +466,17 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     mailPollHandler.postDelayed(this, General.EMAIL_REFRESH_DELAY);
                 }
             }, General.EMAIL_REFRESH_DELAY);
+        }
+    }
+
+    @Override
+    public void loadEmail(EmailMessage email) {
+        if (emailShown) {
+            TextView body = emailDialog.findViewById(R.id.body);
+            emailDialog.findViewById(R.id.body_loading).setVisibility(View.GONE);
+            body.setVisibility(View.VISIBLE);
+            body.setText(linkifyHtml(email.getBody(), Linkify.WEB_URLS));
+            body.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 
@@ -602,15 +633,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         emailList = view.findViewById(R.id.email_list);
         // listview
         emailList.setOnItemClickListener(this);
-//        emailList.setOnTouchListener(new View.OnTouchListener() {
-//            // Setting on Touch Listener for handling the touch inside ScrollView
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                // Disallow the touch request for parent scroll on touch of child view
-//                v.getParent().requestDisallowInterceptTouchEvent(true);
-//                return false;
-//            }
-//        });
+        emailList.setEmptyView(view.findViewById(R.id.empty));
         emailList.setAdapter(null);
         setListViewHeightBasedOnChildren(emailList);
         noInternetMessage = Snackbar.make(view, R.string.network_unavailable, Snackbar.LENGTH_INDEFINITE);

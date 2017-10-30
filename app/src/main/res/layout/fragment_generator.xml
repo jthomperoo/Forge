@@ -55,15 +55,6 @@
                     android:layout_weight="1">
 
                     <ImageView
-                        android:id="@+id/edit_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"
-                        android:tint="@color/colorAccent"
-                        app:srcCompat="@drawable/icon_edit" />
-
-                    <ImageView
                         android:id="@+id/account_icon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -481,6 +472,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:dividerHeight="2dp" />
+
+            <TextView
+                android:id="@+id/empty"
+                android:text="Empty inbox"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center" />
 
         </LinearLayout>
     </ScrollView>

@@ -10,6 +10,8 @@ public class EmailMessage {
     private boolean read;
     // Email ID
     private String id;
+    // Email global SID
+    private String sid;
     // Email subject
     private String subject;
     // Email body
@@ -22,18 +24,24 @@ public class EmailMessage {
     /**
      * @param read    has the email been read
      * @param id      email ID
+     * @param sid     the email global SID
      * @param subject email subject
      * @param body    email body
      * @param time    email receiving time
      * @param from    email sender address
      */
-    public EmailMessage(boolean read, String id, String subject, String body, String time, String from) {
+    public EmailMessage(boolean read, String id, String sid, String subject, String body, String time, String from) {
         this.read = read;
         this.id = id;
+        this.sid = sid;
         this.subject = subject;
         this.body = body;
         this.time = time;
         this.from = from;
+    }
+
+    public String getSid() {
+        return sid;
     }
 
     public boolean isRead() {

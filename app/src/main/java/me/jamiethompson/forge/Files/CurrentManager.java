@@ -20,8 +20,7 @@ public class CurrentManager {
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.shared_prefs), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(context.getString(R.string.shared_pref_current), jsonString);
-        editor.commit();
-
+        editor.apply();
     }
 
     public static ForgeAccount loadCurrentAccount(Context context) {

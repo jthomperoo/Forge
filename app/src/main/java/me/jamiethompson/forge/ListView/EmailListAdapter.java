@@ -19,6 +19,9 @@ import me.jamiethompson.forge.R;
 
 public class EmailListAdapter extends ArrayAdapter<EmailMessage> {
 
+    private boolean currentlyOpened = false;
+    private View openView = null;
+
     public EmailListAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
@@ -36,6 +39,7 @@ public class EmailListAdapter extends ArrayAdapter<EmailMessage> {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
             v = vi.inflate(R.layout.item_email, null);
+            openView = v;
         }
 
         EmailMessage email = getItem(position);
@@ -48,9 +52,11 @@ public class EmailListAdapter extends ArrayAdapter<EmailMessage> {
             if (subject != null) {
                 subject.setText(email.getSubject());
             }
+            currentlyOpened = true;
         }
 
         return v;
     }
+
 
 }

@@ -71,7 +71,7 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
                         builder.show();
                         return false;
                     }
-                    if (value < minAge) {
+                    if (value <= minAge) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle(getString(R.string.invalid_preference));
                         builder.setMessage(getString(R.string.error_min_age_greater_max));
@@ -110,7 +110,7 @@ public class DateOfBirthPreferenceFragment extends PreferenceFragment implements
                         builder.show();
                         return false;
                     }
-                    if (value > maxAge) {
+                    if (value >= maxAge) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle(getString(R.string.invalid_preference));
                         builder.setMessage(getString(R.string.error_min_age_greater_max));

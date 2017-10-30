@@ -18,6 +18,7 @@ public class General {
     final public static int REQUEST_EMAILS = 0;
     final public static int REQUEST_ADDRESS = 1;
     final public static int REQUEST_SET_EMAIL = 2;
+    final public static int REQUEST_GET_EMAIL = 3;
     // API refresh delay, in ms, will check every x milliseconds
     final public static int EMAIL_REFRESH_DELAY = 10000;
     // Time to wait until assuming the user has finished typing

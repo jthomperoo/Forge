@@ -96,6 +96,22 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
     }
 
     /**
+     * Fetches a specific email and all of it's details, e.g. email body
+     *
+     * @param email the email to request more information for
+     */
+    public void getEmail(EmailMessage email) {
+        // Set up parameters
+        HashMap<String, String> parameters = new HashMap<>();
+        // Add the email identifier as a parameter
+        parameters.put(ResponseKeys.SID_PARAMETER_KEY, email.getSid());
+        // Add the email identifier as a parameter
+        parameters.put(ResponseKeys.EMAIL_ID_KEY, email.getId());
+        // Make the request to the API with the parameters and to the set email endpoint
+        getRequest(Endpoints.GET_EMAIL, parameters, General.REQUEST_GET_EMAIL);
+    }
+
+    /**
      * Queues up the GET request to the Guerrilla Mail API
      *
      * @param endpoint   API endpoint
@@ -125,6 +141,26 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
     public void onResponse(int request, JSONObject response) {
         // Depending on the request type
         switch (request) {
+            case General.REQUEST_GET_EMAIL: {
+                try {
+                    // Set the format for hour and minute, 24 hour clock
+                    DecimalFormat format = new DecimalFormat("00");
+                    // Get current time that response is received
+                    Calendar messageTime = Calendar.getInstance();
+                    // Load the returned email
+                    IEmail.loadEmail(new EmailMessage(false,
+                            response.getString(ResponseKeys.MAIL_ID_KEY),
+                            response.getString(ResponseKeys.SID_JSON_KEY),
+                            response.getString(ResponseKeys.SUBJECT_JSON_KEY),
+                            response.getString(ResponseKeys.BODY_JSON_KEY),
+                            String.format("%s:%s", format.format(messageTime.get(Calendar.HOUR_OF_DAY)), format.format(messageTime.get(Calendar.MINUTE))),
+                            response.getString(ResponseKeys.FROM_JSON_KEY)));
+                } catch (JSONException e) {
+                    // If there is an error, log it
+                    Log.e(General.ERROR_LOG, e.getMessage());
+                }
+                break;
+            }
             case General.REQUEST_ADDRESS:
             case General.REQUEST_SET_EMAIL: {
                 // Request address and request set email have the same result, and same action
@@ -152,9 +188,10 @@ public class MailCommunicator implements VolleyInterface, Response.ErrorListener
                         JSONObject email = jsonEmails.getJSONObject(i);
                         // Create a new local email object
                         emails.add(new EmailMessage(false,
-                                email.getString(ResponseKeys.EMAIL_ID_KEY),
+                                email.getString(ResponseKeys.MAIL_ID_KEY),
+                                response.getString(ResponseKeys.SID_JSON_KEY),
                                 email.getString(ResponseKeys.SUBJECT_JSON_KEY),
-                                email.getString(ResponseKeys.BODY_JSON_KEY),
+                                email.getString(ResponseKeys.EXCERPT_JSON_KEY),
                                 String.format("%s:%s", format.format(messageTime.get(Calendar.HOUR_OF_DAY)), format.format(messageTime.get(Calendar.MINUTE))),
                                 email.getString(ResponseKeys.FROM_JSON_KEY)));
                     }

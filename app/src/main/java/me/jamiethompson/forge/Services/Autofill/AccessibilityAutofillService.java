@@ -19,9 +19,8 @@ import me.jamiethompson.forge.UI.Notifications;
 
 /**
  * Created by jamie on 09/10/17.
- * Service for detecting valid fields for auto fill and populating them on notifcation click
+ * Service for detecting valid fields for auto fill and populating them on notification click
  */
-
 public class AccessibilityAutofillService extends AccessibilityService {
     // Current instance
     public static AccessibilityAutofillService instance;
@@ -71,7 +70,6 @@ public class AccessibilityAutofillService extends AccessibilityService {
                 // Get a list of all edit texts in the window
                 editTextNodes = new ArrayList<>();
                 findChildViews(rootNode);
-
                 for (AccessibilityNodeInfo node : editTextNodes) {
                     // Iterate through each edit text
                     if (!alreadyExists(node)) {
