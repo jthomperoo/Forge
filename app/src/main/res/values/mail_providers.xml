@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="mail_providers">
+        <item>\@sharklasers.com</item>
+        <item>\@grr.la</item>
         <item>\@guerrillamailblock.com</item>
+        <item>\@guerrillamail.com</item>
+        <item>\@guerrillamail.info</item>
+        <item>\@guerrillamail.biz</item>
+        <item>\@guerrillamail.com</item>
+        <item>\@guerrillamail.de</item>
+        <item>\@guerrillamail.org</item>
+        <item>\@pokemail.net</item>
+        <item>\@spam4.me</item>
     </string-array>
 </resources>

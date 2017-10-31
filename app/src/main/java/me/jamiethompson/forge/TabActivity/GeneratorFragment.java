@@ -215,13 +215,15 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         setUpGlobals();
         // Set up user interface variables and UI
         setUpUserInterface();
-        displayAccount();
         ForgeAccount currentAccount = CurrentManager.loadCurrentAccount(context);
         if (currentAccount != null) {
             if (currentAccount.getEmail() != null) {
                 load(currentAccount);
             }
+        } else {
+            account = generator.forgeAccount(Util.isNetworkAvailable(context), (String) mailDomain.getSelectedItem());
         }
+        displayAccount();
         SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.shared_prefs),
                 Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(General.FIRST_RUN, true)) {
@@ -262,23 +264,23 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 break;
             }
             case R.id.refresh_firstname: {
-                account = generator.refreshItem(account, UI.FIRSTNAME, networkAvailable);
+                account = generator.refreshItem(account, UI.FIRSTNAME, networkAvailable, (String) mailDomain.getSelectedItem());
                 break;
             }
             case R.id.refresh_middlename: {
-                account = generator.refreshItem(account, UI.MIDDLENAME, networkAvailable);
+                account = generator.refreshItem(account, UI.MIDDLENAME, networkAvailable, (String) mailDomain.getSelectedItem());
                 break;
             }
             case R.id.refresh_lastname: {
-                account = generator.refreshItem(account, UI.LASTNAME, networkAvailable);
+                account = generator.refreshItem(account, UI.LASTNAME, networkAvailable, (String) mailDomain.getSelectedItem());
                 break;
             }
             case R.id.refresh_username: {
-                account = generator.refreshItem(account, UI.USERNAME, networkAvailable);
+                account = generator.refreshItem(account, UI.USERNAME, networkAvailable, (String) mailDomain.getSelectedItem());
                 break;
             }
             case R.id.refresh_email: {
-                account = generator.refreshItem(account, UI.EMAIL, networkAvailable);
+                account = generator.refreshItem(account, UI.EMAIL, networkAvailable, (String) mailDomain.getSelectedItem());
                 this.emailMessages = new ArrayList<>();
                 emailList.setAdapter(null);
                 setListViewHeightBasedOnChildren(emailList);
@@ -288,11 +290,11 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 break;
             }
             case R.id.refresh_password: {
-                generator.refreshItem(account, UI.PASSWORD, networkAvailable);
+                generator.refreshItem(account, UI.PASSWORD, networkAvailable, (String) mailDomain.getSelectedItem());
                 break;
             }
             case R.id.refresh_date: {
-                generator.refreshItem(account, UI.DATE, networkAvailable);
+                generator.refreshItem(account, UI.DATE, networkAvailable, (String) mailDomain.getSelectedItem());
                 break;
             }
             case R.id.copy_firstname: {
@@ -545,7 +547,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         this.emailMessages = new ArrayList<>();
         emailList.setAdapter(null);
         setListViewHeightBasedOnChildren(emailList);
-        account = generator.forgeAccount(Util.isNetworkAvailable(context));
+        account = generator.forgeAccount(Util.isNetworkAvailable(context), (String) mailDomain.getSelectedItem());
         displayAccount();
     }
 
@@ -564,7 +566,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         generator = new ForgeGenerator(this, context);
         loaded = false;
         emailMessages = new ArrayList<>();
-        account = generator.forgeAccount(Util.isNetworkAvailable(context));
     }
 
     private void setUpUserInterface() {
@@ -621,7 +622,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     generator.setEmailAddress(new EmailAddress(
-                            String.format("%s@%s", emailEntry.getText().toString(), General.MAIL_DOMAIN),
+                            String.format("%s@%s", emailEntry.getText().toString(), mailDomain.getSelectedItem()),
                             null));
                 }
                 return false;

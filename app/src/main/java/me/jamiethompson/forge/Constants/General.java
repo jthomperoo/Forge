@@ -21,8 +21,6 @@ public class General {
     final public static int REQUEST_GET_EMAIL = 3;
     // API refresh delay, in ms, will check every x milliseconds
     final public static int EMAIL_REFRESH_DELAY = 10000;
-    // Time to wait until assuming the user has finished typing
-    final public static int TYPING_TIMEOUT = 3000;
     // Fragment tab types
     final public static int GENERATE_TAB = 0;
     final public static int STORE_TAB = 1;

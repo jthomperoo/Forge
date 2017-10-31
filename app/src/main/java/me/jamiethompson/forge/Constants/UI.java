@@ -2,6 +2,7 @@ package me.jamiethompson.forge.Constants;
 
 /**
  * Created by Jamie on 25/10/2017.
+ * User interface constants
  */
 
 public class UI {

@@ -59,7 +59,7 @@ public class ForgeGenerator {
      * @param networkAvailable if the network is available
      * @return the edited Forge Account
      */
-    public ForgeAccount refreshItem(ForgeAccount account, String item, boolean networkAvailable) {
+    public ForgeAccount refreshItem(ForgeAccount account, String item, boolean networkAvailable, String domain) {
         // Set up random number generator
         Random rand = new Random();
         switch (item) {
@@ -92,7 +92,7 @@ public class ForgeGenerator {
                     mailComs.getAddress();
                 } else {
                     // Otherwise, generate it locally
-                    account.setEmail(generateEmail());
+                    account.setEmail(generateEmail(domain));
                 }
                 break;
             }
@@ -126,7 +126,7 @@ public class ForgeGenerator {
      * @param networkAvailable if the network is available
      * @return the newly generated Forge Account
      */
-    public ForgeAccount forgeAccount(boolean networkAvailable) {
+    public ForgeAccount forgeAccount(boolean networkAvailable, String domain) {
         Random rand = new Random();
         // Create a blank account
         ForgeAccount account = new ForgeAccount();
@@ -139,7 +139,7 @@ public class ForgeGenerator {
             mailComs.getAddress();
         } else {
             // Otherwise, generate an email locally
-            account.setEmail(generateEmail());
+            account.setEmail(generateEmail(domain));
         }
         // Get current time
         long currentMillis = System.currentTimeMillis();
@@ -201,7 +201,7 @@ public class ForgeGenerator {
 
     /**
      * Uses Mail Communicator to set an email to the one provided
-     * @param emailAddress
+     * @param emailAddress the email address to set to
      */
     public void setEmailAddress(EmailAddress emailAddress) {
         mailComs.setEmail(emailAddress.getAddress());
@@ -251,8 +251,8 @@ public class ForgeGenerator {
      * Locally generate a random email
      * @return the locally generated email
      */
-    private EmailAddress generateEmail() {
-        return new EmailAddress(String.format("%s@%s", RandomStringUtils.randomAlphanumeric(8), General.MAIL_DOMAIN),
+    private EmailAddress generateEmail(String domain) {
+        return new EmailAddress(String.format("%s@%s", RandomStringUtils.randomAlphanumeric(8), domain),
                 null);
     }
 
