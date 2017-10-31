@@ -157,7 +157,7 @@ public class AccessibilityAutofillService extends AccessibilityService {
                                     if (sharedPref.getBoolean(getString(R.string.pref_helper_key), false)) {
                                         // If the helper notification is enabled, show the
                                         // notification and update the toggle
-                                        Notifications.displayHelperNotification(this, false);
+                                        Notifications.displayHelperNotification(this);
                                         notificationDisplayed = true;
                                     }
                                 }
@@ -211,6 +211,7 @@ public class AccessibilityAutofillService extends AccessibilityService {
             // Get the node input text
             String input = getInput(node.getType(), account);
             // Perform an action and put the text into the field
+            node.getAccessibilityNode().performAction(AccessibilityNodeInfoCompat.ACTION_SELECT);
             Bundle arguments = new Bundle();
             arguments.putString(AccessibilityNodeInfoCompat.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, input);
             node.getAccessibilityNode().performAction(AccessibilityNodeInfoCompat.ACTION_SET_TEXT, arguments);

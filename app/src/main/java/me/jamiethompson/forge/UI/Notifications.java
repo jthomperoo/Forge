@@ -1,6 +1,5 @@
 package me.jamiethompson.forge.UI;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -19,46 +18,41 @@ import me.jamiethompson.forge.TabActivity.Forge;
 
 /**
  * Created by jamie on 02/10/17.
+ * Handles all Android notifications
  */
 
 public class Notifications {
-    public static void setUpChannels(Activity activity) {
-        NotificationManager mNotificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+    /**
+     * Handles setting up a notification channel for the app
+     *
+     * @param context calling context
+     */
+    public static void setUpChannels(Context context) {
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            NotificationChannel mChannel = new NotificationChannel(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_CHANNEL, activity.getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
+            // If the Android version is Oreo or greater
+            // Create a notification channel
+            NotificationChannel mChannel = new NotificationChannel(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_CHANNEL, context.getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
             mNotificationManager.createNotificationChannel(mChannel);
         }
     }
 
-    public static void displayHelperNotification(Context context, Boolean override, Boolean overrideOverlay) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        if (override) {
-            createHelperNotification(context, overrideOverlay);
-        } else {
-            if (sharedPref.getBoolean(context.getString(R.string.pref_helper_key), true)) {
-                createHelperNotification(context, overrideOverlay);
-            }
-        }
-    }
-
-    public static void displayHelperNotification(Context context, Boolean override) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        if (override) {
-            createHelperNotification(context, sharedPref.getBoolean(context.getString(R.string.pref_overlay_key), false));
-        } else {
-            if (sharedPref.getBoolean(context.getString(R.string.pref_helper_key), true)) {
-                createHelperNotification(context, sharedPref.getBoolean(context.getString(R.string.pref_overlay_key), false));
-            }
-        }
-    }
-
-    private static void createHelperNotification(Context context, boolean showOverlay) {
+    /**
+     * Creates the helper notification and displays it
+     *
+     * @param context calling context
+     */
+    public static void displayHelperNotification(Context context) {
+        // Get notification manager
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Set up notification builder
         Notification.Builder notificationBuilder;
+        // Set notification title and text
         String title = context.getString(R.string.helper_notification_title);
         String text = context.getString(R.string.helper_notification_text);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // If the Android version is Oreo or greater
+            // Create notification assigned to notification channel
             notificationBuilder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.forge_logo_small)
                     .setContentTitle(title)
@@ -71,6 +65,8 @@ public class Notifications {
                     .setVibrate(null)
                     .setSound(null);
         } else {
+            // If the Android version is lower than Oreo
+            // Create notification without notification channel
             notificationBuilder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.forge_logo_small)
                     .setContentTitle(title)
@@ -83,11 +79,13 @@ public class Notifications {
                     .setSound(null);
         }
 
-
+        // Set up the pending intent for auto fill triggering
         Intent notificationReciever = new Intent(context, NotificationClickReceiver.class);
         PendingIntent pendingIntentAutoFill = PendingIntent.getBroadcast(context, 0, notificationReciever, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Set on notification click to trigger auto fill
         notificationBuilder.setContentIntent(pendingIntentAutoFill);
 
+        // Set up the pending intent for loading the Generate tab in the Forge activity
         Intent generateIntent = new Intent(context, Forge.class);
         generateIntent.putExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.GENERATE_TAB);
         PendingIntent generatePendingIntent =
@@ -98,8 +96,10 @@ public class Notifications {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+        // Add the generate pending intent action to trigger when Generate button is pressed
         notificationBuilder.addAction(new Notification.Action(R.drawable.icon_generate, context.getString(R.string.helper_notification_generate), generatePendingIntent));
 
+        // Set up the pending intent for loading the Storage tab in the Forge activity
         Intent storeIntent = new Intent(context, Forge.class);
         generateIntent.putExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.STORE_TAB);
         PendingIntent storePendingIntent =
@@ -110,12 +110,15 @@ public class Notifications {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-
+        // Add the storage pending intent action to trigger when Storage button is pressed
         notificationBuilder.addAction(new Notification.Action(R.drawable.icon_store, context.getString(R.string.helper_notification_store), storePendingIntent));
 
+        // Open shared preferences
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if (showOverlay) {
+        if (sharedPref.getBoolean(context.getString(R.string.pref_overlay_key), false)) {
+            // If the overlay is enabled in the preferences
+            // Set up the pending intent for opening up the out of app overlay
             Intent overlayIntent = new Intent(context, OverlayService.class);
             PendingIntent overlayPendingIntent =
                     PendingIntent.getService(
@@ -124,15 +127,25 @@ public class Notifications {
                             overlayIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT
                     );
-
+            // Add the overlay pending intent action to trigger when the Overlay button is pressed
             notificationBuilder.addAction(new Notification.Action(R.drawable.icon_helper, context.getString(R.string.helper_notification_overlay), overlayPendingIntent));
         }
 
-        notificationManager.notify(me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_TAG, me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_ID, notificationBuilder.build());
+        // Display the notification
+        notificationManager.notify(me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_TAG,
+                me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_ID,
+                notificationBuilder.build());
     }
 
+    /**
+     * Removes any active auto fill helper notification
+     *
+     * @param context calling context
+     */
     public static void removeHelperNotification(Context context) {
+        // Get notification manager
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // Cancel the notification
         notificationManager.cancel(me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_TAG, me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_ID);
     }
 }

@@ -87,7 +87,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     // Drop down for choosing email provider
     private Spinner mailDomain;
     // Email entry
-    private EditText emailEntry;
+    private EditText emailIdentifier;
     // Email inbox list
     private ListView emailList;
     // Account entry
@@ -102,11 +102,43 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     private Button moreToggle;
     // If the current account has been loaded from storage or not
     private boolean loaded = false;
-
+    // If an email dialog is currently open, true = dialog open, false = no dialog
     private boolean emailShown = false;
-
+    // The email dialog that is currently (or last) open
     private Dialog emailDialog = null;
+    // The email polling runnable, polls the email inbox repeatedly with a set delay between
+    private Runnable emailPollRunnable = new Runnable() {
+        public void run() {
+            if (account.getEmail().getAddress() != null) {
+                // If the email is set
+                // Show the emails loading progress
+                showEmailsProgress();
+                if (Util.isNetworkAvailable(context)) {
+                    // If there is an internet connection
+                    if (emailMessages.isEmpty()) {
+                        // If there are no email messages
+                        // Load the email messages, with no latest email message set
+                        generator.refreshEmails(account.getEmail(), null);
+                    } else {
+                        // If there are email messages
+                        // Load the email messages, with the latest one provided
+                        generator.refreshEmails(account.getEmail(), emailMessages.get(0));
+                    }
+                } else {
+                    // If there is no internet, display no internet message
+                    toggleNoInternetMessage(true);
+                }
+                // Call this handler again, waiting a certain delay
+                mailPollHandler.postDelayed(this, General.EMAIL_REFRESH_DELAY);
+            }
+        }
+    };
 
+    /**
+     * Creates and returns a new instance of the Generator Fragment
+     *
+     * @return the newly instantiated Generator Fragment
+     */
     public static GeneratorFragment newInstance() {
         return new GeneratorFragment();
     }
@@ -215,18 +247,24 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         setUpGlobals();
         // Set up user interface variables and UI
         setUpUserInterface();
+        // Get any account that is stored in temporary storage
         ForgeAccount currentAccount = CurrentManager.loadCurrentAccount(context);
         if (currentAccount != null) {
+            // If the account exists
             if (currentAccount.getEmail() != null) {
+                // If the account has an email, load that account
                 load(currentAccount);
             }
         } else {
+            // If the account doesn't exist, generate a new one
             account = generator.forgeAccount(Util.isNetworkAvailable(context), (String) mailDomain.getSelectedItem());
         }
+        // Display the account
         displayAccount();
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.shared_prefs),
-                Context.MODE_PRIVATE);
+        // Open shared preferences
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.shared_prefs), Context.MODE_PRIVATE);
         if (sharedPref.getBoolean(General.FIRST_RUN, true)) {
+            // If it is the first run of the app, show the tutorial
             Tutorial tutorial = new Tutorial(getActivity(),
                     R.id.refresh,
                     R.id.refresh_username,
@@ -234,6 +272,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                     R.id.email_list,
                     (ScrollView) view.findViewById(R.id.scroll));
             tutorial.startTutorial();
+            // Mark the app as having been run
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(General.FIRST_RUN, false);
             editor.apply();
@@ -248,12 +287,16 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View view) {
+        // If the network is available
         boolean networkAvailable = Util.isNetworkAvailable(context);
         if (networkAvailable) {
+            // If available, hide any no internet messages
             toggleNoInternetMessage(false);
         } else {
+            // If not available, display no internet message
             toggleNoInternetMessage(true);
         }
+        // Get which element has been clicked, switch to determine action
         switch (view.getId()) {
             case R.id.save: {
                 save();
@@ -280,11 +323,14 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 break;
             }
             case R.id.refresh_email: {
+                // Get a new email
                 account = generator.refreshItem(account, UI.EMAIL, networkAvailable, (String) mailDomain.getSelectedItem());
+                // Clear inbox
                 this.emailMessages = new ArrayList<>();
                 emailList.setAdapter(null);
                 setListViewHeightBasedOnChildren(emailList);
                 if (networkAvailable) {
+                    // If there is a network connection, show the address loading bar
                     showAddressProgress();
                 }
                 break;
@@ -298,8 +344,10 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
                 break;
             }
             case R.id.copy_firstname: {
+                // Copy the item to the clipboard
                 String nameTag = getString(R.string.firstname);
                 addToClipboard(nameTag, account.getFirstName());
+                // Display a message informing the user that the item has been copied to the clipboard
                 Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
                 break;
             }
@@ -336,65 +384,90 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
             case R.id.copy_date: {
                 String nameTag = getString(R.string.date);
                 Calendar dob = account.getDateOfBirth();
+                // Copy to clipboard in date format
                 addToClipboard(nameTag, String.format("%d/%d/%d", dob.get(Calendar.YEAR), dob.get(Calendar.MONTH) + 1, dob.get(Calendar.DAY_OF_MONTH)));
                 Feedback.displayMessage(String.format("%s %s", nameTag, getString(R.string.copy_to_clip)), this.view);
                 break;
             }
             case R.id.more_toggle: {
                 if (moreToggled) {
+                    // If more toggled off, hide each advanced field
                     for (LinearLayout layout : moreFields) {
                         layout.setVisibility(View.GONE);
                     }
+                    // Update the more button text
                     moreToggle.setText(getString(R.string.more_fields));
                 } else {
+                    // If more toggled on, show each advanced field
                     for (LinearLayout layout : moreFields) {
                         layout.setVisibility(View.VISIBLE);
                     }
+                    // Update the more button text
                     moreToggle.setText(getString(R.string.less_fields));
                 }
+                // Invert more toggled
                 moreToggled = !moreToggled;
             }
         }
+        // Update the currently loaded account
         CurrentManager.updateCurrentAccount(account, context);
+        // Display the account
         displayAccount();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        // When an email is opened
+        // Set the email read checkbox to be unchecked
         ((CheckBox) view.findViewById(R.id.read)).setChecked(false);
-        emailMessages.get(i).setRead(true);
+        // Get the email
         EmailMessage email = emailMessages.get(i);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        // Set the email as having been read
+        email.setRead(true);
+        // Set up alert dialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // Set up layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
+        // Set alert dialog listeners and layout
         builder.setView(inflater.inflate(R.layout.dialog_email, null))
                 .setPositiveButton(getString(R.string.dialog_action_dismiss), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        // When button is pressed, dismiss the email dialog
                         dialogInterface.dismiss();
                     }
                 });
+        // Create the dialog
         Dialog dialog = builder.create();
+        // Set up on dismiss listener
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
+                // On dismiss, update global dialog variables
                 emailShown = false;
                 emailDialog = null;
             }
         });
+        // Display the dialog
         dialog.show();
+        // Update global dialog variables
         emailShown = true;
         emailDialog = dialog;
+        // Populate dialog text views with email content
         ((TextView) dialog.findViewById(R.id.subject)).setText(email.getSubject());
         ((TextView) dialog.findViewById(R.id.from)).setText(email.getFrom());
         ((TextView) dialog.findViewById(R.id.time)).setText(email.getTime());
         if (Util.isNetworkAvailable(context)) {
+            // If there is an internet connection, get more info on the email
             generator.fetchEmail(email);
         } else {
+            // If there is no internet connection, set the body to what is currently loaded
+            // and display the body, hiding any loading bars
             TextView body = emailDialog.findViewById(R.id.body);
             emailDialog.findViewById(R.id.body_loading).setVisibility(View.GONE);
             body.setVisibility(View.VISIBLE);
+            // Make links clickable
             body.setText(linkifyHtml(email.getBody(), Linkify.WEB_URLS));
             body.setMovementMethod(LinkMovementMethod.getInstance());
         }
@@ -403,38 +476,33 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
-        mailPollHandler.postDelayed(new Runnable() {
-            public void run() {
-                if (account.getEmail().getAddress() != null) {
-                    showEmailsProgress();
-                    if (Util.isNetworkAvailable(context)) {
-                        if (emailMessages.isEmpty()) {
-                            generator.refreshEmails(account.getEmail(), null);
-                        } else {
-                            generator.refreshEmails(account.getEmail(), emailMessages.get(0));
-                        }
-                    } else {
-                        toggleNoInternetMessage(true);
-                    }
-                    mailPollHandler.postDelayed(this, General.EMAIL_REFRESH_DELAY);
-                }
-            }
-        }, General.EMAIL_REFRESH_DELAY);
+        // When the activity is opened again, run the handler that polls for new
+        // emails into the inbox every set period of time
+        mailPollHandler.postDelayed(emailPollRunnable, General.EMAIL_REFRESH_DELAY);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        // When the app is paused, stop the email inbox poll handler
         mailPollHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
     public void loadAddress(final EmailAddress email) {
         if (email != null) {
-            Feedback.displayMessage(String.format(getString(R.string.email_set_message), email.getAddress()), view);
+            // Stop any email inbox polling
             mailPollHandler.removeCallbacksAndMessages(null);
+            // Get the first, identifier part of the email address
+            String identifier = email.getAddress().split("@")[0];
+            // Set the email address to use the identifier and the selected mail domain
+            email.setAddress(String.format("%s%s", identifier, mailDomain.getSelectedItem()));
+            // Display a message to the user informing them what the address has been set to
+            Feedback.displayMessage(String.format(getString(R.string.email_set_message), email.getAddress()), view);
+            // Update the account to use the email
             account.setEmail(email);
-            emailEntry.setText(email.getAddress().split("@")[0]);
+            emailIdentifier.setText(identifier);
+            // Clear inbox
             emailMessages = new ArrayList<>();
             emailList.setAdapter(null);
 
@@ -442,41 +510,37 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
             showEmailsProgress();
 
             if (Util.isNetworkAvailable(context)) {
+                // If there is an internet connection
                 if (emailMessages.isEmpty()) {
-                    generator.refreshEmails(email, null);
+                    // If there are no email messages
+                    // Load the email messages, with no latest email message set
+                    generator.refreshEmails(account.getEmail(), null);
                 } else {
-                    generator.refreshEmails(email, emailMessages.get(0));
+                    // If there are email messages
+                    // Load the email messages, with the latest one provided
+                    generator.refreshEmails(account.getEmail(), emailMessages.get(0));
                 }
             } else {
+                // If there is no internet, display no internet message
                 toggleNoInternetMessage(true);
             }
+            // Update the temporary current account to the account with the new email
             CurrentManager.updateCurrentAccount(account, context);
-
-
-            mailPollHandler.postDelayed(new Runnable() {
-                public void run() {
-                    showEmailsProgress();
-                    if (Util.isNetworkAvailable(context)) {
-                        if (emailMessages.isEmpty()) {
-                            generator.refreshEmails(email, null);
-                        } else {
-                            generator.refreshEmails(email, emailMessages.get(0));
-                        }
-                    } else {
-                        toggleNoInternetMessage(true);
-                    }
-                    mailPollHandler.postDelayed(this, General.EMAIL_REFRESH_DELAY);
-                }
-            }, General.EMAIL_REFRESH_DELAY);
+            // Run the handler that polls for new emails into the inbox every set period of time
+            mailPollHandler.postDelayed(emailPollRunnable, General.EMAIL_REFRESH_DELAY);
         }
     }
 
     @Override
     public void loadEmail(EmailMessage email) {
         if (emailShown) {
+            // If there is an email dialog shown
+            // Update the dialog's body text
             TextView body = emailDialog.findViewById(R.id.body);
+            // Hide the progress bar, show the body text
             emailDialog.findViewById(R.id.body_loading).setVisibility(View.GONE);
             body.setVisibility(View.VISIBLE);
+            // Make the links clickable
             body.setText(linkifyHtml(email.getBody(), Linkify.WEB_URLS));
             body.setMovementMethod(LinkMovementMethod.getInstance());
         }
@@ -485,16 +549,23 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     @Override
     public void loadEmails(List<EmailMessage> emails) {
         if (!emails.isEmpty()) {
+            // If there are already are emails
+            // Clear the emails
             emailList.setAdapter(null);
+            // For each email, if it doesn't already exist in the list, add it
             for (EmailMessage message : emails) {
                 if (!containsID(emailMessages, message.getId())) {
                     emailMessages.add(message);
                 }
             }
         }
+
         hideEmailsProgress();
+        // Set up email list adapter
         EmailListAdapter adapter = new EmailListAdapter(context, R.layout.item_email, this.emailMessages);
+        // Set email list to use adapter
         emailList.setAdapter(adapter);
+        // Adjust height of list view based on its children
         setListViewHeightBasedOnChildren(emailList);
     }
 
@@ -512,7 +583,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         }
         CurrentManager.updateCurrentAccount(this.account, context);
         displayAccount();
-        Feedback.displayMessage(getString(R.string.message_account_loaded), view);
     }
 
     private void save() {
@@ -533,7 +603,6 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
             }
         }
         ((Forge) getActivity()).reloadSaveList();
-        // External save
     }
 
     private void refresh() {
@@ -577,6 +646,19 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         emailWrapper = view.findViewById(R.id.email_wrapper);
         emailWrapper.setHint(getString(R.string.email));
         mailDomain = view.findViewById(R.id.mail_domain);
+        mailDomain.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String mailWithDomain = String.format("%s%s", emailIdentifier.getText().toString(), mailDomain.getSelectedItem());
+                account.setEmail(new EmailAddress(mailWithDomain, account.getEmail().getSidToken()));
+                CurrentManager.updateCurrentAccount(account, context);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         ((TextInputLayout) view.findViewById(R.id.account_name_wrapper)).setHint(getString(R.string.account_name));
         ((TextInputLayout) view.findViewById(R.id.year_wrapper)).setHint(getString(R.string.year));
         ((TextInputLayout) view.findViewById(R.id.month_wrapper)).setHint(getString(R.string.month));
@@ -615,14 +697,14 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         view.findViewById(R.id.save).setOnClickListener(this);
         // assign globals
         accountNameEntry = view.findViewById(R.id.account_name);
-        emailEntry = view.findViewById(R.id.email);
+        emailIdentifier = view.findViewById(R.id.email);
 
-        emailEntry.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        emailIdentifier.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     generator.setEmailAddress(new EmailAddress(
-                            String.format("%s@%s", emailEntry.getText().toString(), mailDomain.getSelectedItem()),
+                            String.format("%s%s", emailIdentifier.getText().toString(), mailDomain.getSelectedItem()),
                             null));
                 }
                 return false;
@@ -687,6 +769,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         ((TextView) view.findViewById(R.id.username)).setText(account.getUsername());
         if (account.getEmail() != null) {
             ((TextView) view.findViewById(R.id.email)).setText(account.getEmail().getAddress().split("@")[0]);
+            mailDomain.setSelection(getSpinnerIndex(mailDomain, "@" + account.getEmail().getAddress().split("@")[1]),true);
         }
         ((TextView) view.findViewById(R.id.password)).setText(account.getPassword());
         Calendar dob = account.getDateOfBirth();
@@ -719,6 +802,25 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
         emailWrapper.setVisibility(View.GONE);
         mailDomain.setVisibility(View.GONE);
         addressProgress.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Taken from Stack Overflow - https://stackoverflow.com/a/14640612/6052295
+     *
+     * @param spinner
+     * @param myString
+     * @return
+     */
+    private int getSpinnerIndex(Spinner spinner, String myString) {
+        int index = 0;
+
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
     }
 
     private void hideEmailsProgress() {

@@ -252,7 +252,7 @@ public class ForgeGenerator {
      * @return the locally generated email
      */
     private EmailAddress generateEmail(String domain) {
-        return new EmailAddress(String.format("%s@%s", RandomStringUtils.randomAlphanumeric(8), domain),
+        return new EmailAddress(String.format("%s%s", RandomStringUtils.randomAlphanumeric(8), domain),
                 null);
     }
 

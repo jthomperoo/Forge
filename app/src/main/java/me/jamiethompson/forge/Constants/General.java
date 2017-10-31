@@ -12,8 +12,6 @@ public class General {
     final public static String ERROR_LOG = "error";
     // Base API URL
     final public static String BASE_URL = "http://api.guerrillamail.com/ajax.php";
-    // Default mail domain
-    final public static String MAIL_DOMAIN = "guerrillamailblock.com";
     // API Request types
     final public static int REQUEST_EMAILS = 0;
     final public static int REQUEST_ADDRESS = 1;
