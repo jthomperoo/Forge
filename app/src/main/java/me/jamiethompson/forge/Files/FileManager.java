@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.R;
+import me.jamiethompson.forge.TabActivity.Forge;
 
 /**
  * Created by jamie on 29/09/17.
@@ -61,7 +61,7 @@ public class FileManager {
                 }
             } catch (Exception e) {
                 // If there is an error, log it
-                Log.e(General.ERROR_LOG, e.getMessage());
+                Log.e(Forge.ERROR_LOG, e.getMessage());
             }
         }
         return accounts;
@@ -95,7 +95,7 @@ public class FileManager {
             return account;
         } catch (Exception e) {
             // If there is an error, log it
-            Log.e(General.ERROR_LOG, e.getMessage());
+            Log.e(Forge.ERROR_LOG, e.getMessage());
             return null;
         }
     }
@@ -126,7 +126,7 @@ public class FileManager {
             return account;
         } catch (Exception e) {
             // If there is an error, log it
-            Log.e(General.ERROR_LOG, e.getMessage());
+            Log.e(Forge.ERROR_LOG, e.getMessage());
             return null;
         }
     }
@@ -157,7 +157,7 @@ public class FileManager {
             return true;
         } catch (Exception e) {
             // If there is an error, log it
-            Log.e(General.ERROR_LOG, e.getMessage());
+            Log.e(Forge.ERROR_LOG, e.getMessage());
             return false;
         }
     }

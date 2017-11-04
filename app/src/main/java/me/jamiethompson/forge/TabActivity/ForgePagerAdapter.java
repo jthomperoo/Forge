@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.R;
 
 /**
@@ -34,11 +33,11 @@ class ForgePagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page
         switch (position) {
-            case General.GENERATE_TAB: {
+            case Forge.GENERATE_TAB: {
                 generatorFragment = GeneratorFragment.newInstance();
                 return generatorFragment;
             }
-            case General.STORE_TAB: {
+            case Forge.STORE_TAB: {
                 storeFragment = StoreFragment.newInstance();
                 return storeFragment;
             }
@@ -56,9 +55,9 @@ class ForgePagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
-            case General.GENERATE_TAB:
+            case Forge.GENERATE_TAB:
                 return appContext.getString(R.string.tab_generate);
-            case General.STORE_TAB:
+            case Forge.STORE_TAB:
                 return appContext.getString(R.string.tab_store);
         }
         return null;

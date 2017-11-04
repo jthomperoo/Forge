@@ -40,14 +40,11 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/title"
+                <ImageView
+                    android:id="@+id/forge_logo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_name"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                    android:textColor="?android:attr/editTextColor" />
+                    app:srcCompat="@mipmap/forge_logo" />
 
                 <LinearLayout
                     style="@style/ForgeItem"

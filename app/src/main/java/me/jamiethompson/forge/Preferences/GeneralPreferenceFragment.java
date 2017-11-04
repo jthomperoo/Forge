@@ -1,7 +1,7 @@
 package me.jamiethompson.forge.Preferences;
 
 import android.annotation.TargetApi;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -11,35 +11,43 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
 import me.jamiethompson.forge.R;
+import me.jamiethompson.forge.UI.Feedback;
 import me.jamiethompson.forge.UI.Notifications;
 import me.jamiethompson.forge.Util;
 
 /**
  * Created by jamie on 03/10/17.
+ * Handles the general preferences
  */
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class GeneralPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+
+    // Preferences activity
+    private Activity activity;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = getActivity();
+        // Get the preferences from XML
         addPreferencesFromResource(R.xml.pref_general);
         setHasOptionsMenu(true);
         SwitchPreference helperPreference = ((SwitchPreference) getPreferenceScreen().findPreference(getString(R.string.pref_helper_key)));
         SwitchPreference overlayPreference = ((SwitchPreference) getPreferenceScreen().findPreference(getString(R.string.pref_overlay_key)));
         overlayPreference.setOnPreferenceChangeListener(this);
         helperPreference.setOnPreferenceChangeListener(this);
-        if (!Util.isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        if (!Util.isAccessibilitySettingsOn(activity.getApplicationContext())) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getActivity().getString(R.string.pref_overlay_key), false);
             editor.putBoolean(getActivity().getString(R.string.pref_helper_key), false);
             helperPreference.setChecked(false);
             overlayPreference.setChecked(false);
+            editor.apply();
         }
     }
 
@@ -60,7 +68,7 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                 if (Util.isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
                     return true;
                 } else {
-                    showDialog(getString(R.string.accessibility_not_enabled), getString(R.string.error_accessibility_not_enabled), new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                    Feedback.showDialog(activity, getString(R.string.accessibility_not_enabled), getString(R.string.error_accessibility_not_enabled), new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
                     return false;
                 }
             } else {
@@ -76,7 +84,7 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                         if (Settings.canDrawOverlays(getContext())) {
                             return true;
                         } else {
-                            showDialog(getString(R.string.draw_overlay_not_enabled), getString(R.string.error_draw_overlay_not_enabled), new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                            Feedback.showDialog(activity, getString(R.string.draw_overlay_not_enabled), getString(R.string.error_draw_overlay_not_enabled), new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
                             return false;
                         }
                     } else {
@@ -84,36 +92,12 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                     }
 
                 } else {
-                    showDialog(getString(R.string.helper_not_enabled), getString(R.string.error_helper_not_enabled), null);
+                    Feedback.showDialog(activity, getString(R.string.helper_not_enabled), getString(R.string.error_helper_not_enabled), null);
                     return false;
                 }
             }
         }
         return true;
-    }
-
-
-    private void showDialog(String title, String message, final Intent action) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                if (action != null) {
-                    startActivityForResult(action, 0);
-                } else {
-                    dialog.dismiss();
-                }
-            }
-        });
-        if (action != null) {
-            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        builder.show();
     }
 
 

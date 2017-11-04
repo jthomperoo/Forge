@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.R;
 import me.jamiethompson.forge.Services.Autofill.NotificationClickReceiver;
 import me.jamiethompson.forge.Services.OverlayService;
@@ -22,6 +21,12 @@ import me.jamiethompson.forge.TabActivity.Forge;
  */
 
 public class Notifications {
+
+    final public static String NOTIFICATION_NAVIGATION = "notification_nav";
+    final public static String NOTIFICATION_CHANNEL = "forge_channel";
+    final public static int HELPER_NOTIFICATION_ID = 1;
+    final public static String HELPER_NOTIFICATION_TAG = "helper_notification";
+
     /**
      * Handles setting up a notification channel for the app
      *
@@ -32,7 +37,7 @@ public class Notifications {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // If the Android version is Oreo or greater
             // Create a notification channel
-            NotificationChannel mChannel = new NotificationChannel(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_CHANNEL, context.getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel mChannel = new NotificationChannel(NOTIFICATION_CHANNEL, context.getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_LOW);
             mNotificationManager.createNotificationChannel(mChannel);
         }
     }
@@ -57,7 +62,7 @@ public class Notifications {
                     .setSmallIcon(R.mipmap.forge_logo_small)
                     .setContentTitle(title)
                     .setContentText(text)
-                    .setChannelId(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_CHANNEL)
+                    .setChannelId(NOTIFICATION_CHANNEL)
                     .setOngoing(true)
                     .setOnlyAlertOnce(true)
                     .setTicker(null)
@@ -87,7 +92,7 @@ public class Notifications {
 
         // Set up the pending intent for loading the Generate tab in the Forge activity
         Intent generateIntent = new Intent(context, Forge.class);
-        generateIntent.putExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.GENERATE_TAB);
+        generateIntent.putExtra(NOTIFICATION_NAVIGATION, Forge.GENERATE_TAB);
         PendingIntent generatePendingIntent =
                 PendingIntent.getActivity(
                         context,
@@ -101,7 +106,7 @@ public class Notifications {
 
         // Set up the pending intent for loading the Storage tab in the Forge activity
         Intent storeIntent = new Intent(context, Forge.class);
-        generateIntent.putExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.STORE_TAB);
+        generateIntent.putExtra(NOTIFICATION_NAVIGATION, Forge.STORE_TAB);
         PendingIntent storePendingIntent =
                 PendingIntent.getActivity(
                         context,
@@ -132,8 +137,8 @@ public class Notifications {
         }
 
         // Display the notification
-        notificationManager.notify(me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_TAG,
-                me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_ID,
+        notificationManager.notify(HELPER_NOTIFICATION_TAG,
+                HELPER_NOTIFICATION_ID,
                 notificationBuilder.build());
     }
 
@@ -146,6 +151,6 @@ public class Notifications {
         // Get notification manager
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // Cancel the notification
-        notificationManager.cancel(me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_TAG, me.jamiethompson.forge.Constants.Notifications.HELPER_NOTIFICATION_ID);
+        notificationManager.cancel(HELPER_NOTIFICATION_TAG, HELPER_NOTIFICATION_ID);
     }
 }

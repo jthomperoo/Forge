@@ -18,8 +18,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.jamiethompson.forge.Constants.General;
-import me.jamiethompson.forge.Constants.UI;
 import me.jamiethompson.forge.Data.EmailAddress;
 import me.jamiethompson.forge.Data.EmailMessage;
 import me.jamiethompson.forge.Data.ForgeAccount;
@@ -34,6 +32,24 @@ import me.jamiethompson.forge.Web.MailCommunicator;
  */
 
 public class ForgeGenerator {
+
+    public class Items {
+        final public static String FIRSTNAME = "firstname";
+        final public static String MIDDLENAME = "middlename";
+        final public static String LASTNAME = "lastname";
+        final public static String USERNAME = "username";
+        final public static String EMAIL = "email";
+        final public static String PASSWORD = "password";
+        final public static String DATE = "date";
+    }
+
+    public class CharacterSets {
+        final public static String LOWERCASE_CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
+        final public static String SPECIAL_CHARACTERS = "~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?";
+        final public static String NUMBER_CHARACTERS = "0123456789";
+        final public static String UPPERCASE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    }
+
     // List of names available to generate from
     private List<String> names;
     // Mail API communicator
@@ -63,30 +79,30 @@ public class ForgeGenerator {
         // Set up random number generator
         Random rand = new Random();
         switch (item) {
-            case UI.FIRSTNAME: {
+            case Items.FIRSTNAME: {
                 // Set the first name to a random value in the list and update the username
                 account.setFirstName(names.get(rand.nextInt(names.size())));
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case UI.MIDDLENAME: {
+            case Items.MIDDLENAME: {
                 // Set the middle name to a random value in the list and update the username
                 account.setMiddleName(names.get(rand.nextInt(names.size())));
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case UI.LASTNAME: {
+            case Items.LASTNAME: {
                 // Set the last name to a random value in the list and update the username
                 account.setLastName(names.get(rand.nextInt(names.size())));
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case UI.USERNAME: {
+            case Items.USERNAME: {
                 // Set the username to use a different random number at the end
                 account.setUsername(stripSpecialCharacters(generateUsername(account)));
                 break;
             }
-            case UI.EMAIL: {
+            case Items.EMAIL: {
                 if (networkAvailable) {
                     // If there is internet access, get the email from the API
                     mailComs.getAddress();
@@ -96,12 +112,12 @@ public class ForgeGenerator {
                 }
                 break;
             }
-            case UI.PASSWORD: {
+            case Items.PASSWORD: {
                 // Set the password to a randomly generated value
                 account.setPassword(generatePassword());
                 break;
             }
-            case UI.DATE: {
+            case Items.DATE: {
                 // Load the users Date of Birth preferences
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
                 long minAge = Integer.valueOf(sharedPref.getString(context.getString(R.string.pref_dob_min_key), "")) * DateUtils.YEAR_IN_MILLIS;
@@ -233,15 +249,15 @@ public class ForgeGenerator {
         // If numbers can be used
         boolean numberChars = sharedPref.getBoolean(context.getString(R.string.pref_password_number_key), true);
         // Set character set to include lower case characters
-        String characterSet = General.LOWERCASE_CHARACTERS;
+        String characterSet = CharacterSets.LOWERCASE_CHARACTERS;
         if (specialChars) {
-            characterSet += General.SPECIAL_CHARACTERS;
+            characterSet += CharacterSets.SPECIAL_CHARACTERS;
         }
         if (uppercaseChars) {
-            characterSet += General.UPPERCASE_CHARACTERS;
+            characterSet += CharacterSets.UPPERCASE_CHARACTERS;
         }
         if (numberChars) {
-            characterSet += General.NUMBER_CHARACTERS;
+            characterSet += CharacterSets.NUMBER_CHARACTERS;
         }
         // Return the randomly generated password string
         return RandomStringUtils.random(rand.nextInt((maxLen - minLen) + 1) + minLen, characterSet);

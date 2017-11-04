@@ -77,6 +77,8 @@
 
     <string name="error_must_be_numeric">Value must be numeric</string>
 
+    <string name="error_identifer_too_long">Use 74 characters or less for email</string>
+
     <string name="error_age_too_high">Age must be less than\u0020</string>
     <string name="error_age_too_low">Age must be greater than\u0020</string>
     <string name="error_min_age_greater_max">Minimum age must be less than maximum age</string>

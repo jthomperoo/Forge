@@ -1,5 +1,7 @@
 package me.jamiethompson.forge;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -7,8 +9,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.Services.Autofill.AccessibilityAutofillService;
+import me.jamiethompson.forge.TabActivity.Forge;
 
 /**
  * Created by Jamie on 17/10/2017.
@@ -32,7 +34,7 @@ public class Util {
                     android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
         } catch (Settings.SettingNotFoundException e) {
             // If there is an error, log it
-            Log.e(General.ERROR_LOG, e.getMessage());
+            Log.e(Forge.ERROR_LOG, e.getMessage());
         }
         TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
 
@@ -54,6 +56,23 @@ public class Util {
         return false;
     }
 
+
+    /**
+     * Places a string into the device's clipboard to paste
+     *
+     * @param context calling context
+     * @param label   clip label
+     * @param content string to be pasted
+     */
+    public static void addToClipboard(Context context, String label, String content) {
+        // Get the clipboard manager
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        // Create the new Clip Data with the label and content
+        ClipData clip = ClipData.newPlainText(label, content);
+        // Put the clip data into the clipboard manager
+        clipboard.setPrimaryClip(clip);
+    }
+
     /**
      * Taken from Stack Overflow - https://stackoverflow.com/a/4239019
      * Checks if there is an available network connection
@@ -66,7 +85,7 @@ public class Util {
             NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
             return activeNetworkInfo != null && activeNetworkInfo.isConnected();
         } catch (NullPointerException e) {
-            Log.e(General.ERROR_LOG, e.getMessage());
+            Log.e(Forge.ERROR_LOG, e.getMessage());
             return false;
         }
     }

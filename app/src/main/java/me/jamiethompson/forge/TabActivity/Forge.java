@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import me.jamiethompson.forge.Constants.General;
 import me.jamiethompson.forge.Data.ForgeAccount;
 import me.jamiethompson.forge.Preferences.Preferences;
 import me.jamiethompson.forge.R;
@@ -23,6 +22,11 @@ import me.jamiethompson.forge.UI.Notifications;
  * Main activity class, holding both the generator page and the storage page
  */
 public class Forge extends AppCompatActivity {
+    // Error log key
+    final public static String ERROR_LOG = "error";
+    // Fragment tab types
+    final public static int GENERATE_TAB = 0;
+    final public static int STORE_TAB = 1;
     // Fragment Pager Adapter for managing tab fragments
     private ForgePagerAdapter forgePagerAdapter;
     // View Pager for displaying fragments
@@ -35,7 +39,7 @@ public class Forge extends AppCompatActivity {
         // Open with keyboard hidden
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // Set up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Set up fragment pager adapter
         forgePagerAdapter = new ForgePagerAdapter(getSupportFragmentManager(), getApplicationContext());
@@ -43,10 +47,10 @@ public class Forge extends AppCompatActivity {
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params.setScrollFlags(0);
         // Set up viewpager
-        viewPager = (ViewPager) findViewById(R.id.container);
+        viewPager = findViewById(R.id.container);
         viewPager.setAdapter(forgePagerAdapter);
         // Set up tab layout
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         // Set up notification channel
         Notifications.setUpChannels(this);
@@ -54,10 +58,10 @@ public class Forge extends AppCompatActivity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         // Get activity starting intent
         Intent intent = getIntent();
-        if (intent.hasExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION)) {
+        if (intent.hasExtra(Notifications.NOTIFICATION_NAVIGATION)) {
             // If the activity was opened from a notification click
             // Set the current fragment viewed to the one requested
-            viewPager.setCurrentItem(intent.getIntExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.GENERATE_TAB));
+            viewPager.setCurrentItem(intent.getIntExtra(Notifications.NOTIFICATION_NAVIGATION, GENERATE_TAB));
         }
         // If the user preferences have not been set yet, set them to defaults
         if (!sharedPref.getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)) {
@@ -71,10 +75,10 @@ public class Forge extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.hasExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION)) {
+        if (intent.hasExtra(Notifications.NOTIFICATION_NAVIGATION)) {
             // If the activity was opened from a notification click
             // Set the current fragment viewed to the one requested
-            viewPager.setCurrentItem(intent.getIntExtra(me.jamiethompson.forge.Constants.Notifications.NOTIFICATION_NAVIGATION, General.GENERATE_TAB));
+            viewPager.setCurrentItem(intent.getIntExtra(Notifications.NOTIFICATION_NAVIGATION, GENERATE_TAB));
         }
     }
 
@@ -109,12 +113,12 @@ public class Forge extends AppCompatActivity {
 
     /**
      * Loads an account into the generator page
-     * @param account the account to be loadeds
+     * @param account the account to be loaded
      */
     public void loadAccount(ForgeAccount account) {
         GeneratorFragment generator = forgePagerAdapter.getGeneratorFragment();
         generator.load(account);
-        viewPager.setCurrentItem(General.GENERATE_TAB);
+        viewPager.setCurrentItem(GENERATE_TAB);
     }
 
 

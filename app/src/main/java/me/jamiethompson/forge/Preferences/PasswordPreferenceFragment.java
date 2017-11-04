@@ -16,6 +16,7 @@ import me.jamiethompson.forge.R;
 
 /**
  * Created by jamie on 03/10/17.
+ * Handles all password related preferences
  */
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
