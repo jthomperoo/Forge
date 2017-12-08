@@ -6,6 +6,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
  * Created by Jamie on 19/10/2017.
  * Represents an accessibility node that can be auto filled by the auto fill service, includes
  * the auto fill input type
+ * REMOVED IN 1.4 DUE TO CHANGE IN ANDROID GUIDELINES
  */
 
 public class AutoFillNode {

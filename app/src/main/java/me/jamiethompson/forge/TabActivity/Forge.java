@@ -70,6 +70,12 @@ public class Forge extends AppCompatActivity {
             PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.pref_date_of_birth, true);
         }
 
+        if (sharedPref.getBoolean(getString(R.string.pref_helper_key), false)) {
+            Notifications.displayHelperNotification(this);
+        } else {
+            Notifications.removeHelperNotification(this);
+        }
+
     }
 
     @Override

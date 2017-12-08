@@ -11,7 +11,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 import me.jamiethompson.forge.R;
-import me.jamiethompson.forge.Services.Autofill.NotificationClickReceiver;
 import me.jamiethompson.forge.Services.OverlayService;
 import me.jamiethompson.forge.TabActivity.Forge;
 
@@ -83,12 +82,12 @@ public class Notifications {
                     .setVibrate(null)
                     .setSound(null);
         }
-
+//        REMOVED IN 1.4 DUE TO CHANGE IN ANDROID GUIDELINES
         // Set up the pending intent for auto fill triggering
-        Intent notificationReciever = new Intent(context, NotificationClickReceiver.class);
-        PendingIntent pendingIntentAutoFill = PendingIntent.getBroadcast(context, 0, notificationReciever, PendingIntent.FLAG_UPDATE_CURRENT);
+//        Intent notificationReciever = new Intent(context, NotificationClickReceiver.class);
+//        PendingIntent pendingIntentAutoFill = PendingIntent.getBroadcast(context, 0, notificationReciever, PendingIntent.FLAG_UPDATE_CURRENT);
         // Set on notification click to trigger auto fill
-        notificationBuilder.setContentIntent(pendingIntentAutoFill);
+//        notificationBuilder.setContentIntent(pendingIntentAutoFill);
 
         // Set up the pending intent for loading the Generate tab in the Forge activity
         Intent generateIntent = new Intent(context, Forge.class);
@@ -101,6 +100,7 @@ public class Notifications {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+        notificationBuilder.setContentIntent(generatePendingIntent);
         // Add the generate pending intent action to trigger when Generate button is pressed
         notificationBuilder.addAction(new Notification.Action(R.drawable.icon_generate, context.getString(R.string.helper_notification_generate), generatePendingIntent));
 

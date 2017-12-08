@@ -40,13 +40,11 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
         SwitchPreference overlayPreference = ((SwitchPreference) getPreferenceScreen().findPreference(getString(R.string.pref_overlay_key)));
         overlayPreference.setOnPreferenceChangeListener(this);
         helperPreference.setOnPreferenceChangeListener(this);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
         if (!Util.isAccessibilitySettingsOn(activity.getApplicationContext())) {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getActivity().getString(R.string.pref_overlay_key), false);
             editor.putBoolean(getActivity().getString(R.string.pref_helper_key), false);
-            helperPreference.setChecked(false);
-            overlayPreference.setChecked(false);
             editor.apply();
         }
     }
@@ -64,16 +62,23 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
 
     public boolean onPreferenceChange(Preference preference, Object o) {
         if (preference.getKey().equals(getString(R.string.pref_helper_key))) {
+//            REMOVED IN 1.4 DUE TO CHANGE IN ANDROID GUIDELINES
+//            if ((boolean) o) {
+//                if (Util.isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
+//                    return true;
+//                } else {
+//                    Feedback.showDialog(activity, getString(R.string.accessibility_not_enabled), getString(R.string.error_accessibility_not_enabled), new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+//                    return false;
+//                }
+//            } else {
+//                Notifications.removeHelperNotification(getActivity());
+//            }
             if ((boolean) o) {
-                if (Util.isAccessibilitySettingsOn(getActivity().getApplicationContext())) {
-                    return true;
-                } else {
-                    Feedback.showDialog(activity, getString(R.string.accessibility_not_enabled), getString(R.string.error_accessibility_not_enabled), new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                    return false;
-                }
+                Notifications.displayHelperNotification(getActivity());
             } else {
                 Notifications.removeHelperNotification(getActivity());
             }
+            return true;
         }
 
         if (preference.getKey().equals(getString(R.string.pref_overlay_key))) {

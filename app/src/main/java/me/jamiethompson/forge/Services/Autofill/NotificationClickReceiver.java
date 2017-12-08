@@ -12,6 +12,7 @@ import me.jamiethompson.forge.Util;
 /**
  * Created by jamie on 16/10/17.
  * Handles receiving notification clicks and initiating the autofill
+ * REMOVED IN 1.4 DUE TO CHANGE IN ANDROID GUIDELINES
  */
 
 public class NotificationClickReceiver extends BroadcastReceiver {

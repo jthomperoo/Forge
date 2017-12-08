@@ -8,8 +8,8 @@ android {
         applicationId "me.jamiethompson.forge"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 12
-        versionName "forge_1_3"
+        versionCode 13
+        versionName "forge_1_4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

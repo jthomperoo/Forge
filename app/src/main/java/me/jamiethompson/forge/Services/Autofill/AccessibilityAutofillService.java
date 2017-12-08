@@ -20,6 +20,7 @@ import me.jamiethompson.forge.UI.Notifications;
 /**
  * Created by jamie on 09/10/17.
  * Service for detecting valid fields for auto fill and populating them on notification click
+ * FEATURE REMOVED IN 1.4 DUE TO CHANGE IN ANDROID GUIDELINES
  */
 public class AccessibilityAutofillService extends AccessibilityService {
     // Current instance

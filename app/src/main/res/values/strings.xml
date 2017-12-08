@@ -36,7 +36,7 @@
     <string name="notification_channel">forge_channel</string>
 
     <string name="helper_notification_title">Load Forge</string>
-    <string name="helper_notification_text">Tap to autofill</string>
+    <string name="helper_notification_text">Tap to load Forge</string>
     <string name="helper_notification_generate">Generate</string>
     <string name="helper_notification_store">Store</string>
     <string name="helper_notification_overlay">Overlay</string>
