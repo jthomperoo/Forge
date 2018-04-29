@@ -45,6 +45,15 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="OverlayTitleBar">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingLeft">18sp</item>
+        <item name="android:paddingTop">9sp</item>
+        <item name="android:paddingBottom">9sp</item>
+        <item name="android:textColor">@color/common_google_signin_btn_text_dark</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

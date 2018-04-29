@@ -93,6 +93,7 @@ public class GeneralPreferenceFragment extends PreferenceFragment implements Pre
                             return false;
                         }
                     } else {
+                        Notifications.displayHelperNotification(getActivity());
                         return true;
                     }
 

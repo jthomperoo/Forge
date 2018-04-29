@@ -109,7 +109,7 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
     // The email polling runnable, polls the email inbox repeatedly with a set delay between
     private Runnable emailPollRunnable = new Runnable() {
         public void run() {
-            if (account.getEmail().getAddress() != null) {
+            if (account != null && account.getEmail() != null && account.getEmail().getAddress() != null) {
                 // If the email is set
                 // Show the emails loading progress
                 showEmailsProgress();
@@ -745,28 +745,30 @@ public class GeneratorFragment extends Fragment implements View.OnClickListener,
      * Updates the UI with the Forge Account details
      */
     private void displayAccount() {
-        // Set details to account details
-        ((TextView) view.findViewById(R.id.account_name)).setText(account.getAccountName());
-        ((TextView) view.findViewById(R.id.firstname)).setText(account.getFirstName());
-        ((TextView) view.findViewById(R.id.middlename)).setText(account.getMiddleName());
-        ((TextView) view.findViewById(R.id.lastname)).setText(account.getLastName());
-        ((TextView) view.findViewById(R.id.username)).setText(account.getUsername());
-        ((TextView) view.findViewById(R.id.password)).setText(account.getPassword());
-        if (account.getEmail() != null) {
-            // If the account has an email
-            // Set the identifier to the first part of the email before the '@'
-            ((TextView) view.findViewById(R.id.email)).setText(account.getEmail().getAddress().split("@")[0]);
-            // Set the mail domain spinner to the second part of the email after the '@'
-            mailDomain.setSelection(getSpinnerIndex(mailDomain, "@" + account.getEmail().getAddress().split("@")[1]), true);
+        if (account != null) {
+            // Set details to account details
+            ((TextView) view.findViewById(R.id.account_name)).setText(account.getAccountName());
+            ((TextView) view.findViewById(R.id.firstname)).setText(account.getFirstName());
+            ((TextView) view.findViewById(R.id.middlename)).setText(account.getMiddleName());
+            ((TextView) view.findViewById(R.id.lastname)).setText(account.getLastName());
+            ((TextView) view.findViewById(R.id.username)).setText(account.getUsername());
+            ((TextView) view.findViewById(R.id.password)).setText(account.getPassword());
+            if (account.getEmail() != null) {
+                // If the account has an email
+                // Set the identifier to the first part of the email before the '@'
+                ((TextView) view.findViewById(R.id.email)).setText(account.getEmail().getAddress().split("@")[0]);
+                // Set the mail domain spinner to the second part of the email after the '@'
+                mailDomain.setSelection(getSpinnerIndex(mailDomain, "@" + account.getEmail().getAddress().split("@")[1]), true);
+            }
+            // Get the date of birth
+            Calendar dob = account.getDateOfBirth();
+            // Set Day
+            ((TextView) view.findViewById(R.id.day)).setText(String.valueOf(dob.get(Calendar.DAY_OF_MONTH)));
+            // Set Month, month has to be +1 because Calendar Month is zero indexed
+            ((TextView) view.findViewById(R.id.month)).setText(String.valueOf(dob.get(Calendar.MONTH) + 1));
+            // Set Year
+            ((TextView) view.findViewById(R.id.year)).setText(String.valueOf(dob.get(Calendar.YEAR)));
         }
-        // Get the date of birth
-        Calendar dob = account.getDateOfBirth();
-        // Set Day
-        ((TextView) view.findViewById(R.id.day)).setText(String.valueOf(dob.get(Calendar.DAY_OF_MONTH)));
-        // Set Month, month has to be +1 because Calendar Month is zero indexed
-        ((TextView) view.findViewById(R.id.month)).setText(String.valueOf(dob.get(Calendar.MONTH) + 1));
-        // Set Year
-        ((TextView) view.findViewById(R.id.year)).setText(String.valueOf(dob.get(Calendar.YEAR)));
     }
 
     /**

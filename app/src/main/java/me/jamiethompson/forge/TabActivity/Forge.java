@@ -123,8 +123,10 @@ public class Forge extends AppCompatActivity {
      */
     public void loadAccount(ForgeAccount account) {
         GeneratorFragment generator = forgePagerAdapter.getGeneratorFragment();
-        generator.load(account);
-        viewPager.setCurrentItem(GENERATE_TAB);
+        if (generator != null) {
+            generator.load(account);
+            viewPager.setCurrentItem(GENERATE_TAB);
+        }
     }
 
 
